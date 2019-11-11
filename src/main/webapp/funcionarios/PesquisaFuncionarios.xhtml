@@ -1,0 +1,98 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Funcionários</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaFuncionarioBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Funcionários</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Pesquisar"
+						action="#{pesquisaFuncionarioBean.pesquisar}" update="@form" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo funcionário"
+						outcome="/funcionarios/CadastroFuncionario" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-8"
+					styleClass="panelgrid-withmargin">
+					<p:outputLabel value="Nome" for="nome" />
+					<p:inputText id="nome"
+						value="#{pesquisaFuncionarioBean.filter.nome}" />
+				</p:panelGrid>
+				<p:panelGrid columns="6" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-2, ui-grid-col-2,  ui-grid-col-2, ui-grid-col-2"
+					styleClass="panelgrid-withmargin">
+					<p:outputLabel value="CPF" for="cpf" />
+					<p:inputMask mask="999.999.99-99" id="cpf"
+						value="#{pesquisaFuncionarioBean.filter.documentoReceita}" />
+					<p:outputLabel value="Somente ativos" for="ativos" />
+					<p:selectBooleanCheckbox
+						value="#{pesquisaFuncionarioBean.filter.ativo}" id="ativos" />
+					<p:outputLabel value="Somente inativos" for="inativos" />
+					<p:selectBooleanCheckbox
+						value="#{pesquisaFuncionarioBean.filter.inativo}" id="inativos" />
+				</p:panelGrid>
+			</div>
+			<p:dataTable value="#{pesquisaFuncionarioBean.listaFiltrada}"
+				var="func" style="margin-top: 20px" selectionMode="single"
+				selection="#{pesquisaFuncionarioBean.funcionarioSelecionado}"
+				rowKey="#{func.id}" reflow="true"
+				emptyMessage="Nenhum funcionário cadastrado" id="table">
+				<p:ajax event="rowSelect" update="btnEdit btnRemove"
+					listener="#{pesquisaFuncionarioBean.onRowSelect}" />
+				<p:ajax event="rowUnselect" update="btnEdit btnRemove"
+					listener="#{pesquisaFuncionarioBean.onRowUnSelect}" />
+				<p:column headerText="Nome">
+					<h:outputText value="#{func.nome}" />
+				</p:column>
+				<p:column headerText="CPF" width="15%">
+					<h:outputText value="#{func.documentoReceita}" />
+				</p:column>
+				<p:column headerText="RG" width="15%">
+					<h:outputText value="#{func.rg}" />
+				</p:column>
+				<p:column headerText="Ativo" width="5%" priority="6"
+					style="text-align: center">
+					<h:outputText value="#{func.ativoPesquisa}" />
+				</p:column>
+				<f:facet name="footer">
+					<p:button icon="ui-icon-pencil" value="Visualizar/Editar"
+						id="btnEdit"
+						disabled="#{pesquisaFuncionarioBean.desabilitarBotoes}"
+						outcome="/funcionarios/CadastroFuncionario">
+						<f:param name="pessoa"
+							value="#{pesquisaFuncionarioBean.funcionarioSelecionado.id}" />
+					</p:button>
+					<p:commandButton icon="ui-icon-trash" value="Excluir"
+						id="btnRemove"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf"
+						disabled="#{pesquisaFuncionarioBean.desabilitarBotoes}" />
+				</f:facet>
+			</p:dataTable>
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma excluir o funcionário #{pesquisaFuncionarioBean.funcionarioSelecionado.nome}?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaFuncionarioBean.excluir}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

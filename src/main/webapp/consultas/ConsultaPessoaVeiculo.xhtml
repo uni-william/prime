@@ -1,0 +1,212 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Consulta clientes</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{consultaPessoaVeiculoBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Consulta Histórico Pessoa / Veículo</h1>
+		<h:form id="frm">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Pesquisar" update="@form"
+						action="#{consultaPessoaVeiculoBean.consultar}" />
+					<p:commandButton value="Limpar" update="@form"
+						action="#{consultaPessoaVeiculoBean.limpar}" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages id="msg" autoUpdate="false" closable="true" />
+
+			<p:tabView style="margin-top: 10px" id="tabView"
+				activeIndex="#{consultaPessoaVeiculoBean.index}">
+				<p:tab title="Pesquisa Pessoa" id="tbpessoa">
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-1, ui-grid-col-4"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Tipo" for="rgTipoPessoa" />
+						<p:selectOneRadio id="rgTipoPessoa"
+							value="#{consultaPessoaVeiculoBean.indicePessoa}" columns="2"
+							layout="responsive">
+							<f:selectItem itemValue="0" itemLabel="Física" />
+							<f:selectItem itemValue="1" itemLabel="Jurídica" />
+							<p:ajax event="change" process="@this" update="lablDoc documento"></p:ajax>
+						</p:selectOneRadio>
+
+						<p:outputLabel id="lablDoc"
+							value="#{consultaPessoaVeiculoBean.labelDocto}" for="documento" />
+						<p:inputMask id="documento"
+							mask="#{consultaPessoaVeiculoBean.mascara}"
+							value="#{consultaPessoaVeiculoBean.documentoReceita}" />
+					</p:panelGrid>
+					<div class="ui-fluid">
+						<p:panel header="Dados pessoa" id="pncli" style="margin-top:10px">
+							<p:panelGrid columns="4" layout="grid"
+								columnClasses="ui-grid-col-1, ui-grid-col-6, ui-grid-col-1, ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+								<p:outputLabel value="Nome" />
+								<p:outputLabel value="#{consultaPessoaVeiculoBean.pessoa.nome}" />
+								<p:outputLabel value="Tipo" />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.pessoa.tipo.descricao}" />
+							</p:panelGrid>
+							<p:panelGrid columns="4" layout="grid"
+								columnClasses="ui-grid-col-1, ui-grid-col-6, ui-grid-col-2, ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+								<p:outputLabel value="CPF/CNPJ" />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.pessoa.documentoReceita}" />
+								<p:outputLabel value="RG" />
+								<p:outputLabel
+									value="#{cadastroIntermediacaoBean.intermediacao.cliente.rg}" />
+								<p:outputLabel value="Endereço" />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.pessoa.logradouro}" />
+								<p:outputLabel value="Número" />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.pessoa.numero}" />
+								<p:outputLabel value="CEP" />
+								<p:outputLabel value="#{consultaPessoaVeiculoBean.pessoa.cep}" />
+								<p:outputLabel value="Bairro" />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.pessoa.bairro}" />
+								<p:outputLabel value="Cidade" />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.pessoa.cidade}" />
+								<p:outputLabel value="Estado" />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.pessoa.estado.descricao}" />
+							</p:panelGrid>
+						</p:panel>
+						<p:panel header="Movimentações" id="pnmovcliente"
+							rendered="#{consultaPessoaVeiculoBean.transacoesCliente.size() > 0}">
+							<p:repeat value="#{consultaPessoaVeiculoBean.transacoesCliente}"
+								var="trans">
+								<p:panelGrid columns="4" layout="grid"
+									styleClass="panelgrid-noborder">
+									<p:panelGrid columns="2" layout="grid"
+										columnClasses="ui-grid-col-4, ui-grid-col-2"
+										styleClass="panelgrid-noborder">
+										<h:outputText value="Transação:" />
+										<h:outputText value="#{trans.operacao}" />
+										<h:outputText value="Data:" />
+										<h:outputText value="#{trans.dataFormatadaBr}" />
+									</p:panelGrid>
+									<p:panelGrid columns="2" layout="grid"
+										columnClasses="ui-grid-col-3, ui-grid-col-6"
+										styleClass="panelgrid-noborder">
+										<h:outputText value="Veiculo:" />
+										<h:outputText value="#{trans.veiculo.modelo.modeloMotoriacao}" />
+										<h:outputText value="Placa:" />
+										<h:outputText value="#{trans.veiculo.placa}" />
+									</p:panelGrid>
+									<p:panelGrid columns="2" layout="grid"
+										columnClasses="ui-grid-col-3, ui-grid-col-2"
+										styleClass="panelgrid-noborder">
+										<h:outputText value="Valor:" />
+										<h:outputText value="#{trans.valorFormatadoBr}" />
+										<h:outputText value="Entrada:" />
+										<h:outputText value="#{trans.entradaFormatadoBr}" />
+
+									</p:panelGrid>
+									<p:panelGrid columns="2" layout="grid"
+										columnClasses="ui-grid-col-3, ui-grid-col-9"
+										styleClass="panelgrid-noborder">
+										<h:outputText value="Parceiro:" />
+										<h:outputText value="#{trans.parceiro}" />
+									</p:panelGrid>
+								</p:panelGrid>
+								<p:separator />
+							</p:repeat>
+						</p:panel>
+					</div>
+				</p:tab>
+				<p:tab title="Pesquisa Veículo" id="tbveiculo">
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-1, ui-grid-col-4"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel id="lablPlaca" value="Placa" for="placa" />
+						<p:inputText id="placa" value="#{consultaPessoaVeiculoBean.placa}" />
+					</p:panelGrid>
+					<div class="ui-fluid">
+						<p:panel header="Dados veículo" id="pnveic"
+							style="margin-top:10px">
+							<p:panelGrid columns="8" layout="grid"
+								columnClasses="ui-grid-col-1, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
+								styleClass="panelgrid-noborder">
+								<p:outputLabel value="Modelo" />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.veiculo.modelo.modeloMotoriacao}" />
+								<p:outputLabel value="Fabricante" />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.veiculo.modelo.fabricante.descricao}" />
+								<p:outputLabel value="Ano mod." />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.veiculo.anoModelo}" />
+								<p:outputLabel value="Cor" />
+								<p:outputLabel value="#{consultaPessoaVeiculoBean.veiculo.cor}" />
+								<p:outputLabel value="Renavan" />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.veiculo.renavan}" />
+								<p:outputLabel value="Chassis" />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.veiculo.chassi}" />
+								<p:outputLabel value="Situação" />
+								<p:outputLabel
+									value="#{consultaPessoaVeiculoBean.veiculo.statusVeiculo.descricao}" />
+							</p:panelGrid>
+						</p:panel>
+						<p:panel header="Movimentações" id="pnmovveiculo"
+							rendered="#{consultaPessoaVeiculoBean.transacoesVeiculo.size() > 0}">
+							<p:repeat value="#{consultaPessoaVeiculoBean.transacoesVeiculo}"
+								var="trans">
+								<p:panelGrid columns="4" layout="grid"
+									styleClass="panelgrid-noborder">
+									<p:panelGrid columns="2" layout="grid"
+										columnClasses="ui-grid-col-4, ui-grid-col-2"
+										styleClass="panelgrid-noborder">
+										<h:outputText value="Transação:" />
+										<h:outputText value="#{trans.operacao}" />
+										<h:outputText value="Data:" />
+										<h:outputText value="#{trans.dataFormatadaBr}" />
+									</p:panelGrid>
+									<p:panelGrid columns="2" layout="grid"
+										columnClasses="ui-grid-col-4, ui-grid-col-8"
+										styleClass="panelgrid-noborder">
+										<h:outputText value="Cliente:" />
+										<h:outputText value="#{trans.cliente.nome}" />
+										<h:outputText value="CPF/CNPJ:" />
+										<h:outputText value="#{trans.cliente.documentoReceita}" />
+									</p:panelGrid>
+									<p:panelGrid columns="2" layout="grid"
+										columnClasses="ui-grid-col-3, ui-grid-col-2"
+										styleClass="panelgrid-noborder">
+										<h:outputText value="Valor:" />
+										<h:outputText value="#{trans.valorFormatadoBr}" />
+										<h:outputText value="Entrada:" />
+										<h:outputText value="#{trans.entradaFormatadoBr}" />
+
+									</p:panelGrid>
+									<p:panelGrid columns="2" layout="grid"
+										columnClasses="ui-grid-col-3, ui-grid-col-9"
+										styleClass="panelgrid-noborder">
+										<h:outputText value="Parceiro:" />
+										<h:outputText value="#{trans.parceiro}" />
+									</p:panelGrid>
+								</p:panelGrid>
+								<p:separator />
+							</p:repeat>
+						</p:panel>
+					</div>
+				</p:tab>
+			</p:tabView>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

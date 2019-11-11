@@ -1,0 +1,369 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Compra</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewParam name="compra" value="#{cadastroCompraBean.movimentacao}" />
+			<f:viewAction action="#{cadastroCompraBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">#{cadastroCompraBean.compraEfetuada ?
+			'Compra - Visualização' : 'Compra'}</h1>
+		<br />
+		<p:tooltip />
+		<h:form id="frm" enctype="multipart/form-data">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Efetuar Compra"
+						action="#{cadastroCompraBean.eftuarCompra}"
+						process="@this tabView:tbcompra tabView:tbcli tabView:modelo tabView:pngtipo tabView:pngdados tabView:pngacessorios"
+						update="@form" disabled="#{cadastroCompraBean.compraEfetuada}" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Nova compra"
+						outcome="/movimentacoes/CadastroCompra" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<div class="ui-fluid">
+				<p:messages id="msg1" autoUpdate="false" closable="true" />
+				<p:tabView style="margin-top: 10px" id="tabView"
+					activeIndex="#{cadastroClienteBean.idex}">
+					<p:tab title="Dados Compra" id="tbcompra">
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-10"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel value="Data Compra" />
+							<p:outputLabel value="#{cadastroCompraBean.movimentacao.data}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</p:outputLabel>
+							<p:outputLabel value="Cliente" />
+							<p:outputLabel id="lnome"
+								value="#{cadastroCompraBean.movimentacao.cliente.nome}" />
+							<p:outputLabel value="CPF/CNPJ" />
+							<p:outputLabel
+								value="#{cadastroCompraBean.movimentacao.cliente.documentoReceita}" />
+							<p:outputLabel value="Veículo" />
+							<p:outputLabel
+								value="#{cadastroCompraBean.movimentacao.veiculo.modelo.modeloMotoriacao}" />
+							<p:outputLabel value="Placa" />
+							<p:outputLabel
+								value="#{cadastroCompraBean.movimentacao.veiculo.placa}" />
+							<p:outputLabel value="Renavan" />
+							<p:outputLabel
+								value="#{cadastroCompraBean.movimentacao.veiculo.renavan}" />
+
+							<p:outputLabel value="Chassi" />
+							<p:outputLabel
+								value="#{cadastroCompraBean.movimentacao.veiculo.chassi}" />
+							<p:outputLabel value="Cor" />
+							<p:outputLabel
+								value="#{cadastroCompraBean.movimentacao.veiculo.cor}" />
+							<p:outputLabel value="Ano Fabricação" />
+							<p:outputLabel
+								value="#{cadastroCompraBean.movimentacao.veiculo.anoFabricacao}" />
+							<p:outputLabel value="Ano Modelo" />
+							<p:outputLabel
+								value="#{cadastroCompraBean.movimentacao.veiculo.anoModelo}" />
+						</p:panelGrid>
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-2"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel value="Valor Compra" for="vlcompra"
+								styleClass="textoNegrito" />
+							<p:inputNumber value="#{cadastroCompraBean.movimentacao.valor}"
+								decimalPlaces="2" thousandSeparator="." decimalSeparator=","
+								id="vlcompra" rendered="#{!cadastroCompraBean.compraEfetuada}">
+							</p:inputNumber>
+							<h:outputText value="#{cadastroCompraBean.movimentacao.valor}"
+								rendered="#{cadastroCompraBean.compraEfetuada}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</p:panelGrid>
+					</p:tab>
+					<p:tab title="Dados Cliente" id="tbcli"
+						disabled="#{cadastroCompraBean.desabilitaTabCliente}">
+						<p:panelGrid columns="3" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-7, ui-grid-col-1"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel value="Nome" for="nome" />
+							<p:inputText id="nome"
+								value="#{cadastroCompraBean.movimentacao.cliente.nome}" />
+							<p:commandButton icon="ui-icon-search" style="width: 30px"
+								id="btcliente" title="Carregar cliente cadastrado"
+								rendered="#{cadastroCompraBean.movimentacao.cliente.nome == null}"
+								process="@this" update="@none" ignoreAutoUpdate="true"
+								actionListener="#{selecaoClienteBean.abrirSelecaoCliente}">
+								<p:ajax event="dialogReturn"
+									listener="#{cadastroCompraBean.onClienteEscolhido}"
+									update="@form" ignoreAutoUpdate="true" />
+							</p:commandButton>
+						</p:panelGrid>
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-4"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel value="Tipo" for="rgTipoPessoa" />
+							<p:selectOneRadio id="rgTipoPessoa"
+								value="#{cadastroCompraBean.indicePessoa}" columns="2"
+								layout="responsive">
+								<f:selectItem itemValue="0" itemLabel="Física" />
+								<f:selectItem itemValue="1" itemLabel="Jurídica" />
+								<p:ajax event="change"
+									listener="#{cadastroCompraBean.atualizaTipoPessoa}"
+									process="@this" update="documento"></p:ajax>
+							</p:selectOneRadio>
+						</p:panelGrid>
+
+						<p:panelGrid columns="6" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-1, ui-grid-col-3, ui-grid-col-2, ui-grid-col-2"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel value="Documento Receita" for="documento" />
+							<p:inputMask id="documento" mask="#{cadastroCompraBean.mascara}"
+								disabled="#{!cadastroCompraBean.exibirDocumento}"
+								value="#{cadastroCompraBean.movimentacao.cliente.documentoReceita}">
+							</p:inputMask>
+							<p:outputLabel value="RG" for="rg" />
+							<p:inputText id="rg"
+								value="#{cadastroCompraBean.movimentacao.cliente.rg}" />
+						</p:panelGrid>
+						<p:panelGrid columns="4" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-1, ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel value="Telefone" for="fixo" />
+							<p:inputMask id="fixo" mask="(99)9999-9999"
+								value="#{cadastroCompraBean.movimentacao.cliente.fixo}" />
+							<p:outputLabel value="Celular" for="celular" />
+							<p:inputMask id="celular" mask="(99)99999-9999"
+								value="#{cadastroCompraBean.movimentacao.cliente.celular}" />
+						</p:panelGrid>
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel value="E-mail" for="email" />
+							<p:inputText id="email"
+								value="#{cadastroCompraBean.movimentacao.cliente.email}" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel value="Logradouro" />
+							<p:inputText
+								value="#{cadastroCompraBean.movimentacao.cliente.logradouro}" />
+							<p:outputLabel value="Número" />
+							<p:inputText
+								value="#{cadastroCompraBean.movimentacao.cliente.numero}"
+								style="width: 20%" />
+							<p:outputLabel value="CEP" />
+							<p:inputMask mask="99999-999"
+								value="#{cadastroCompraBean.movimentacao.cliente.cep}"
+								style="width: 20%" />
+							<p:outputLabel value="Bairro" />
+							<p:inputText
+								value="#{cadastroCompraBean.movimentacao.cliente.bairro}"
+								style="width: 50%" />
+							<p:outputLabel value="Cidade" />
+							<p:inputText
+								value="#{cadastroCompraBean.movimentacao.cliente.cidade}"
+								style="width: 70%" />
+							<p:outputLabel value="Estado" />
+							<p:selectOneMenu
+								value="#{cadastroCompraBean.movimentacao.cliente.estado}"
+								style="width: 30%">
+								<f:selectItems value="#{cadastroCompraBean.estados}"
+									var="estado" itemValue="#{estado}"
+									itemLabel="#{estado.descricao}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</p:tab>
+					<p:tab title="Dados veículo" id="tbveiculo"
+						disabled="#{cadastroCompraBean.desabilitaTabVeiculo}">
+						<p:panelGrid columns="3" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-4"
+							styleClass="panelgrid-noborder" style="margin-top: 10px">
+							<p:outputLabel value="Fabricante" for="fabricante" />
+							<p:selectOneMenu id="fabricante"
+								value="#{cadastroCompraBean.fabricanteSelecionado}">
+								<f:selectItem itemLabel="Selecione fabricante" />
+								<f:selectItems value="#{cadastroCompraBean.fabricantes}"
+									var="fabricante" itemLabel="#{fabricante.descricao}"
+									itemValue="#{fabricante}" />
+								<p:ajax event="itemSelect" process="@this"
+									listener="#{cadastroCompraBean.listarModelos}"
+									update="modelo btnovomod" />
+							</p:selectOneMenu>
+							<p:commandButton title="Novo fabricante" icon="ui-icon-plus"
+								actionListener="#{cadastroCompraBean.novoFabricante()}"
+								style="width: 30px" process="@this"
+								update="fabricante modelo btnovomod"
+								oncomplete="PF('dlg_fab').show();" rendered="false">
+								<p:resetInput target="frm:dlgfab" />
+							</p:commandButton>
+
+						</p:panelGrid>
+						<p:panelGrid columns="3" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-4"
+							styleClass="panelgrid-noborder" style="margin-top: 10px">
+
+							<p:outputLabel value="Modelo" for="modelo" />
+							<p:selectOneMenu id="modelo"
+								value="#{cadastroCompraBean.movimentacao.veiculo.modelo}">
+								<f:selectItems value="#{cadastroCompraBean.modelos}"
+									var="modelo" itemLabel="#{modelo.modeloMotoriacao}"
+									itemValue="#{modelo}" />
+							</p:selectOneMenu>
+
+							<p:commandButton title="Novo modelo" icon="ui-icon-plus"
+								id="btnovomod" actionListener="#{cadastroCompraBean.novoModelo}"
+								style="width: 30px" process="@this" update="modelo frm:dlgmod"
+								disabled="#{cadastroCompraBean.fabricanteSelecionado.id == null}"
+								oncomplete="PF('dlg_mod').show();" rendered="false">
+								<p:resetInput target="frm:dlgmod" />
+							</p:commandButton>
+						</p:panelGrid>
+						<p:panelGrid columns="3" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-3"
+							styleClass="panelgrid-noborder" style="margin-top: 10px"
+							id="pngtipo">
+							<p:outputLabel value="Tipo" for="tipo" />
+							<p:selectOneMenu id="tipo"
+								value="#{cadastroCompraBean.movimentacao.veiculo.tipoVeiculo}">
+								<f:selectItems value="#{cadastroCompraBean.tipoVeiculos}"
+									var="tipo" itemLabel="#{tipo.descricao}" itemValue="#{tipo}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="5" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-2, ui-grid-col-2, ui-grid-col-3"
+							styleClass="panelgrid-noborder" style="margin-top: 10px"
+							id="pngdados">
+
+							<p:outputLabel value="Placa" for="placa" />
+							<p:inputText id="placa"
+								value="#{cadastroCompraBean.movimentacao.veiculo.placa}" />
+							<p:commandButton icon="ui-icon-search" style="width: 30px"
+								id="btveiculo" title="Carregar veículo cadastrado"
+								rendered="#{cadastroCompraBean.movimentacao.veiculo.chassi == null}"
+								process="@this" update="@none" ignoreAutoUpdate="true"
+								actionListener="#{selecaoVeiculoBean.abrirSelecaoVeiculoCompra}">
+								<p:ajax event="dialogReturn"
+									listener="#{cadastroCompraBean.onVeiculoEscolhido}"
+									update="@form" ignoreAutoUpdate="true" />
+							</p:commandButton>
+							<p:outputLabel value=""
+								rendered="#{cadastroCompraBean.movimentacao.veiculo.chassi != null}" />
+							<p:outputLabel value="Renavan" for="renavan" />
+							<p:inputText id="renavan"
+								value="#{cadastroCompraBean.movimentacao.veiculo.renavan}" />
+
+							<p:outputLabel value="Chassi" for="chassi" />
+							<p:inputText id="chassi"
+								value="#{cadastroCompraBean.movimentacao.veiculo.chassi}" />
+							<p:outputLabel value="" />
+							<p:outputLabel value="Cor" for="cor" />
+							<p:inputText id="cor"
+								value="#{cadastroCompraBean.movimentacao.veiculo.cor}" />
+							<p:outputLabel value="Km" for="km" />
+							<p:inputNumber id="km"
+								value="#{cadastroCompraBean.movimentacao.veiculo.quilometragem}"
+								decimalPlaces="0" thousandSeparator="." />
+							<p:outputLabel value="" />
+							<p:outputLabel value="Combustível" for="combustivel" />
+							<p:inputText id="combustivel"
+								value="#{cadastroCompraBean.movimentacao.veiculo.combustivel}" />
+							<p:outputLabel value="Ano fabricação" for="anofab" />
+							<p:inputNumber id="anofab"
+								value="#{cadastroCompraBean.movimentacao.veiculo.anoFabricacao}"
+								decimalPlaces="0" decimalSeparator="" thousandSeparator="" />
+							<p:outputLabel value="" />
+							<p:outputLabel value="Ano modelo" for="anomodelo" />
+							<p:inputNumber id="anomodelo"
+								value="#{cadastroCompraBean.movimentacao.veiculo.anoModelo}"
+								decimalPlaces="0" decimalSeparator="" thousandSeparator="" />
+						</p:panelGrid>
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-10"
+							styleClass="panelgrid-noborder" style="margin-top: 10px"
+							id="pngacessorios">
+							<p:outputLabel value="Acessórios" for="acessorios" />
+							<p:selectManyCheckbox id="acessorios"
+								value="#{cadastroCompraBean.movimentacao.veiculo.acessorios}"
+								converter="#{cadastroCompraBean.acessorioConverter}">
+								<f:attribute name="collectionType" value="java.util.ArrayList" />
+								<f:selectItems value="#{cadastroCompraBean.acessorios}"
+									var="acessorio" itemLabel="#{acessorio.descricao}"
+									itemValue="#{acessorio}" />
+							</p:selectManyCheckbox>
+						</p:panelGrid>
+					</p:tab>
+				</p:tabView>
+			</div>
+
+			<p:dialog header="Fabricante" widgetVar="dlg_fab" id="dlgfab"
+				responsive="true">
+				<h:panelGroup id="pnfab" layout="block" class="ui-fluid">
+					<p:messages id="msgfab" autoUpdate="false" />
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-4, ui-grid-col-8"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Fabricante" for="fabdesc" />
+						<p:inputText
+							value="#{cadastroCompraBean.fabricanteSelecionado.descricao}"
+							id="fabdesc" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-6, ui-grid-col-6"
+						styleClass="panelgrid-noborder">
+
+						<p:commandButton value="Adicionar" process=":frm:dlgfab"
+							update="pnfab frm:tabView:fabricante frm:tabView:modelo"
+							actionListener="#{cadastroCompraBean.salvarNovoFabricante()}"
+							oncomplete="if (!args.validation.Failed) PF('dlg_fab').hide()" />
+						<p:commandButton value="Cancelar" onclick="PF('dlg_fab').hide();"
+							process="@this frm:dlgfab" />
+					</p:panelGrid>
+				</h:panelGroup>
+			</p:dialog>
+
+			<p:dialog header="Modelo" widgetVar="dlg_mod" id="dlgmod"
+				responsive="true">
+				<h:panelGroup id="pnmod" layout="block" class="ui-fluid">
+					<p:messages id="msgmod" autoUpdate="false" />
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-4, ui-grid-col-8"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Fabricante" />
+						<p:outputLabel
+							value="#{cadastroCompraBean.novoModelo.fabricante.descricao}" />
+						<p:outputLabel value="Modelo" for="moddesc" />
+						<p:inputText value="#{cadastroCompraBean.novoModelo.descricao}"
+							id="moddesc" />
+						<p:outputLabel value="Motorização" for="modmot" />
+						<p:inputText value="#{cadastroCompraBean.novoModelo.motorizacao}"
+							id="modmot" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-6, ui-grid-col-6"
+						styleClass="panelgrid-noborder">
+
+						<p:commandButton value="Adicionar" process="frm:dlgmod"
+							update="pnmod frm:tabView:modelo"
+							actionListener="#{cadastroCompraBean.salvarNovoModelo()}"
+							oncomplete="if (!args.validationFailed) PF('dlg_mod').hide();" />
+						<p:commandButton value="Cancelar" onclick="PF('dlg_mod').hide();"
+							process="@this" />
+					</p:panelGrid>
+				</h:panelGroup>
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

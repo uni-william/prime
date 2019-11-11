@@ -1,0 +1,113 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Compra/Venda</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaMovimentacaoBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Compra/Venda</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Pesquisar"
+						action="#{pesquisaMovimentacaoBean.pesquisar}" update="@form" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2"
+					styleClass="panelgrid-withmargin">
+					<p:outputLabel value="Data inicial" for="dtini" />
+					<p:calendar value="#{pesquisaMovimentacaoBean.filter.dtIni}"
+						mask="99/99/9999" pattern="dd/MM/yyyy" id="dtini" showOn="button" />
+					<p:outputLabel value="Data final" for="dtfim" />
+					<p:calendar value="#{pesquisaMovimentacaoBean.filter.dtFim}"
+						mask="99/99/9999" pattern="dd/MM/yyyy" id="dtfim" showOn="button" />
+
+					<p:outputLabel value="Operação" for="operacao" />
+					<p:selectOneMenu id="operacao"
+						value="#{pesquisaMovimentacaoBean.filter.tipoOperacao}">
+						<f:selectItem itemLabel="Todas" />
+						<f:selectItems value="#{pesquisaMovimentacaoBean.tipoOperacoes}"
+							var="tipo" itemLabel="#{tipo.descricao}" itemValue="#{tipo}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-4"
+					styleClass="panelgrid-withmargin">
+					<p:outputLabel value="Nome" for="nome" />
+					<p:inputText value="#{pesquisaMovimentacaoBean.filter.nome}"
+						id="nome" />
+				</p:panelGrid>
+			</div>
+			<p:dataTable value="#{pesquisaMovimentacaoBean.lista}"
+				var="movimentacao" style="margin-top: 20px"
+				rowKey="#{movimentacao.id}" reflow="true"
+				emptyMessage="Nenhum registro cadastrado" id="table"
+				paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+				paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}">
+				<f:facet name="{Exporters}">
+					<h:commandLink title="Exportar para excel"
+						rendered="#{pesquisaMovimentacaoBean.lista.size() > 0}">
+						<p:graphicImage library="images" name="xls_16.png" />
+						<p:dataExporter type="xls" target="table" fileName="movimentações" />
+					</h:commandLink>
+				</f:facet>
+
+				<p:column headerText="Data">
+					<h:outputText value="#{movimentacao.data}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Operação">
+					<h:outputText value="#{movimentacao.tipoOperacao.descricao}" />
+				</p:column>
+				<p:column headerText="Veículo">
+					<h:outputText
+						value="#{movimentacao.veiculo.modelo.modeloMotoriacao}" />
+				</p:column>
+				<p:column headerText="Placa">
+					<h:outputText value="#{movimentacao.veiculo.placa}" />
+				</p:column>
+				<p:column headerText="Chassi">
+					<h:outputText value="#{movimentacao.veiculo.chassi}" />
+				</p:column>
+				<p:column headerText="Valor">
+					<h:outputText value="#{movimentacao.valor}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Cliente">
+					<h:outputText value="#{movimentacao.cliente.nome}" />
+				</p:column>
+				<p:column headerText="Status">
+					<h:outputText value="#{movimentacao.statusVenda.descricao}" />
+				</p:column>
+				<p:column exportable="false">
+					<p:commandButton icon="ui-icon-info" title="Visualizar operação"
+						action="#{pesquisaMovimentacaoBean.selecionar(movimentacao)}" />
+				</p:column>
+
+
+			</p:dataTable>
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma excluir este registro?" widgetVar="confirmacao"
+				id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaMovimentacaoBean.excluir}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

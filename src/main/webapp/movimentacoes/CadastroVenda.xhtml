@@ -1,0 +1,214 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Venda</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewParam name="venda" value="#{cadastroVendaBean.movimentacao}" />
+			<f:viewAction action="#{cadastroVendaBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">#{cadastroVendaBean.vendaEfetuada ?
+			'Venda - Visualização' : 'Venda'}</h1>
+		<br />
+		<p:tooltip />
+		<h:form id="frm" enctype="multipart/form-data">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="#{cadastroVendaBean.labelBotao}"
+						action="#{cadastroVendaBean.efetuarVenda}" update="@form"
+						disabled="#{cadastroVendaBean.vendaCancelada}" />
+					<p:commandButton ajax="false" value="Termo de garantia"
+						action="#{cadastroVendaBean.emitirRelatorio}" update="msg"
+						disabled="#{!cadastroVendaBean.vendaEfetuada}" />
+					<p:commandButton ajax="false" value="Recibo"
+						action="#{cadastroVendaBean.emitirRecibo}" update="msg"
+						disabled="#{!cadastroVendaBean.possuiEntrada}" />
+					<p:commandButton value="Cancelar venda"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf"
+						disabled="#{!cadastroVendaBean.vendaEfetuada and !cadastroVendaBean.vendaEmAndamento}" />
+
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Nova Venda" outcome="/movimentacoes/CadastroVenda" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<div class="ui-fluid">
+				<p:messages id="msg" autoUpdate="false" closable="true" />
+				<p:panel header="Dados cliente" id="pncli" style="margin-top:10px">
+					<p:panelGrid columns="3" layout="grid"
+						columnClasses="ui-grid-col-1, ui-grid-col-5, ui-grid-col-1"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Cliente" for="cliente" />
+						<p:autoComplete id="cliente"
+							value="#{cadastroVendaBean.movimentacao.cliente}"
+							completeMethod="#{cadastroVendaBean.completePorNome}"
+							var="cliente" itemLabel="#{cliente.nome}" itemValue="#{cliente}"
+							dropdown="true" converter="#{cadastroVendaBean.pessoaConverter}"
+							forceSelection="true"
+							disabled="#{cadastroVendaBean.vendaEfetuada}">
+							<p:ajax event="itemSelect" process="@this" update="pncli" />
+						</p:autoComplete>
+						<p:commandButton icon="ui-icon-search" style="width: 30px"
+							id="btcliente" title="Carregar cliente cadastrado"
+							process="@this" update="@none" ignoreAutoUpdate="true"
+							actionListener="#{selecaoClienteBean.abrirSelecaoCliente}"
+							disabled="#{cadastroVendaBean.vendaEfetuada}">
+							<p:ajax event="dialogReturn"
+								listener="#{cadastroVendaBean.onClienteEscolhido}"
+								update="@form" ignoreAutoUpdate="true" />
+						</p:commandButton>
+					</p:panelGrid>
+					<p:panelGrid columns="4" layout="grid"
+						columnClasses="ui-grid-col-1, ui-grid-col-6, ui-grid-col-1, ui-grid-col-3"
+						styleClass="panelgrid-noborder" style="margin-top: 10px">
+						<p:outputLabel value="CPF/CNPJ" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.cliente.documentoReceita}" />
+						<p:outputLabel value="RG" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.cliente.rg}" />
+						<p:outputLabel value="Endereço" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.cliente.logradouro}" />
+						<p:outputLabel value="Número" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.cliente.numero}" />
+						<p:outputLabel value="CEP" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.cliente.cep}" />
+						<p:outputLabel value="Bairro" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.cliente.bairro}" />
+						<p:outputLabel value="Cidade" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.cliente.cidade}" />
+						<p:outputLabel value="Estado" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.cliente.estado.descricao}" />
+					</p:panelGrid>
+				</p:panel>
+				<p:panel header="Dados veículo" id="pnveiculo">
+					<p:panelGrid columns="3" layout="grid"
+						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Placa" for="placa" />
+						<p:inputText id="placa" value="#{cadastroVendaBean.placa}"
+							disabled="#{cadastroVendaBean.vendaEfetuada}">
+							<p:ajax event="change"
+								listener="#{cadastroVendaBean.pesquisarPorPlaca}"
+								process="@this" update="pnveiculo pnvenda msg" />
+						</p:inputText>
+						<p:commandButton icon="ui-icon-search" style="width: 30px"
+							id="btveiculo" title="Carregar veículo cadastrado"
+							process="@this" update="@none" ignoreAutoUpdate="true"
+							actionListener="#{selecaoVeiculoVendaBean.abrirSelecaoVeiculoVenda}"
+							disabled="#{cadastroVendaBean.vendaEfetuada}">
+							<p:ajax event="dialogReturn"
+								listener="#{cadastroVendaBean.onVeiculoEscolhido}"
+								update="@form" ignoreAutoUpdate="true" />
+						</p:commandButton>
+					</p:panelGrid>
+					<p:panelGrid columns="6" layout="grid"
+						columnClasses="ui-grid-col-1, ui-grid-col-4, ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Modelo" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.veiculo.modelo.modeloMotoriacao}" />
+						<p:outputLabel value="Cor" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.veiculo.cor}" />
+						<p:outputLabel value="Chassi" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.veiculo.chassi}" />
+						<p:outputLabel value="Fabricação" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.veiculo.anoFabricacao}" />
+						<p:outputLabel value="Ano Modelo" />
+						<p:outputLabel
+							value="#{cadastroVendaBean.movimentacao.veiculo.anoModelo}" />
+					</p:panelGrid>
+				</p:panel>
+				<p:panel header="Venda" id="pnvenda">
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-2, ui-grid-col-2"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Valor Veículo" for="vlvenda" />
+						<p:inputNumber value="#{cadastroVendaBean.movimentacao.valor}"
+							decimalPlaces="2" thousandSeparator="." decimalSeparator=","
+							id="vlvenda" rendered="#{!cadastroVendaBean.vendaEfetuada}">
+							<p:ajax event="change" process="@this" update="pnvenda msg" />
+						</p:inputNumber>
+
+						<h:outputText value="#{cadastroVendaBean.movimentacao.valor}"
+							rendered="#{cadastroVendaBean.vendaEfetuada}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+
+						<p:outputLabel value="Valor Entrada" for="vlentrada" />
+						<p:inputNumber value="#{cadastroVendaBean.movimentacao.entrada}"
+							decimalPlaces="2" thousandSeparator="." decimalSeparator=","
+							id="vlentrada">
+							<p:ajax event="change" process="@this" update="pnvenda" />
+						</p:inputNumber>
+
+
+						<p:outputLabel value="Valor Financiamento" for="vlfin" />
+						<p:outputLabel id="vlfin"
+							value="#{cadastroVendaBean.movimentacao.valorFinanciamento}">
+							<f:convertNumber type="currency" />
+						</p:outputLabel>
+
+						<p:outputLabel value="Banco" for="banco" />
+						<p:selectOneMenu id="banco"
+							value="#{cadastroVendaBean.movimentacao.banco}"
+							disabled="#{cadastroVendaBean.vendaEfetuada}">
+							<f:selectItems value="#{cadastroVendaBean.bancos}" var="banco"
+								itemValue="#{banco}" itemLabel="#{banco.descricao}"></f:selectItems>
+						</p:selectOneMenu>
+
+					</p:panelGrid>
+					<p:panelGrid columns="3" layout="grid"
+						columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-2"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Termo assinado" for="garantia" />
+						<p:fileUpload id="garantia" update="@form" process="@this"
+							rendered="#{cadastroVendaBean.exibirComponenteUpload}"
+							fileUploadListener="#{cadastroVendaBean.carregarArquivo}"
+							mode="advanced" auto="true" allowTypes="/(\.|\/)(jpe?g|png)$/" />
+						<p:commandButton value="Baixar termo assinado"
+							rendered="#{cadastroVendaBean.exibirBotaoDownload}"
+							actionListener="#{cadastroVendaBean.baixarComprovante}"
+							process="@this" ajax="false">
+							<p:fileDownload value="#{cadastroVendaBean.file}" />
+						</p:commandButton>
+						<p:commandButton value="Limpar termo assinado"
+							rendered="#{cadastroVendaBean.exibirBotaoDownload}"
+							actionListener="#{cadastroVendaBean.limparTermoGravado}"
+							process="@this" update="@form">
+						</p:commandButton>
+					</p:panelGrid>
+				</p:panel>
+			</div>
+
+			<p:confirmDialog header="Cancelammento de Venda"
+				message="Confirma cancelamento desta venda?" widgetVar="confirmacao"
+				id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{cadastroVendaBean.cancelarVenda}" />
+			</p:confirmDialog>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

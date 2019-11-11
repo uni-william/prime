@@ -1,0 +1,202 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Intermediacao</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewParam name="intermediacao"
+				value="#{cadastroIntermediacaoBean.intermediacao}" />
+			<f:viewAction action="#{cadastroIntermediacaoBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Intermediação -
+			#{cadastroIntermediacaoBean.intermediacao.statusVenda.descricao}</h1>
+		<br />
+		<p:tooltip />
+		<h:form id="frm" enctype="multipart/form-data">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Efetuar Intermediação"
+						action="#{cadastroIntermediacaoBean.efetuarIntermediacao}"
+						update="@form"
+						disabled="#{cadastroIntermediacaoBean.intermediacaoCancelada}" />
+					<p:commandButton ajax="false" value="Termo de garantia"
+						action="#{cadastroIntermediacaoBean.emitirRelatorio()}"
+						update="msg"
+						disabled="#{cadastroIntermediacaoBean.intermediacaoCancelada or cadastroIntermediacaoBean.intermediacaoEmAndamento}" />
+					<p:commandButton ajax="false" value="Recibo"
+						action="#{cadastroIntermediacaoBean.emitirRecibo}" update="msg"
+						disabled="#{not cadastroIntermediacaoBean.possuiEntrada or cadastroIntermediacaoBean.intermediacaoEmAndamento or cadastroIntermediacaoBean.intermediacaoCancelada}" />
+
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Nova Intermediação"
+						outcome="/intermediacoes/CadastroIntermediacao" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<div class="ui-fluid">
+				<p:messages id="msg" autoUpdate="false" closable="true" />
+				<p:panel header="Dados cliente" id="pncli" style="margin-top:10px">
+					<p:panelGrid columns="3" layout="grid"
+						columnClasses="ui-grid-col-1, ui-grid-col-5, ui-grid-col-1"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Cliente" for="cliente" />
+						<p:autoComplete id="cliente"
+							value="#{cadastroIntermediacaoBean.intermediacao.cliente}"
+							completeMethod="#{cadastroIntermediacaoBean.completePorNome}"
+							var="cliente" itemLabel="#{cliente.nome}" itemValue="#{cliente}"
+							dropdown="true"
+							converter="#{cadastroIntermediacaoBean.clienteConverter}"
+							forceSelection="true"
+							disabled="#{cadastroIntermediacaoBean.intermediacaoEfetuada or cadastroIntermediacaoBean.intermediacaoCancelada}">
+							<p:ajax event="itemSelect" process="@this" update="pncli" />
+						</p:autoComplete>
+						<p:commandButton icon="ui-icon-search" style="width: 30px"
+							id="btcliente" title="Carregar cliente cadastrado"
+							process="@this" update="@none" ignoreAutoUpdate="true"
+							actionListener="#{selecaoClienteBean.abrirSelecaoCliente}"
+							disabled="#{cadastroIntermediacaoBean.intermediacaoEfetuada or cadastroIntermediacaoBean.intermediacaoCancelada}">
+							<p:ajax event="dialogReturn"
+								listener="#{cadastroIntermediacaoBean.onClienteEscolhido}"
+								update="@form" ignoreAutoUpdate="true" />
+						</p:commandButton>
+					</p:panelGrid>
+					<p:panelGrid columns="4" layout="grid"
+						columnClasses="ui-grid-col-1, ui-grid-col-6, ui-grid-col-1, ui-grid-col-3"
+						styleClass="panelgrid-noborder" style="margin-top: 10px">
+						<p:outputLabel value="CPF/CNPJ" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.cliente.documentoReceita}" />
+						<p:outputLabel value="RG" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.cliente.rg}" />
+						<p:outputLabel value="Endereço" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.cliente.logradouro}" />
+						<p:outputLabel value="Número" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.cliente.numero}" />
+						<p:outputLabel value="CEP" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.cliente.cep}" />
+						<p:outputLabel value="Bairro" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.cliente.bairro}" />
+						<p:outputLabel value="Cidade" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.cliente.cidade}" />
+						<p:outputLabel value="Estado" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.cliente.estado.descricao}" />
+					</p:panelGrid>
+				</p:panel>
+				<p:panel header="Dados veículo" id="pnveiculo">
+					<p:panelGrid columns="3" layout="grid"
+						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Placa" for="placa" />
+						<p:inputText id="placa" value="#{cadastroIntermediacaoBean.placa}"
+							disabled="#{cadastroIntermediacaoBean.intermediacaoEfetuada or cadastroIntermediacaoBean.intermediacaoCancelada}">
+							<p:ajax event="change"
+								listener="#{cadastroIntermediacaoBean.pesquisarPorPlaca}"
+								process="@this" update="pnveiculo pnvenda msg" />
+						</p:inputText>
+						<p:commandButton icon="ui-icon-search" style="width: 30px"
+							id="btveiculo" title="Carregar veículo cadastrado"
+							process="@this" update="@none" ignoreAutoUpdate="true"
+							actionListener="#{selecaoVeiculoIntermediacaoBean.abrirSelecaoVeiculoIntermediacao()}"
+							disabled="#{cadastroIntermediacaoBean.intermediacaoEfetuada or cadastroIntermediacaoBean.intermediacaoCancelada}">
+							<p:ajax event="dialogReturn"
+								listener="#{cadastroIntermediacaoBean.onVeiculoEscolhido}"
+								update="@form" ignoreAutoUpdate="true" />
+						</p:commandButton>
+					</p:panelGrid>
+					<p:panelGrid columns="6" layout="grid"
+						columnClasses="ui-grid-col-1, ui-grid-col-4, ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Modelo" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.veiculo.modelo.modeloMotoriacao}" />
+						<p:outputLabel value="Cor" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.veiculo.cor}" />
+						<p:outputLabel value="Chassi" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.veiculo.chassi}" />
+						<p:outputLabel value="Fabricação" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.veiculo.anoFabricacao}" />
+						<p:outputLabel value="Ano Modelo" />
+						<p:outputLabel
+							value="#{cadastroIntermediacaoBean.intermediacao.veiculo.anoModelo}" />
+					</p:panelGrid>
+				</p:panel>
+				<p:panel header="Dados parceiro" id="pnparceiro">
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-1, ui-grid-col-5"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Parceito" for="parceiro" />
+						<p:autoComplete id="parceiro"
+							value="#{cadastroIntermediacaoBean.intermediacao.parceiro}"
+							completeMethod="#{cadastroIntermediacaoBean.completePorNomeParceiro}"
+							var="parceiro" itemLabel="#{parceiro.nome}"
+							itemValue="#{parceiro}" dropdown="true"
+							converter="#{cadastroIntermediacaoBean.parceiroConverter}"
+							forceSelection="true"
+							disabled="#{cadastroIntermediacaoBean.intermediacaoEfetuada or cadastroIntermediacaoBean.intermediacaoCancelada}">
+						</p:autoComplete>
+						<p:outputLabel value="Banco" for="banco" />
+						<p:selectOneMenu id="banco"
+							value="#{cadastroIntermediacaoBean.intermediacao.banco}"
+							disabled="#{cadastroIntermediacaoBean.intermediacaoEfetuada or cadastroIntermediacaoBean.intermediacaoCancelada}">
+							<f:selectItems value="#{cadastroIntermediacaoBean.bancos}"
+								var="banco" itemValue="#{banco}" itemLabel="#{banco.descricao}"></f:selectItems>
+						</p:selectOneMenu>
+					</p:panelGrid>
+
+				</p:panel>
+				<p:panel header="Intermediação" id="pnvenda">
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-2, ui-grid-col-2"
+						styleClass="panelgrid-noborder">
+
+						<p:outputLabel value="Valor Entrada" for="vlentrada" />
+						<p:inputNumber
+							value="#{cadastroIntermediacaoBean.intermediacao.entrada}"
+							decimalPlaces="2" thousandSeparator="." decimalSeparator=","
+							id="vlentrada"
+							rendered="#{!cadastroIntermediacaoBean.intermediacaoEfetuada and !cadastroIntermediacaoBean.intermediacaoCancelada}">
+							<p:ajax event="change" process="@this" update="pnvenda" />
+						</p:inputNumber>
+						<h:outputText
+							value="#{cadastroIntermediacaoBean.intermediacao.entrada}"
+							rendered="#{cadastroIntermediacaoBean.intermediacaoEfetuada or cadastroIntermediacaoBean.intermediacaoCancelada}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+
+						<p:outputLabel value="Valor Intermediação" for="vlvenda" />
+						<p:inputNumber
+							value="#{cadastroIntermediacaoBean.intermediacao.valorFinanciado}"
+							decimalPlaces="2" thousandSeparator="." decimalSeparator=","
+							id="vlvenda"
+							rendered="#{!cadastroIntermediacaoBean.intermediacaoEfetuada and !cadastroIntermediacaoBean.intermediacaoCancelada}">
+							<p:ajax event="change" process="@this" update="pnvenda msg" />
+						</p:inputNumber>
+						<h:outputText
+							value="#{cadastroIntermediacaoBean.intermediacao.valorFinanciado}"
+							rendered="#{cadastroIntermediacaoBean.intermediacaoEfetuada or cadastroIntermediacaoBean.intermediacaoCancelada}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</p:panelGrid>
+				</p:panel>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

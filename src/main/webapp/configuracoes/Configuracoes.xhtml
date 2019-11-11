@@ -1,0 +1,73 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Configurações</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{configuracoesBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Configurações</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Salvar"
+						action="#{configuracoesBean.salvar}" update="@form" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:messages autoUpdate="false" closable="true" />
+
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-10"
+					styleClass="panelgrid-withmargin">
+					<p:outputLabel value="Usuário de envio de email" for="useremail" />
+					<p:inputText id="useremail"
+						value="#{configuracoesBean.configuracoes.usuarioEnviaEmail}"
+						style="width: 70%" />
+					<p:outputLabel value="Email de envio" for="emailenvio" />
+					<p:inputText id="emailenvio"
+						value="#{configuracoesBean.configuracoes.emailEnvio}" />
+					<p:outputLabel value="Senha email envio" for="senhaemailenvio" />
+					<p:password id="senhaemailenvio" redisplay="true"
+						value="#{configuracoesBean.senha}" style="width: 30%" />
+					<p:outputLabel value="Host de envio de email" for="host" />
+					<p:inputText id="host"
+						value="#{configuracoesBean.configuracoes.host}" style="width: 50%" />
+					<p:outputLabel value="Porta" for="porta" />
+					<p:inputText id="porta"
+						value="#{configuracoesBean.configuracoes.porta}"
+						style="width: 10%" />
+					<p:outputLabel value="Usa SSL" for="ssl" />
+					<p:selectBooleanCheckbox id="ssl"
+						value="#{configuracoesBean.configuracoes.sslOnConection}" />
+					<p:outputLabel value="TLS Requerido" for="tls" />
+					<p:selectBooleanCheckbox id="tls"
+						value="#{configuracoesBean.configuracoes.tlsRequired}" />
+					<p:outputLabel value="Gerar e enviar senha por e-mail" for="enviarEmail" />
+					<p:selectBooleanCheckbox id="enviarEmail"
+						value="#{configuracoesBean.configuracoes.enviarSenhaEmail}" />
+						
+				</p:panelGrid>
+				<p:separator />
+
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-1"
+					styleClass="panelgrid-withmargin">
+					<p:outputLabel value="Dias para gráficos Pizza/Linhas e Relatórios" for="dias" />
+					<p:inputNumber decimalPlaces="0" id="dias"
+						value="#{configuracoesBean.configuracoes.diasRetroativosGraficoPizzaELinhas}" />
+					<p:outputLabel value="Meses para gráficos Barras" for="meses" />
+					<p:inputNumber decimalPlaces="0" id="meses"
+						value="#{configuracoesBean.configuracoes.mesesRetroativosGrficoBarras}" />
+				</p:panelGrid>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

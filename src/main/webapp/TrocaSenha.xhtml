@@ -1,0 +1,45 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Coloqueo titulo aqui</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{trocaSenhaBean.inicializar}">
+			</f:viewAction>
+		</f:metadata>
+
+		<br />
+		<p:messages id="msg" autoUpdate="true" closable="true" />
+		<div class="ui-fluid centralizado">
+			<h:form id="form">
+
+				<h1>Troca de senha</h1>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-4, ui-grid-col-6"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Nova senha" for="nova" />
+					<p:password id="nova" style="width: 100%"
+						value="#{trocaSenhaBean.novaSenha}" match="confirma"
+						validatorMessage="Senhas não conferem" />
+					<p:outputLabel value="Confirma senha" for="confirma" />
+					<p:password id="confirma" style="width: 100%"
+						value="#{trocaSenhaBean.confirmaSenha}" />
+					<p:outputLabel />
+					<p:outputLabel />
+					<p:outputLabel />
+					<p:outputLabel />
+					<p:outputLabel />
+					<p:commandButton value="Salvar"
+						action="#{trocaSenhaBean.trocarSenha}" ajax="false" />
+				</p:panelGrid>
+
+			</h:form>
+		</div>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+	</f:facet>
+	<f:metadata>
+
+	</f:metadata>
+	<title>Esqueci minha senha</title>
+	<h:outputStylesheet library="css" name="login.css" />
+</h:head>
+
+<body>
+	<h:outputScript library="primefaces" name="jquery/jquery.js" />
+	<div class="div-central">
+		<h:form id="frm">
+			<p:growl id="msg" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-4, ui-grid-col-8"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel />
+					<p:outputLabel />					
+					<p:outputLabel value="Inforime o login" for="login" />
+					<p:inputText value="#{esqueciSenhaBean.login}" id="login" />
+					<p:outputLabel />
+					<p:outputLabel />
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-6, ui-grid-col-6"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel />
+					<p:outputLabel />
+					<p:commandButton value="Redefinir senha"
+						actionListener="#{esqueciSenhaBean.redefinirSenha}" ajax="false" update="@form" />
+					<p:button value="Retornar" outcome="/Login" />
+				</p:panelGrid>
+
+			</div>
+		</h:form>
+	</div>
+</body>
+
+</html>

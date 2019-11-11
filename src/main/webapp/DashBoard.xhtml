@@ -1,0 +1,55 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">DashBoard</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{dashBoardBean.inicializar}" />
+		</f:metadata>
+		<h:form id="frm">
+			<div class="ui-fluid">
+				<p:panelGrid columns="4" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
+					styleClass="panelgrid-withmargin" rendered="false">
+					<p:outputLabel value="Data inicial" for="dataInicial" />
+					<p:calendar value="#{dashBoardBean.dataInicial}" mask="99/99/9999"
+						pattern="dd/MM/yyyy" id="dataInicial" showOn="button">
+						<p:ajax event="dateSelect" listener="#{dashBoardBean.pesquisar}"
+							process="@this dataFinal" update="@form" />
+						<p:ajax event="change" listener="#{dashBoardBean.pesquisar}"
+							process="@this dataFinal" update="@form" />
+					</p:calendar>
+					<p:outputLabel value="Data final" for="dataFinal" />
+					<p:calendar value="#{dashBoardBean.dataFinal}" mask="99/99/9999"
+						pattern="dd/MM/yyyy" id="dataFinal" showOn="button">
+						<p:ajax event="dateSelect" listener="#{dashBoardBean.pesquisar}"
+							process="@this dataInicial" update="@form" />
+						<p:ajax event="change" listener="#{dashBoardBean.pesquisar}"
+							process="@this dataInicial" update="@form" />
+
+					</p:calendar>
+				</p:panelGrid>
+
+				<p:panelGrid columns="1" layout="grid"
+					columnClasses="ui-grid-col-12" styleClass="panelgrid-withmargin">
+					<p:chart type="line" model="#{dashBoardBean.lines}"
+						responsive="true" />
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-6, ui-grid-col-6"
+					styleClass="panelgrid-withmargin">
+					<p:chart type="pie" model="#{dashBoardBean.pie}" responsive="true" />
+					<p:chart type="bar" model="#{dashBoardBean.barModel}" responsive="true" rendered="#{dashBoardBean.barModel != null}" />
+				</p:panelGrid>
+				
+			</div>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

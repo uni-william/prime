@@ -1,0 +1,84 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cadastro fabricante</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{cadastroFabricanteBean.inicializar}" />
+			<f:viewParam name="fabricante"
+				value="#{cadastroFabricanteBean.fabricante}" />
+		</f:metadata>
+		<h1 class="aw-page-title">#{cadastroFabricanteBean.editando ?
+			'Edição de fabricante' : 'Novo fabricante'}</h1>
+		<br />
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Salvar"
+						action="#{cadastroFabricanteBean.salvar}" process="fabricante tbModelos @this" update="@form" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo fabricante"
+						outcome="/fabricantes/CadastroFabricante" />
+					<p:button value="Pesquisa"
+						outcome="/fabricantes/PesquisaFabricantes" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:messages autoUpdate="true" closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-4"
+					styleClass="panelgrid-noborder" style="margin-top: 10px">
+					<p:outputLabel value="Fabricante" for="fabricante" />
+					<p:inputText id="fabricante"
+						value="#{cadastroFabricanteBean.fabricante.descricao}" />
+				</p:panelGrid>
+				<p:separator />
+				<p:panelGrid columns="5" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-1, ui-grid-col-2, ui-grid-col-1"
+					styleClass="panelgrid-noborder" style="margin-top: 10px">
+					<p:outputLabel value="Modelo" for="modelo" />
+					<p:inputText id="modelo"
+						value="#{cadastroFabricanteBean.modelo.descricao}" />
+					<p:outputLabel value="Mototização" for="motor" />
+					<p:inputText id="motor"
+						value="#{cadastroFabricanteBean.modelo.motorizacao}" />						
+					<p:commandButton icon="ui-icon-plus" process="@this modelo motor"
+						update="modelo motor tbModelos"
+						action="#{cadastroFabricanteBean.adicionarModelo}" />
+				</p:panelGrid>
+
+				<p:dataTable value="#{cadastroFabricanteBean.fabricante.modelos}"
+					id="tbModelos" var="model" style="margin-top: 20px"
+					rowIndexVar="linha" reflow="true"
+					emptyMessage="Nenhum modelo cadastrado">
+					<p:column headerText="Modelos - fabricante">
+						<h:outputText value="#{model.descricao}" />
+					</p:column>
+					<p:column headerText="Motorização">
+						<h:outputText value="#{model.motorizacao}" />
+					</p:column>					
+					<p:column width="6%" style="text-align: center">
+						<p:commandButton icon="ui-icon-pencil" title="Editar"
+							action="#{cadastroFabricanteBean.editarModelo(linha)}"
+							process="@this tbModelos" update="tbModelos :frm:modelo :frm:motor"
+							style="height: 20px; width: 20px">
+						</p:commandButton>
+						<p:commandButton icon="ui-icon-trash" title="Remover"
+							action="#{cadastroFabricanteBean.removerModelo(linha)}"
+							process="@this tbModelos" update="tbModelos"
+							style="height: 20px; width: 20px">
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

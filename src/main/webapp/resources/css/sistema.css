@@ -1,0 +1,97 @@
+@charset "utf-8";
+
+body {
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+	margin: 0px;
+	font-weight: normal;
+}
+
+header {
+	padding: 5px 0px;
+	margin-bottom: 20px;
+	height: 40px;
+	background-color: #3B240B;
+	color: #FFFFFF;
+	box-shadow: 0px 2px 2px #ccc;
+}
+
+header>div {
+	margin-left: 8px;
+}
+
+#login-dialog {
+	width: 290px;
+	margin: auto;
+	margin-top: 150px;
+}
+
+.grid-login {
+	background-color: #f2f2f2;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	margin-top: 8px;
+	padding: 10px;
+}
+
+#conteudo {
+	padding: 0px 8px;
+}
+
+footer {
+	padding: 0px 8px;
+	margin-bottom: 10px
+}
+
+.rotulo {
+	width: 150px;
+}
+
+.rotuloMaior {
+	width: 300px;
+}
+
+.ajax-status {
+	position: fixed;
+	top: 55px;
+	right: 10px;
+	width: 35px;
+	height: 35px;
+}
+
+/* Menu sistema início */
+.menu-sistema {
+	border: 0px !important;
+	padding: 5px 0px 0px 0px !important;
+	background: none !important;
+	font-size: medium;
+}
+
+.menu-sistema .ui-menu-parent>a .ui-menuitem-text, .menu-sistema>.ui-menu-list>.ui-menuitem>a>.ui-menuitem-text
+	{
+	color: #FFFFFF !important;
+	background: none !important;
+}
+
+.menu-sistema .ui-icon-triangle-1-s {
+	background: url(#{ resource [ 'images:seta-para-baixo.png' ]
+}
+
+)
+no-repeat
+
+
+!
+important
+;
+
+
+}
+.logo {
+	width: 80px;
+	height: 40px;
+}
+
+.textoDadosCompra {
+	height: 24px;
+}

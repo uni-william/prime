@@ -1,0 +1,123 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Intermediações</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaIntermediacaoBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Intermediações</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Pesquisar"
+						action="#{pesquisaIntermediacaoBean.pesquisar}" update="@form" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:button value="Nova Intermediação"
+						outcome="/intermediacoes/CadastroIntermediacao" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2"
+					styleClass="panelgrid-withmargin">
+					<p:outputLabel value="Data inicial" for="dtini" />
+					<p:calendar value="#{pesquisaIntermediacaoBean.filter.dtIni}"
+						mask="99/99/9999" pattern="dd/MM/yyyy" id="dtini" showOn="button" />
+					<p:outputLabel value="Data final" for="dtfim" />
+					<p:calendar value="#{pesquisaIntermediacaoBean.filter.dtFim}"
+						mask="99/99/9999" pattern="dd/MM/yyyy" id="dtfim" showOn="button" />
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-3"
+					styleClass="panelgrid-noborder">
+
+					<p:outputLabel value="Perceiro" for="parceiro" />
+					<p:selectOneMenu id="parceiro"
+						value="#{pesquisaIntermediacaoBean.filter.parceiro}">
+						<f:selectItem itemLabel="Todos" />
+						<f:selectItems value="#{pesquisaIntermediacaoBean.parceiros}"
+							var="parceiro" itemLabel="#{parceiro.nome}"
+							itemValue="#{parceiro}" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+			</div>
+			<p:dataTable value="#{pesquisaIntermediacaoBean.lista}"
+				var="intermediacao" style="margin-top: 20px"
+				rowKey="#{intermediacao.id}" reflow="true"
+				emptyMessage="Nenhum registro cadastrado" id="table"
+				paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+				paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}">
+				<f:facet name="{Exporters}">
+					<h:commandLink title="Exportar para excel"
+						rendered="#{pesquisaIntermediacaoBean.lista.size() > 0}">
+						<p:graphicImage library="images" name="xls_16.png" />
+						<p:dataExporter type="xls" target="table"
+							fileName="intermediações" />
+					</h:commandLink>
+				</f:facet>
+				<p:column headerText="Data">
+					<h:outputText value="#{intermediacao.data}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Veículo">
+					<h:outputText
+						value="#{intermediacao.veiculo.modelo.modeloMotoriacao}" />
+				</p:column>
+				<p:column headerText="Placa">
+					<h:outputText value="#{intermediacao.veiculo.placa}" />
+				</p:column>
+				<p:column headerText="Valor">
+					<h:outputText value="#{intermediacao.valorFinanciado}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Cliente">
+					<h:outputText value="#{intermediacao.cliente.nome}" />
+				</p:column>
+				<p:column headerText="Parceiro">
+					<h:outputText value="#{intermediacao.parceiro.nome}" />
+				</p:column>
+				<p:column headerText="Status">
+					<h:outputText value="#{intermediacao.statusVenda.descricao}" />
+				</p:column>
+				<p:column exportable="false">
+					<p:button outcome="/intermediacoes/CadastroIntermediacao"
+						icon="ui-icon-info" title="Visualizar intermediação">
+						<f:param name="intermediacao" value="#{intermediacao.id}" />
+					</p:button>
+
+					<p:commandButton icon="ui-icon-closethick" title="Cancelar"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf"
+						disabled="#{intermediacao.cancelada}">
+						<f:setPropertyActionListener value="#{intermediacao}"
+							target="#{pesquisaIntermediacaoBean.intermediacaoSelecionado}" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+			<p:confirmDialog header="Canclamento"
+				message="Confirma cancelamento da intermediação selecionada?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaIntermediacaoBean.cancelarVenda}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

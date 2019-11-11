@@ -1,0 +1,25 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	ounfxmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	<head>
+<meta charset="UTF-8" />
+	</head>
+
+	<ui:define name="titulo">Acesso negado</ui:define>
+
+	<ui:define name="content">
+		<div class="acessoNegado">
+			<h:panelGrid columns="1" styleClass="acessoNegado">
+				<h1>ACESSO NEGADO</h1>
+				<h:graphicImage library="images" name="negado.jpg"
+					styleClass="acessoNegadoImg" />
+				<p:outputLabel value="A página não pode ser exibida" />
+			</h:panelGrid>
+		</div>
+		<h:link outcome="/Home" value="Voltar a página inicial" />
+	</ui:define>
+
+</ui:composition>

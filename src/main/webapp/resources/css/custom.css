@@ -1,0 +1,43 @@
+body {
+	margin: 0;
+	font-size: 13px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* TABVIEW */
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a {
+	color: #555;
+}
+
+@media ( max-width : 640px) {
+	.ui-tabs.ui-tabs-top>.ui-tabs-nav li {
+		width: 100%;
+	}
+}
+
+/* PANELGRID */
+.ui-panelgrid.panelgrid-noborder .ui-grid-responsive {
+	border: none;
+}
+
+.ui-panelgrid.panelgrid-withmargin .ui-grid-responsive {
+	border: none;
+	margin-top: 20px;
+}
+
+.ui-panelmenu .ui-panelmenu-header a {
+  text-decoration: none;
+}
+
+@media ( max-width : 640px) {
+	.ui-panelgrid.panelgrid-noborder .ui-grid-responsive .ui-grid-row,
+		.ui-panelgrid.panelgrid-withmargin .ui-grid-responsive .ui-grid-row {
+		border: none;
+	}
+}
+
+/* PANELMENU */
+.ui-panelmenu  {
+	font-size: 1.1em;
+	border: none;
+}

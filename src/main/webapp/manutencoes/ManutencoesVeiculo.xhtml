@@ -1,0 +1,148 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Manutenções de veículo</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{manutencoesVeiculoBean.inicializar}" />
+			<f:viewParam name="veiculo" value="#{manutencoesVeiculoBean.veiculo}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Manutenções de veículo</h1>
+		<br />
+		<h:form id="frm" enctype="multipart/form-data">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:button value="Retornar para o veículo"
+						outcome="/veiculos/CadastroVeiculo">
+						<f:param name="veiculo"
+							value="#{manutencoesVeiculoBean.veiculo.id}" />
+					</p:button>
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-5"
+					styleClass="panelgrid-noborder" style="margin-top: 10px">
+					<p:outputLabel value="Veóculo" />
+					<p:outputLabel
+						value="#{manutencoesVeiculoBean.veiculo.modelo.modeloMotoriacao}" />
+					<p:outputLabel value="Placa" />
+					<p:outputLabel value="#{manutencoesVeiculoBean.veiculo.placa}" />
+					<p:outputLabel value="Total" />
+					<h:outputText value="#{manutencoesVeiculoBean.totalManutencoes}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</p:panelGrid>
+				<p:separator />
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2"
+					styleClass="panelgrid-noborder" style="margin-top: 10px">
+					<p:outputLabel value="Data" for="data" />
+					<p:calendar value="#{manutencoesVeiculoBean.manutencao.data}"
+						mask="99/99/9999" pattern="dd/MM/yyyy" id="data" showOn="button" />
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-4"
+					styleClass="panelgrid-noborder" style="margin-top: 10px">
+					<p:outputLabel value="Descrição dos serviços" for="descricao" />
+					<p:inputTextarea id="descricao" rows="5"
+						value="#{manutencoesVeiculoBean.manutencao.descricao}" />
+					<p:outputLabel value="Valor" for="valor" />
+					<p:inputNumber id="valor"
+						value="#{manutencoesVeiculoBean.manutencao.valor}"
+						decimalPlaces="2" thousandSeparator="." decimalSeparator="," />
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Comprovante" for="comprovante" />
+					<p:fileUpload id="comprovante"
+						value="#{manutencoesVeiculoBean.uploadedFile}" mode="simple"
+						 allowTypes="/(\.|\/)(jpe?g|png)$/" />
+					<p:commandButton title="Adicionar" icon="ui-icon-plus"
+						process="@this descricao valor data comprovante" update="@form" ajax="false"
+						actionListener="#{manutencoesVeiculoBean.adicionarManutenco}" />
+				</p:panelGrid>
+				<p:carousel value="#{manutencoesVeiculoBean.manutencoesVeiculo}"
+					headerText="Manuteções do veículo" var="manu"
+					itemStyle="text-align:center" responsive="true" id="carrousel">
+					<p:panelGrid columns="3" style="width:100%;margin:10px 0px"
+						columnClasses="label, label, value" layout="grid"
+						styleClass="ui-panelgrid-blank">
+						<p:outputLabel value="Data" />
+						<p:outputLabel value="Comprovante" />
+						<p:outputLabel value="Valor" />
+						<h:outputText value="#{manu.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+						<p:outputLabel value="" />
+						<h:outputText value="#{manu.valor}">
+							<f:convertNumber type="currency" /> />
+						</h:outputText>
+						<p:commandButton update=":frm:manuDetail"
+							process="@this carrousel" oncomplete="PF('Dialog').show()"
+							icon="ui-icon-search" style="width: 30px" title="Detalhes">
+							<f:setPropertyActionListener value="#{manu}"
+								target="#{manutencoesVeiculoBean.manutencaoSelecionada}" />
+						</p:commandButton>
+						<p:outputLabel value="" rendered="#{!manu.possuiComprovante}" />
+						<p:commandButton icon="ui-icon-image"
+							rendered="#{manu.possuiComprovante}" style="width: 30px"
+							title="Baixar imagem do comprovante"
+							actionListener="#{manutencoesVeiculoBean.baixarComprovante(manu)}"
+							process="@this" ajax="false" immediate="true">
+							<p:fileDownload value="#{manutencoesVeiculoBean.file}" />
+						</p:commandButton>
+						<p:commandButton icon="ui-icon-trash" style="width: 30px"
+							process="@this" title="Excluir manutenção"
+							oncomplete="PF('confirmacao').show()">
+							<f:setPropertyActionListener value="#{manu}"
+								target="#{manutencoesVeiculoBean.manutencaoSelecionada}" />
+						</p:commandButton>
+					</p:panelGrid>
+				</p:carousel>
+			</div>
+			<p:dialog header="Detalhes" widgetVar="Dialog" modal="true"
+				showEffect="fade" hideEffect="fade" resizable="false">
+				<p:outputPanel id="manuDetail" style="text-align:center;">
+					<p:panelGrid columns="2"
+						rendered="#{not empty manutencoesVeiculoBean.manutencaoSelecionada}"
+						columnClasses="label,value">
+						<p:outputLabel value="Data" />
+						<p:outputLabel
+							value="#{manutencoesVeiculoBean.manutencaoSelecionada.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:outputLabel>
+						<p:outputLabel value="Valor" />
+						<h:outputText
+							value="#{manutencoesVeiculoBean.manutencaoSelecionada.valor}">
+							<f:convertNumber type="currency" /> />
+						</h:outputText>
+						<p:outputLabel value="Descrição" />
+						<p:outputLabel
+							value="#{manutencoesVeiculoBean.manutencaoSelecionada.descricao}" />
+
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma exclusão desta manutenção?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{manutencoesVeiculoBean.excluir()}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

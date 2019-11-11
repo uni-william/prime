@@ -1,0 +1,60 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Acessórios</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaBancoBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Bancos</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo banco" outcome="/bancos/CadastroBanco" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" closable="true" />
+			<p:dataTable value="#{pesquisaBancoBean.listaBancos}" var="banco"
+				style="margin-top: 20px" selectionMode="single"
+				selection="#{pesquisaBancoBean.bancoSelecionado}"
+				rowKey="#{banco.id}" reflow="true"
+				emptyMessage="Nenhum banco cadastrado" id="table">
+				<p:ajax event="rowSelect" update="btnEdit btnRemove"
+					listener="#{pesquisaBancoBean.onRowSelect}" />
+				<p:ajax event="rowUnselect" update="btnEdit btnRemove"
+					listener="#{pesquisaBancoBean.onRowUnSelect}" />
+				<p:column headerText="Bancos cadastrados">
+					<h:outputText value="#{banco.descricao}" />
+				</p:column>
+				<f:facet name="footer">
+					<p:button icon="ui-icon-pencil" value="Visualizar/Editar" id="btnEdit"
+						outcome="/bancos/CadastroBanco"
+						disabled="#{pesquisaBancoBean.desabilitarBotoes}">
+						<f:param name="banco"
+							value="#{pesquisaBancoBean.bancoSelecionado.id}" />
+					</p:button>
+					<p:commandButton icon="ui-icon-trash" value="Excluir"
+						id="btnRemove"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf"
+						disabled="#{pesquisaBancoBean.desabilitarBotoes or not seguranca.bancoExcluir}" />
+				</f:facet>
+			</p:dataTable>
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma excluir o banco #{pesquisaBancoBean.bancoSelecionado.descricao}?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaBancoBean.excluir}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,215 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cadastro veículo aluguel</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{cadastroVeiculoAluguelBean.inicializar}" />
+			<f:viewParam name="veiculo"
+				value="#{cadastroVeiculoAluguelBean.veiculo}" />
+		</f:metadata>
+		<h1 class="aw-page-title">#{cadastroVeiculoAluguelBean.editando
+			? 'Edição de veículo para aluguel' : 'Novo veículo para aluguel'}</h1>
+		<br />
+		<h:form id="frm">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Salvar"
+						action="#{cadastroVeiculoAluguelBean.salvar}" update="@form"
+						process="@this modelo pngtipo pngdados pngacessorios" />
+					<p:button value="Manutenções do veículo"
+						disabled="#{!cadastroVeiculoAluguelBean.editando}"
+						outcome="/manutencoes/ManutencoesVeiculo">
+						<f:param name="veiculo"
+							value="#{cadastroVeiculoAluguelBean.veiculo.id}" />
+					</p:button>
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo veiculo"
+						outcome="/alugueis/CadastroVeiculoAluguel" />
+					<p:button value="Pesquisa"
+						outcome="/alugueis/PesquisaVeiculosAluguel" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:messages autoUpdate="false" closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="3" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-1"
+					styleClass="panelgrid-noborder" style="margin-top: 10px">
+					<p:outputLabel value="Fabricante" for="fabricante" />
+					<p:selectOneMenu id="fabricante"
+						value="#{cadastroVeiculoAluguelBean.fabricanteSelecionado}">
+						<f:selectItem itemLabel="Selecione fabricante" />
+						<f:selectItems value="#{cadastroVeiculoAluguelBean.fabricantes}"
+							var="fabricante" itemLabel="#{fabricante.descricao}"
+							itemValue="#{fabricante}" />
+						<p:ajax event="itemSelect"
+							listener="#{cadastroVeiculoAluguelBean.listarModelos}"
+							update="modelo btnovomod" />
+					</p:selectOneMenu>
+					<p:commandButton title="Novo fabricante" icon="ui-icon-plus"
+						actionListener="#{cadastroVeiculoAluguelBean.novoFabricante}"
+						style="width: 30px" oncomplete="PF('dlg_fab').show();"
+						process="@this" update="fabricante modelo dlgfab btnovomod"
+						rendered="false">
+						<p:resetInput target="dlgfab" />
+					</p:commandButton>
+				</p:panelGrid>
+				<p:panelGrid columns="3" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-1"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Modelo" for="modelo" />
+					<p:selectOneMenu id="modelo"
+						value="#{cadastroVeiculoAluguelBean.veiculo.modelo}">
+						<f:selectItems value="#{cadastroVeiculoAluguelBean.modelos}"
+							var="modelo" itemLabel="#{modelo.modeloMotoriacao}"
+							itemValue="#{modelo}" />
+					</p:selectOneMenu>
+					<p:commandButton title="Novo modelo" icon="ui-icon-plus"
+						id="btnovomod"
+						actionListener="#{cadastroVeiculoAluguelBean.novoModelo}"
+						style="width: 30px" oncomplete="PF('dlg_mod').show();"
+						process="@this" update="modelo dlgmod"
+						disabled="#{cadastroVeiculoAluguelBean.fabricanteSelecionado.id == null}"
+						rendered="false">
+						<p:resetInput target="dlgmod" />
+					</p:commandButton>
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-4"
+					styleClass="panelgrid-noborder" id="pngtipo">
+					<p:outputLabel value="Tipo" for="tipo" />
+					<p:selectOneMenu id="tipo"
+						value="#{cadastroVeiculoAluguelBean.veiculo.tipoVeiculo}">
+						<f:selectItems value="#{cadastroVeiculoAluguelBean.tipoVeiculos}"
+							var="tipo" itemLabel="#{tipo.descricao}" itemValue="#{tipo}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+			
+				<p:panelGrid columns="5" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-2, ui-grid-col-1, ui-grid-col-3"
+					styleClass="panelgrid-noborder" style="margin-top: 10px"
+					id="pngdados">
+					<p:outputLabel value="Placa" for="placa" />
+					<p:inputText id="placa"
+						value="#{cadastroVeiculoAluguelBean.veiculo.placa}" />
+					<p:outputLabel value="" />
+					<p:outputLabel value="Renavan" for="renavan" />
+					<p:inputText id="renavan"
+						value="#{cadastroVeiculoAluguelBean.veiculo.renavan}" />
+					<p:outputLabel value="Chassi" for="chassi" />
+					<p:inputText id="chassi"
+						value="#{cadastroVeiculoAluguelBean.veiculo.chassi}" />
+					<p:outputLabel value="" />
+					<p:outputLabel value="Cor" for="cor" />
+					<p:inputText id="cor"
+						value="#{cadastroVeiculoAluguelBean.veiculo.cor}" />
+					<p:outputLabel value="Km" for="km" />
+					<p:inputNumber id="km"
+						value="#{cadastroVeiculoAluguelBean.veiculo.quilometragem}"
+						decimalPlaces="0" thousandSeparator="." />
+					<p:outputLabel value="" />
+					<p:outputLabel value="Combustível" for="combustivel" />
+					<p:inputText id="combustivel"
+						value="#{cadastroVeiculoAluguelBean.veiculo.combustivel}" />
+					<p:outputLabel value="Ano fabricação" for="anofab" />
+					<p:inputNumber id="anofab"
+						value="#{cadastroVeiculoAluguelBean.veiculo.anoFabricacao}"
+						decimalPlaces="0" decimalSeparator="" thousandSeparator="" />
+					<p:outputLabel value="" />
+					<p:outputLabel value="Ano modelo" for="anomodelo" />
+					<p:inputNumber id="anomodelo"
+						value="#{cadastroVeiculoAluguelBean.veiculo.anoModelo}"
+						decimalPlaces="0" decimalSeparator="" thousandSeparator="" />
+					<p:outputLabel value="Valor diária" for="valorAluguel" />
+					<p:inputNumber id="valorAluguel"
+						value="#{cadastroVeiculoAluguelBean.veiculo.valorAluguel}"
+						decimalPlaces="2" thousandSeparator="." decimalSeparator="," />
+					<p:outputLabel value="" />
+					<p:outputLabel value="Situação Veículo" for="statusVeiculo" />
+					<p:outputLabel id="statusVeiculo" value="#{cadastroVeiculoAluguelBean.veiculo.statusVeiculo.descricao}" />
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-10"
+					styleClass="panelgrid-noborder" style="margin-top: 10px"
+					id="pngacessorios">
+					<p:outputLabel value="Acessórios" for="acessorios" />
+					<p:selectManyCheckbox id="acessorios"
+						value="#{cadastroVeiculoAluguelBean.veiculo.acessorios}"
+						converter="#{cadastroVeiculoAluguelBean.acessorioConverter}">
+						<f:attribute name="collectionType" value="java.util.ArrayList" />
+						<f:selectItems value="#{cadastroVeiculoAluguelBean.acessorios}"
+							var="acessorio" itemLabel="#{acessorio.descricao}"
+							itemValue="#{acessorio}" />
+					</p:selectManyCheckbox>
+				</p:panelGrid>
+			</div>
+			<p:dialog header="Fabricante" widgetVar="dlg_fab" id="dlgfab"
+				responsive="true">
+				<h:panelGroup id="pnfab" layout="block" class="ui-fluid">
+					<p:messages id="msgfab" autoUpdate="false" />
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-4, ui-grid-col-8"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Fabricante" for="fabdesc" />
+						<p:inputText
+							value="#{cadastroVeiculoAluguelBean.fabricanteSelecionado.descricao}"
+							id="fabdesc" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-6, ui-grid-col-6"
+						styleClass="panelgrid-noborder">
+
+						<p:commandButton value="Adicionar" process="@this dlgfab"
+							update="pnfab fabricante modelo"
+							actionListener="#{cadastroVeiculoAluguelBean.salvarNovoFabricante}"
+							oncomplete="if (!args.validation.Failed) PF('dlg_fab').hide()" />
+						<p:commandButton value="Cancelar" onclick="PF('dlg_fab').hide();"
+							process="@this" update="@form" />
+					</p:panelGrid>
+				</h:panelGroup>
+			</p:dialog>
+
+			<p:dialog header="Modelo" widgetVar="dlg_mod" id="dlgmod"
+				responsive="true">
+				<h:panelGroup id="pnmod" layout="block" class="ui-fluid">
+					<p:messages id="msgmod" autoUpdate="false" />
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-4, ui-grid-col-8"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Fabricante" />
+						<p:outputLabel
+							value="#{cadastroVeiculoAluguelBean.novoModelo.fabricante.descricao}" />
+						<p:outputLabel value="Modelo" for="moddesc" />
+						<p:inputText
+							value="#{cadastroVeiculoAluguelBean.novoModelo.descricao}"
+							id="moddesc" />
+						<p:outputLabel value="Motorização" for="modmot" />
+						<p:inputText
+							value="#{cadastroVeiculoAluguelBean.novoModelo.motorizacao}"
+							id="modmot" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-6, ui-grid-col-6"
+						styleClass="panelgrid-noborder">
+						<p:commandButton value="Adicionar" process="dlgmod"
+							update="pnmod modelo"
+							actionListener="#{cadastroVeiculoAluguelBean.salvarNovoModelo}"
+							oncomplete="if (!args.validationFailed) PF('dlg_mod').hide();" />
+						<p:commandButton value="Cancelar" onclick="PF('dlg_mod').hide();"
+							process="@this" />
+					</p:panelGrid>
+				</h:panelGroup>
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

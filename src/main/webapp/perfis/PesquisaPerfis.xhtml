@@ -1,0 +1,60 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Perfis</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaPerfilBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Perfis</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo perfil" outcome="/perfis/CadastroPerfil" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" closable="true" />
+			<p:dataTable value="#{pesquisaPerfilBean.listaPerfis}" var="perfil"
+				style="margin-top: 20px" selectionMode="single"
+				selection="#{pesquisaPerfilBean.perfilSelecionado}"
+				rowKey="#{perfil.id}" reflow="true"
+				emptyMessage="Nenhum perfil cadastrado" id="table">
+				<p:ajax event="rowSelect" update="btnEdit btnRemove"
+					listener="#{pesquisaPerfilBean.onRowSelect}" />
+				<p:ajax event="rowUnselect" update="btnEdit btnRemove"
+					listener="#{pesquisaPerfilBean.onRowUnSelect}" />
+				<p:column headerText="Perfis cadastrados">
+					<h:outputText value="#{perfil.descricao}" />
+				</p:column>
+				<f:facet name="footer">
+					<p:button icon="ui-icon-pencil" value="Visualizar/Editar" id="btnEdit"
+						outcome="/perfis/CadastroPerfil"
+						disabled="#{pesquisaPerfilBean.desabilitarBotoes}">
+						<f:param name="perfil"
+							value="#{pesquisaPerfilBean.perfilSelecionado.id}" />
+					</p:button>
+					<p:commandButton icon="ui-icon-trash" value="Excluir"
+						id="btnRemove"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf"
+						disabled="#{pesquisaPerfilBean.desabilitarBotoes or not seguranca.perfilExcluir}" />
+				</f:facet>
+			</p:dataTable>
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma excluir o perfil #{pesquisaPerfilBean.perfilSelecionado.descricao}?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaPerfilBean.excluir}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

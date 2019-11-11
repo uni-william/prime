@@ -1,0 +1,22 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	ounfxmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	<head>
+<meta charset="UTF-8" />
+	</head>
+
+	<ui:define name="titulo">Página não encontrada</ui:define>
+
+	<ui:define name="content">
+		<div class="Page404">
+			<h:panelGrid columns="1" styleClass="Page404">
+				<h:graphicImage library="images" name="404-morte.jpg" styleClass="Page404Img" />
+			</h:panelGrid>
+		</div>
+		<h:link outcome="/Home" value="Voltar a página inicial"/>
+	</ui:define>
+
+</ui:composition>

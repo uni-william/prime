@@ -1,0 +1,106 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Parceiros</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaParceiroBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Parceiros</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Pesquisar"
+						action="#{pesquisaParceiroBean.pesquisar}" update="@form" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo parceiro"
+						outcome="/parceiros/CadastroParceiro" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-8"
+					styleClass="panelgrid-withmargin">
+					<p:outputLabel value="Nome" for="nome" />
+					<p:inputText id="nome" value="#{pesquisaParceiroBean.filter.nome}" />
+				</p:panelGrid>
+				<p:panelGrid columns="6" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-2, ui-grid-col-2,  ui-grid-col-2, ui-grid-col-2"
+					styleClass="panelgrid-withmargin">
+					<p:outputLabel value="CPF" for="cpf" />
+					<p:inputMask mask="999.999.999-99" id="cpf"
+						value="#{pesquisaParceiroBean.filter.documentoReceita}" />
+					<p:outputLabel value="Somente ativos" for="ativos" />
+					<p:selectBooleanCheckbox
+						value="#{pesquisaParceiroBean.filter.ativo}" id="ativos" />
+					<p:outputLabel value="Somente inativos" for="inativos" />
+					<p:selectBooleanCheckbox
+						value="#{pesquisaParceiroBean.filter.inativo}" id="inativos" />
+				</p:panelGrid>
+			</div>
+			<p:dataTable value="#{pesquisaParceiroBean.listaFiltrada}" var="cli"
+				style="margin-top: 20px" selectionMode="single"
+				selection="#{pesquisaParceiroBean.parceiroSelecionado}"
+				rowKey="#{cli.id}" reflow="true"
+				emptyMessage="Nenhum parceiro cadastrado" id="table"
+				paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+				paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}">
+				<p:ajax event="rowSelect" update="btnEdit btnRemove"
+					listener="#{pesquisaParceiroBean.onRowSelect}" />
+				<p:ajax event="rowUnselect" update="btnEdit btnRemove"
+					listener="#{pesquisaParceiroBean.onRowUnSelect}" />
+				<f:facet name="{Exporters}">
+					<h:commandLink title="Exportar para excel"
+						rendered="#{pesquisaParceiroBean.listaFiltrada.size() > 0}">
+						<p:graphicImage library="images" name="xls_16.png" />
+						<p:dataExporter type="xls" target="table" fileName="parceiros" />
+					</h:commandLink>
+				</f:facet>					
+				<p:column headerText="Nome">
+					<h:outputText value="#{cli.nome}" />
+				</p:column>
+				<p:column headerText="CPF/CNPJ" width="15%">
+					<h:outputText value="#{cli.documentoReceita}" />
+				</p:column>
+				<p:column headerText="Tipo" width="15%">
+					<h:outputText value="#{cli.tipoPessoa.descricao}" />
+				</p:column>
+				<p:column headerText="Ativo" width="5%" priority="6"
+					style="text-align: center" exportable="false">
+					<h:outputText value="#{cli.ativoPesquisa}" />
+				</p:column>
+				<f:facet name="footer">
+					<p:button icon="ui-icon-pencil" value="Visualizar/Editar"
+						id="btnEdit" disabled="#{pesquisaParceiroBean.desabilitarBotoes}"
+						outcome="/parceiros/CadastroParceiro">
+						<f:param name="pessoa"
+							value="#{pesquisaParceiroBean.parceiroSelecionado.id}" />
+					</p:button>
+					<p:commandButton icon="ui-icon-trash" value="Excluir"
+						id="btnRemove"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf"
+						disabled="#{pesquisaParceiroBean.desabilitarBotoes}" />
+				</f:facet>
+			</p:dataTable>
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma excluir o parceiro #{pesquisaParceiroBean.parceiroSelecionado.nome}?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaParceiroBean.excluir}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

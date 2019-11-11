@@ -1,0 +1,125 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Veículos</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaVeiculoBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Veículos</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Pesquisar"
+						action="#{pesquisaVeiculoBean.pesquisar}" update="@form" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo veículo" outcome="/veiculos/CadastroVeiculo" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Placa" for="placa" />
+					<p:inputText id="placa" value="#{pesquisaVeiculoBean.filter.placa}" />
+					<p:outputLabel value="Chassi" for="chassi" />
+					<p:inputText id="chassi"
+						value="#{pesquisaVeiculoBean.filter.chassi}" />
+					<p:outputLabel value="Renavan" for="renavan" />
+					<p:inputText id="renavan"
+						value="#{pesquisaVeiculoBean.filter.renavan}" />
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-3"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Modelo" for="modelo" />
+					<p:selectOneMenu value="#{pesquisaVeiculoBean.filter.modelo}"
+						id="modelo">
+						<f:selectItem itemLabel="Todos" />
+						<f:selectItems value="#{pesquisaVeiculoBean.modelos}" var="modelo"
+							itemLabel="#{modelo.modeloMotoriacao}" itemValue="#{modelo}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Status" for="status" />
+					<p:selectOneMenu
+						value="#{pesquisaVeiculoBean.filter.statusVeiculo}" id="status">
+						<f:selectItem itemLabel="Todos" />
+						<f:selectItems value="#{pesquisaVeiculoBean.statusVeiculos}"
+							var="status" itemLabel="#{status.descricao}"
+							itemValue="#{status}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+			</div>
+			<p:dataTable value="#{pesquisaVeiculoBean.listaVeiculos}"
+				var="veiculo" style="margin-top: 20px" selectionMode="single"
+				selection="#{pesquisaVeiculoBean.veiculoSelecionado}"
+				rowKey="#{veiculo.id}" reflow="true"
+				emptyMessage="Nenhum veículo cadastrado" id="table" paginator="true"
+				rows="10" rowsPerPageTemplate="10,20,30" paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}">
+				<p:ajax event="rowSelect" update="btnEdit btnRemove"
+					listener="#{pesquisaVeiculoBean.onRowSelect}" />
+				<p:ajax event="rowUnselect" update="btnEdit"
+					listener="#{pesquisaVeiculoBean.onRowUnSelect}" />
+				<f:facet name="{Exporters}">
+					<h:commandLink title="Exportar para excel"
+						rendered="#{pesquisaVeiculoBean.listaVeiculos.size() > 0}">
+						<p:graphicImage library="images" name="xls_16.png" />
+						<p:dataExporter type="xls" target="table" fileName="veículos" />
+					</h:commandLink>
+				</f:facet>
+				<p:column headerText="Modelo">
+					<h:outputText value="#{veiculo.modelo.modeloMotoriacao}" />
+				</p:column>
+				<p:column headerText="Placa">
+					<h:outputText value="#{veiculo.placa}" />
+				</p:column>
+				<p:column headerText="Cor">
+					<h:outputText value="#{veiculo.cor}" />
+				</p:column>
+				<p:column headerText="Valor venda">
+					<h:outputText value="#{veiculo.valorVenda}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Situação">
+					<h:outputText value="#{veiculo.statusVeiculo.descricao}" />
+				</p:column>
+				<f:facet name="footer">
+					<p:button icon="ui-icon-pencil" value="Visualizar/Editar"
+						id="btnEdit" outcome="/veiculos/CadastroVeiculo"
+						disabled="#{pesquisaVeiculoBean.desabilitarBotoes}">
+						<f:param name="veiculo"
+							value="#{pesquisaVeiculoBean.veiculoSelecionado.id}" />
+					</p:button>
+					<p:commandButton icon="ui-icon-trash" value="Excluir"
+						id="btnRemove"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf"
+						disabled="#{pesquisaVeiculoBean.desabilitarBotoes}" />
+				</f:facet>
+			</p:dataTable>
+
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma excluir o veiculo selecionado?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaVeiculoBean.excluir}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

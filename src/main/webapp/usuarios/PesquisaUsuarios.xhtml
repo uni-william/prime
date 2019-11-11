@@ -1,0 +1,88 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Usuários</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaUsuarioBean.inicalizar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Usuários</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Pesquisar"
+						action="#{pesquisaUsuarioBean.pesquisar}" update="@form" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo usuário" outcome="/usuarios/CadastroUsuario" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" id="msg" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-8"
+					styleClass="panelgrid-withmargin">
+					<p:outputLabel value="Nome" for="nome" />
+					<p:inputText id="nome" value="#{pesquisaUsuarioBean.filter.nome}" />
+					<p:outputLabel value="CPF" for="cpf" />
+					<p:inputMask mask="999.999.999-99" id="cpf" style="width:25%"
+						value="#{pesquisaUsuarioBean.filter.cpf}" />
+					<p:outputLabel value="Login" for="login" />
+					<p:inputText id="login" style="width:50%"
+						value="#{pesquisaUsuarioBean.filter.login}" />
+				</p:panelGrid>
+			</div>
+			<p:dataTable value="#{pesquisaUsuarioBean.listaUsuarios}"
+				var="usuario" style="margin-top: 20px" selectionMode="single"
+				selection="#{pesquisaUsuarioBean.usuarioSelecionado}"
+				rowKey="#{usuario.id}" reflow="true"
+				emptyMessage="Nenhum usuário cadastrado" id="table">
+				<p:ajax event="rowSelect" update="btnEdit btnRemove btnSenha"
+					listener="#{pesquisaUsuarioBean.onRowSelect}" />
+				<p:ajax event="rowUnselect" update="btnEdit btnRemove btnSenha"
+					listener="#{pesquisaUsuarioBean.onRowUnSelect}" />
+				<p:column headerText="Login" width="25%">
+					<h:outputText value="#{usuario.login}" />
+				</p:column>
+				<p:column headerText="Nome">
+					<h:outputText value="#{usuario.pessoa.nome}" />
+				</p:column>
+
+				<f:facet name="footer">
+					<p:button icon="ui-icon-pencil" value="Visualizar/Editar" id="btnEdit"
+						disabled="#{pesquisaUsuarioBean.desabilitarBotoes}"
+						outcome="/usuarios/CadastroUsuario">
+						<f:param name="usuario"
+							value="#{pesquisaUsuarioBean.usuarioSelecionado.id}" />
+					</p:button>
+					<p:commandButton icon="ui-icon-trash" value="Excluir"
+						id="btnRemove"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf"
+						disabled="#{pesquisaUsuarioBean.desabilitarBotoes}" />
+					<p:commandButton icon="ui-icon-mail-open" value="Redefinir senha"
+						id="btnSenha" process="@this" update="@form"
+						action="#{pesquisaUsuarioBean.gerarSenhaESalvar}"
+						disabled="#{pesquisaUsuarioBean.desabilitarBotoes}" />
+
+				</f:facet>
+			</p:dataTable>
+
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma excluir o uusário do funcionário #{pesquisaUsuarioBean.usuarioSelecionado.pessoa.nome}?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaUsuarioBean.excluir}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

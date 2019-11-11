@@ -1,0 +1,53 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Veículos no pátio</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{consultaVeiculosBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Listagem de Veículos no Pátio</h1>
+		<h:form id="frm">
+			<p:dataTable value="#{consultaVeiculosBean.listaVeiculos}"
+				var="veiculo" style="margin-top: 20px" reflow="true"
+				emptyMessage="Sem registros" id="table" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+				rowsPerPageTemplate="10,20,30" paginatorPosition="bottom">
+				<f:facet name="{Exporters}">
+					<h:commandLink title="Exportar para excel"
+						rendered="#{consultaVeiculosBean.listaVeiculos.size() > 0}">
+						<p:graphicImage library="images" name="xls_16.png" />
+						<p:dataExporter type="xls" target="table" fileName="carros" />
+					</h:commandLink>
+				</f:facet>
+
+				<p:column headerText="Fabricante">
+					<h:outputText value="#{veiculo.modelo.fabricante.descricao}" />
+				</p:column>
+				<p:column headerText="Modelo">
+					<h:outputText value="#{veiculo.modelo.modeloMotoriacao}" />
+				</p:column>
+				<p:column headerText="Placa">
+					<h:outputText value="#{veiculo.placa}" />
+				</p:column>				
+				<p:column headerText="Cor">
+					<h:outputText value="#{veiculo.cor}" />
+				</p:column>
+				<p:column headerText="Fabricação/Modelo">
+					<h:outputText value="#{veiculo.anoFabricacao}/#{veiculo.anoModelo}" />
+				</p:column>
+				<p:column headerText="Preço">
+					<h:outputText value="#{veiculo.valorVenda}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

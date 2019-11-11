@@ -1,0 +1,46 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cadastro acessorio</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{cadastroAcessorioBean.inicializar}" />
+			<f:viewParam name="acessorio"
+				value="#{cadastroAcessorioBean.acessorio}" />
+		</f:metadata>
+		<h1 class="aw-page-title">#{cadastroAcessorioBean.editando ?
+			'Edição de acessorio' : 'Novo acessorio'}</h1>
+		<br />
+		<h:form id="frm">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Salvar"
+						action="#{cadastroAcessorioBean.salvar}" update="@form" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo acessorio"
+						outcome="/acessorios/CadastroAcessorio" />
+					<p:button value="Pesquisa" outcome="/acessorios/PesquisaAcessorios" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:messages autoUpdate="true" closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-4"
+					styleClass="panelgrid-noborder" style="margin-top: 10px">
+					<p:outputLabel value="Acessorio" for="acessorio" />
+					<p:inputText id="acessorio"
+						value="#{cadastroAcessorioBean.acessorio.descricao}" />
+				</p:panelGrid>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
