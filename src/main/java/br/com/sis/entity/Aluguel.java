@@ -29,6 +29,7 @@ public class Aluguel implements Serializable {
 
 	private Long id;
 	private Pessoa cliente;
+	private Pessoa funcionario;
 	private Veiculo veiculo;
 	private Date dataInicio;
 	private Date dataPrevista;
@@ -58,6 +59,17 @@ public class Aluguel implements Serializable {
 
 	public void setCliente(Pessoa cliente) {
 		this.cliente = cliente;
+	}
+
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "func_id", nullable = false)
+	public Pessoa getFuncionario() {
+		return funcionario;
+	}
+
+	public void setFuncionario(Pessoa funcionario) {
+		this.funcionario = funcionario;
 	}
 
 	@NotNull

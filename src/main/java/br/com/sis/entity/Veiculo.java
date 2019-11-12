@@ -248,6 +248,12 @@ public class Veiculo implements Serializable {
 	public boolean isNoPatio() {
 		return this.statusVeiculo.equals(StatusVeiculo.PATIO);
 	}
+	
+	@Transient
+	public boolean isParaAluguel() {
+		return this.statusVeiculo.equals(StatusVeiculo.PARA_ALUGUEL);
+	}
+	
 
 	@Override
 	public int hashCode() {
