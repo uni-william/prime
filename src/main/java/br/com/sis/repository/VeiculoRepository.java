@@ -138,6 +138,9 @@ public class VeiculoRepository implements Serializable {
 		if (filter.getModelo() != null) {
 			predicates.add(builder.equal(veiculoRoot.get("modelo"), filter.getModelo()));
 		}
+		if (filter.getStatusVeiculo() != null) {
+			predicates.add(builder.equal(veiculoRoot.get("statusVeiculo"), filter.getStatusVeiculo()));
+		}
 
 		criteriaQuery.where(predicates.toArray(new Predicate[0]));
 		TypedQuery<Veiculo> query = manager.createQuery(criteriaQuery);

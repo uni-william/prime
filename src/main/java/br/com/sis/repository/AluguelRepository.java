@@ -1,0 +1,88 @@
+package br.com.sis.repository;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang.StringUtils;
+
+import br.com.sis.entity.Aluguel;
+import br.com.sis.entity.Pessoa;
+import br.com.sis.repository.filter.AluguelFilter;
+import br.com.sis.util.Utils;
+import br.com.sis.util.jpa.Transactional;
+import br.com.sis.util.jsf.FacesUtil;
+
+public class AluguelRepository implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	private EntityManager manager;
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<Aluguel> filtrados(AluguelFilter filter) {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<Aluguel> criteriaQuery = builder.createQuery(Aluguel.class);
+		Root<Aluguel> aluguelRoot = criteriaQuery.from(Aluguel.class);
+		aluguelRoot.fetch("veiculo", JoinType.INNER);
+		Join<Pessoa, Aluguel> cliRoot = (Join) aluguelRoot.fetch("cliente");
+		criteriaQuery.select(aluguelRoot);
+		List<Predicate> predicates = new ArrayList<>();
+		if (filter.getDtIni() != null) {
+			predicates.add(builder.greaterThanOrEqualTo(aluguelRoot.get("dataPrevista"), filter.getDtIni()));
+		}
+
+		if (filter.getDtFim() != null) {
+			predicates.add(builder.lessThanOrEqualTo(aluguelRoot.get("dataPrevista"), filter.getDtFim()));
+		}
+		if (StringUtils.isNotBlank(filter.getDocumentoReceita())) {
+			predicates.add(builder.equal(cliRoot.get("documentoReceita"), Utils.removerCaracter(
+					Utils.removerCaracter(Utils.removerCaracter(filter.getDocumentoReceita(), "."), "-"), "/")));
+		}		
+		if (StringUtils.isNotBlank(filter.getNome())) {
+			predicates
+					.add(builder.like(builder.lower(cliRoot.get("nome")), "%" + filter.getNome().toLowerCase() + "%"));
+		}		
+		if (filter.getStatusAluguel() != null) {
+			predicates.add(builder.equal(aluguelRoot.get("statusAluguel"), filter.getStatusAluguel()));
+		}
+		criteriaQuery.where(predicates.toArray(new Predicate[0]));
+		TypedQuery<Aluguel> query = manager.createQuery(criteriaQuery);
+		return query.getResultList();
+	}
+	
+
+	public Aluguel porId(Long id) {
+		return manager.find(Aluguel.class, id);
+	}
+
+	@Transactional
+	public boolean remover(Aluguel aluguel) {
+		try {
+			aluguel = porId(aluguel.getId());
+			manager.remove(aluguel);
+			manager.flush();
+			return true;
+		} catch (PersistenceException e) {
+			FacesUtil.addErroMessage("O aluguel não pode ser excluído.");
+			return false;
+		}
+	}
+
+	public Aluguel salvar(Aluguel aluguel) {
+		return manager.merge(aluguel);
+	}
+	
+}

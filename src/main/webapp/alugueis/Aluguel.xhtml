@@ -16,7 +16,8 @@
 			<p:focus context="frm" />
 			<p:toolbar>
 				<p:toolbarGroup>
-					<p:commandButton value="Realizar Aluguel" update="@form" />
+					<p:commandButton value="Realizar Aluguel"
+						action="#{aluguelBean.realizarAluguel}" update="@form" />
 				</p:toolbarGroup>
 			</p:toolbar>
 
@@ -110,6 +111,11 @@
 						<p:outputLabel value="Início" for="dtini" />
 						<p:calendar value="#{aluguelBean.aluguel.dataInicio}"
 							mask="99/99/9999" pattern="dd/MM/yyyy" id="dtini" showOn="button">
+							<p:ajax event="dateSelect"
+								listener="#{aluguelBean.calcularTotal}"
+								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
+							<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
+								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
 						</p:calendar>
 						<p:outputLabel value="Data final" for="dtprevista" />
 						<p:calendar value="#{aluguelBean.aluguel.dataPrevista}"
@@ -117,9 +123,9 @@
 							showOn="button">
 							<p:ajax event="dateSelect"
 								listener="#{aluguelBean.calcularTotal}"
-								process="dtini dtprevista" update="@form" />
+								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
 							<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
-								process="dtini dtprevista" update="@form" />
+								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
 						</p:calendar>
 					</p:panelGrid>
 					<p:panelGrid columns="4" layout="grid"
@@ -149,13 +155,15 @@
 						<p:inputNumber id="vldesconto"
 							value="#{aluguelBean.aluguel.desconto}" decimalPlaces="2"
 							thousandSeparator="." decimalSeparator=",">
-
+							<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
+								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
 						</p:inputNumber>
 						<p:outputLabel value="Acréscimo" />
 						<p:inputNumber id="vlacrescimo"
 							value="#{aluguelBean.aluguel.acrescimo}" decimalPlaces="2"
 							thousandSeparator="." decimalSeparator=",">
-
+							<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
+								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
 						</p:inputNumber>
 
 					</p:panelGrid>

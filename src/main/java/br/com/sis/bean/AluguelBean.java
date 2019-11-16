@@ -23,6 +23,7 @@ import br.com.sis.enuns.StatusAluguel;
 import br.com.sis.repository.PessoaRepository;
 import br.com.sis.repository.VeiculoRepository;
 import br.com.sis.security.Seguranca;
+import br.com.sis.service.AluguelService;
 import br.com.sis.util.jsf.FacesUtil;
 
 @Named
@@ -39,6 +40,8 @@ public class AluguelBean implements Serializable {
 	private PessoaConverter pessoaConverter;
 	@Inject
 	private Seguranca seguranca;
+	@Inject
+	private AluguelService aluguelService;
 
 	private Aluguel aluguel;
 
@@ -73,8 +76,24 @@ public class AluguelBean implements Serializable {
 	}
 	
 	public void calcularTotal() {
+		BigDecimal desconto = BigDecimal.ZERO;
+		BigDecimal acrescimo = BigDecimal.ZERO;
+		BigDecimal total = this.aluguel.getDiaria();
+		
+		if (this.getAluguel().getDesconto() != null) {
+			desconto = this.getAluguel().getDesconto();
+		}
+		if (this.getAluguel().getAcrescimo() != null) {
+			acrescimo = this.getAluguel().getAcrescimo();
+		}
+		
 		if (this.getDias().longValue() > BigDecimal.ZERO.longValue() ) {
-			this.aluguel.setTotal(this.aluguel.getDiaria().multiply(this.getDias()));
+			total = total.multiply(this.getDias());
+			total = total.add(acrescimo);
+			total = total.subtract(desconto);
+			this.aluguel.setTotal(total);
+		} else {
+			this.aluguel.setTotal(null);
 		}
 	}
 	
@@ -101,6 +120,16 @@ public class AluguelBean implements Serializable {
 			
 		} 
 		return retorno;
+	}
+	
+	public void realizarAluguel() {
+		this.aluguelService.realizarAluguel(this.aluguel);
+		this.placa = "";
+		FacesUtil.addInfoMessage("Aluguel realizado com sucesso!");
+		aluguel = new Aluguel();
+		aluguel.setFuncionario(seguranca.getUsuarioLogado().getUsuario().getPessoa());
+		aluguel.setDataInicio(new Date());
+		aluguel.setStatusAluguel(StatusAluguel.ABERTO);		
 	}
 	
 	public void inicializar() {
