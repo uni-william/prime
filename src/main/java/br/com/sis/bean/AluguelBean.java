@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -17,9 +18,14 @@ import org.primefaces.event.SelectEvent;
 
 import br.com.sis.converter.PessoaConverter;
 import br.com.sis.entity.Aluguel;
+import br.com.sis.entity.CheckList;
+import br.com.sis.entity.Configuracoes;
+import br.com.sis.entity.ItemCheckList;
 import br.com.sis.entity.Pessoa;
 import br.com.sis.entity.Veiculo;
 import br.com.sis.enuns.StatusAluguel;
+import br.com.sis.repository.ConfiguracoesRepository;
+import br.com.sis.repository.ItemCheckListRepository;
 import br.com.sis.repository.PessoaRepository;
 import br.com.sis.repository.VeiculoRepository;
 import br.com.sis.security.Seguranca;
@@ -37,15 +43,23 @@ public class AluguelBean implements Serializable {
 	@Inject
 	private VeiculoRepository veiculoRepository;
 	@Inject
+	private ItemCheckListRepository itemCheckListRepository;
+	
+	@Inject
 	private PessoaConverter pessoaConverter;
 	@Inject
 	private Seguranca seguranca;
 	@Inject
 	private AluguelService aluguelService;
 
+	@Inject
+	private ConfiguracoesRepository configuracoesRepository;
+
 	private Aluguel aluguel;
 
 	private String placa;
+
+	private List<CheckList> checkLists = new ArrayList<CheckList>();
 
 	public PessoaConverter getPessoaConverter() {
 		return pessoaConverter;
@@ -70,24 +84,32 @@ public class AluguelBean implements Serializable {
 	public void setPlaca(String placa) {
 		this.placa = placa;
 	}
-	
+
+	public List<CheckList> getCheckLists() {
+		return checkLists;
+	}
+
+	public void setCheckLists(List<CheckList> checkLists) {
+		this.checkLists = checkLists;
+	}
+
 	public List<Pessoa> completePorNome(String nome) {
 		return pessoaRepository.clientesAtivosPorNome(nome);
 	}
-	
+
 	public void calcularTotal() {
 		BigDecimal desconto = BigDecimal.ZERO;
 		BigDecimal acrescimo = BigDecimal.ZERO;
 		BigDecimal total = this.aluguel.getValorDiaria();
-		
+
 		if (this.getAluguel().getValorDesconto() != null) {
 			desconto = this.getAluguel().getValorDesconto();
 		}
 		if (this.getAluguel().getValorAcrescimo() != null) {
 			acrescimo = this.getAluguel().getValorAcrescimo();
 		}
-		
-		if (this.getDias().longValue() > BigDecimal.ZERO.longValue() ) {
+
+		if (this.getDias().longValue() > BigDecimal.ZERO.longValue()) {
 			total = total.multiply(this.getDias());
 			total = total.add(acrescimo);
 			total = total.subtract(desconto);
@@ -96,7 +118,7 @@ public class AluguelBean implements Serializable {
 			this.aluguel.setValorTotal(null);
 		}
 	}
-	
+
 	public BigDecimal getDias() {
 		BigDecimal retorno = BigDecimal.ZERO;
 		if (this.aluguel.getDataInicio() != null && this.aluguel.getDataPrevista() != null) {
@@ -107,21 +129,21 @@ public class AluguelBean implements Serializable {
 			int diai = ci.get(Calendar.DAY_OF_MONTH);
 			int mesi = ci.get(Calendar.MONTH);
 			int anoi = ci.get(Calendar.YEAR);
-			
+
 			int diaf = cf.get(Calendar.DAY_OF_MONTH);
 			int mesf = cf.get(Calendar.MONTH);
 			int anof = cf.get(Calendar.YEAR);
-			
+
 			LocalDate di = LocalDate.of(anoi, mesi, diai);
 			LocalDate df = LocalDate.of(anof, mesf, diaf);
-			
+
 			Long dias = ChronoUnit.DAYS.between(di, df);
 			retorno = BigDecimal.valueOf(dias);
-			
-		} 
+
+		}
 		return retorno;
 	}
-	
+
 	public void realizarAluguel() {
 		this.aluguelService.realizarAluguel(this.aluguel);
 		this.placa = "";
@@ -129,20 +151,31 @@ public class AluguelBean implements Serializable {
 		aluguel = new Aluguel();
 		aluguel.setFuncionario(seguranca.getUsuarioLogado().getUsuario().getPessoa());
 		aluguel.setDataInicio(new Date());
-		aluguel.setStatusAluguel(StatusAluguel.ABERTO);		
+		aluguel.setStatusAluguel(StatusAluguel.ABERTO);
 	}
-	
+
 	public void inicializar() {
 		if (aluguel == null) {
 			aluguel = new Aluguel();
 			aluguel.setFuncionario(seguranca.getUsuarioLogado().getUsuario().getPessoa());
 			aluguel.setDataInicio(new Date());
 			aluguel.setStatusAluguel(StatusAluguel.ABERTO);
+			checkLists.clear();
+			List<ItemCheckList> lista = itemCheckListRepository.listAll();
+			for (ItemCheckList item : lista) {
+				CheckList checkList = new CheckList();
+				checkList.setAluguel(aluguel);
+				checkList.setItemCheckList(item);
+				checkList.setQuantidade(BigDecimal.ONE);
+				checkList.setEntrega(true);
+				checkList.setRecebimento(false);
+				checkLists.add(checkList);
+			}
 		} else {
 			this.placa = this.aluguel.getVeiculo().getPlaca();
 		}
 	}
-	
+
 	public void onClienteEscolhido(SelectEvent event) {
 		Pessoa pes = (Pessoa) event.getObject();
 		this.aluguel.setCliente(pes);
@@ -153,9 +186,11 @@ public class AluguelBean implements Serializable {
 		carro = veiculoRepository.porId(carro.getId());
 		this.aluguel.setVeiculo(carro);
 		this.aluguel.setValorDiaria(carro.getValorAluguel());
+		this.aluguel.setKmInicial(carro.getQuilometragem());
+		this.aluguel.setKmFinal(carro.getQuilometragem() + this.config().getLimiteKmAluguel());
 		this.placa = carro.getPlaca();
 	}
-	
+
 	public void pesquisarPorPlaca() {
 		if (StringUtils.isNotBlank(placa)) {
 			Veiculo v = veiculoRepository.porPlaca(placa);
@@ -170,12 +205,18 @@ public class AluguelBean implements Serializable {
 					aluguel.setValorDiaria(null);
 				} else {
 					aluguel.setValorDiaria(v.getValorAluguel());
+					aluguel.setKmInicial(v.getQuilometragem());
+					aluguel.setKmFinal(v.getQuilometragem() + this.config().getLimiteKmAluguel());
 				}
 			}
 			aluguel.setVeiculo(v);
 		} else {
 			aluguel.setVeiculo(new Veiculo());
 		}
-	}	
+	}
+
+	private Configuracoes config() {
+		return configuracoesRepository.configuracoesGerais();
+	}
 
 }

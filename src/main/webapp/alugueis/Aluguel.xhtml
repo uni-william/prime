@@ -46,26 +46,13 @@
 						</p:commandButton>
 					</p:panelGrid>
 					<p:panelGrid columns="4" layout="grid"
-						columnClasses="ui-grid-col-1, ui-grid-col-6, ui-grid-col-1, ui-grid-col-3"
+						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
 						styleClass="panelgrid-noborder" style="margin-top: 10px">
 						<p:outputLabel value="CPF/CNPJ" />
 						<p:outputLabel
 							value="#{aluguelBean.aluguel.cliente.documentoReceita}" />
 						<p:outputLabel value="RG" />
 						<p:outputLabel value="#{aluguelBean.aluguel.cliente.rg}" />
-						<p:outputLabel value="Endereço" />
-						<p:outputLabel value="#{aluguelBean.aluguel.cliente.logradouro}" />
-						<p:outputLabel value="Número" />
-						<p:outputLabel value="#{aluguelBean.aluguel.cliente.numero}" />
-						<p:outputLabel value="CEP" />
-						<p:outputLabel value="#{aluguelBean.aluguel.cliente.cep}" />
-						<p:outputLabel value="Bairro" />
-						<p:outputLabel value="#{aluguelBean.aluguel.cliente.bairro}" />
-						<p:outputLabel value="Cidade" />
-						<p:outputLabel value="#{aluguelBean.aluguel.cliente.cidade}" />
-						<p:outputLabel value="Estado" />
-						<p:outputLabel
-							value="#{aluguelBean.aluguel.cliente.estado.descricao}" />
 					</p:panelGrid>
 				</p:panel>
 				<p:panel header="Dados veículo" id="pnveiculo">
@@ -113,9 +100,9 @@
 							mask="99/99/9999" pattern="dd/MM/yyyy" id="dtini" showOn="button">
 							<p:ajax event="dateSelect"
 								listener="#{aluguelBean.calcularTotal}"
-								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
+								process="dtini dtprevista" update="@form" />
 							<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
-								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
+								process="dtini dtprevista" update="@form" />
 						</p:calendar>
 						<p:outputLabel value="Data final" for="dtprevista" />
 						<p:calendar value="#{aluguelBean.aluguel.dataPrevista}"
@@ -123,16 +110,17 @@
 							showOn="button">
 							<p:ajax event="dateSelect"
 								listener="#{aluguelBean.calcularTotal}"
-								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
+								process="dtini dtprevista" update="@form" />
 							<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
-								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
+								process="dtini dtprevista" update="@form" />
 						</p:calendar>
 					</p:panelGrid>
 					<p:panelGrid columns="4" layout="grid"
 						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
 						styleClass="panelgrid-noborder">
 						<p:outputLabel value="Valor Diária" for="vldiaria" />
-						<p:outputLabel value="#{aluguelBean.aluguel.valorDiaria}" id="vldiaria">
+						<p:outputLabel value="#{aluguelBean.aluguel.valorDiaria}"
+							id="vldiaria">
 							<f:convertNumber type="currency" />
 						</p:outputLabel>
 						<p:outputLabel value="Dias" />
@@ -141,33 +129,46 @@
 					<p:panelGrid columns="4" layout="grid"
 						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
 						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Km Inicial" />
+						<p:outputLabel value="#{aluguelBean.aluguel.kmInicial}">
+							<f:convertNumber pattern="###,###" />
+						</p:outputLabel>
+						<p:outputLabel value="Km limite" />
+						<p:outputLabel value="#{aluguelBean.aluguel.kmFinal}">
+							<f:convertNumber pattern="###,###" />
+						</p:outputLabel>
+					</p:panelGrid>
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-1, ui-grid-col-2"
+						styleClass="panelgrid-noborder">
 						<p:outputLabel value="Total" />
 						<p:outputLabel value="#{aluguelBean.aluguel.valorTotal}"
 							style="font-weight: bold">
 							<f:convertNumber type="currency" />
 						</p:outputLabel>
-					</p:panelGrid>
-
-					<p:panelGrid columns="4" layout="grid"
-						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
-						styleClass="panelgrid-noborder">
-						<p:outputLabel value="Desconto" />
-						<p:inputNumber id="vldesconto"
-							value="#{aluguelBean.aluguel.valorDesconto}" decimalPlaces="2"
-							thousandSeparator="." decimalSeparator=",">
-							<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
-								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
-						</p:inputNumber>
-						<p:outputLabel value="Acréscimo" />
-						<p:inputNumber id="vlacrescimo"
-							value="#{aluguelBean.aluguel.valorAcrescimo}" decimalPlaces="2"
-							thousandSeparator="." decimalSeparator=",">
-							<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
-								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
-						</p:inputNumber>
-
+						<p:outputLabel value="Valor Luva" for="luva" />
+						<p:inputNumber id="luva" value="#{aluguelBean.aluguel.valorLuva}"
+							decimalPlaces="2" decimalSeparator="," thousandSeparator="." />
 					</p:panelGrid>
 				</p:panel>
+				<p:dataTable value="#{aluguelBean.checkLists}" var="checkList">
+					<f:facet name="header">CheckList Entrega</f:facet>
+					<p:column headerText="Item">
+						<h:outputText value="#{checkList.itemCheckList.descricao}" />
+					</p:column>
+					<p:column headerText="Valor" width="10%">
+						<h:outputText value="#{checkList.itemCheckList.valor}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Qtd" width="6%">
+						<p:inputNumber value="#{checkList.quantidade}" decimalPlaces="0">
+						</p:inputNumber>
+					</p:column>
+					<p:column headerText="Consta" width="6%">
+						<p:selectBooleanCheckbox value="#{checkList.entrega}"  />
+					</p:column>					
+				</p:dataTable>
 			</div>
 		</h:form>
 	</ui:define>

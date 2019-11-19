@@ -44,6 +44,9 @@ public class Aluguel implements Serializable {
 	private BigDecimal valorTotal;
 	private BigDecimal valorLuva;
 	private StatusAluguel statusAluguel;
+	private Integer kmInicial;
+	private Integer kmFinal;
+	private Integer kmReal;
 	private List<CheckList> checkList = new ArrayList<CheckList>();
 
 	@Id
@@ -180,6 +183,30 @@ public class Aluguel implements Serializable {
 
 	public void setCheckList(List<CheckList> checkList) {
 		this.checkList = checkList;
+	}
+
+	public Integer getKmInicial() {
+		return kmInicial;
+	}
+
+	public void setKmInicial(Integer kmInicial) {
+		this.kmInicial = kmInicial;
+	}
+
+	public Integer getKmFinal() {
+		return kmFinal;
+	}
+
+	public void setKmFinal(Integer kmFinal) {
+		this.kmFinal = kmFinal;
+	}
+
+	public Integer getKmReal() {
+		return kmReal;
+	}
+
+	public void setKmReal(Integer kmReal) {
+		this.kmReal = kmReal;
 	}
 
 	@Override

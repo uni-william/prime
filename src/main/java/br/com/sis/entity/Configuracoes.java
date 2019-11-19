@@ -1,6 +1,7 @@
 package br.com.sis.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,6 +29,8 @@ public class Configuracoes implements Serializable {
 	private int diasRetroativosGraficoPizzaELinhas = 15;
 	private int mesesRetroativosGrficoBarras = 12;
 	private boolean enviarSenhaEmail = true;
+	private Integer limiteKmAluguel = 7000;
+	private BigDecimal valorKmExcedente;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -127,6 +130,23 @@ public class Configuracoes implements Serializable {
 
 	public void setEnviarSenhaEmail(boolean enviarSenhaEmail) {
 		this.enviarSenhaEmail = enviarSenhaEmail;
+	}
+
+	public Integer getLimiteKmAluguel() {
+		return limiteKmAluguel;
+	}
+
+	public void setLimiteKmAluguel(Integer limiteKmAluguel) {
+		this.limiteKmAluguel = limiteKmAluguel;
+	}
+
+	@Column(precision = 10, scale = 2)
+	public BigDecimal getValorKmExcedente() {
+		return valorKmExcedente;
+	}
+
+	public void setValorKmExcedente(BigDecimal valorKmExcedente) {
+		this.valorKmExcedente = valorKmExcedente;
 	}
 
 	@Override

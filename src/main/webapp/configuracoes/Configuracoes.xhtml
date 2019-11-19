@@ -49,22 +49,31 @@
 					<p:outputLabel value="TLS Requerido" for="tls" />
 					<p:selectBooleanCheckbox id="tls"
 						value="#{configuracoesBean.configuracoes.tlsRequired}" />
-					<p:outputLabel value="Gerar e enviar senha por e-mail" for="enviarEmail" />
+					<p:outputLabel value="Gerar e enviar senha por e-mail"
+						for="enviarEmail" />
 					<p:selectBooleanCheckbox id="enviarEmail"
 						value="#{configuracoesBean.configuracoes.enviarSenhaEmail}" />
-						
+
 				</p:panelGrid>
 				<p:separator />
 
 				<p:panelGrid columns="2" layout="grid"
 					columnClasses="ui-grid-col-2, ui-grid-col-1"
 					styleClass="panelgrid-withmargin">
-					<p:outputLabel value="Dias para gráficos Pizza/Linhas e Relatórios" for="dias" />
+					<p:outputLabel value="Dias para gráficos Pizza/Linhas e Relatórios"
+						for="dias" />
 					<p:inputNumber decimalPlaces="0" id="dias"
 						value="#{configuracoesBean.configuracoes.diasRetroativosGraficoPizzaELinhas}" />
 					<p:outputLabel value="Meses para gráficos Barras" for="meses" />
 					<p:inputNumber decimalPlaces="0" id="meses"
 						value="#{configuracoesBean.configuracoes.mesesRetroativosGrficoBarras}" />
+					<p:outputLabel value="Limite KM" for="km" />
+					<p:inputNumber decimalPlaces="0" id="km"
+						value="#{configuracoesBean.configuracoes.limiteKmAluguel}" />
+					<p:outputLabel value="Valor KM excedente" for="valorExcedente" />
+					<p:inputNumber decimalPlaces="2" decimalSeparator=","
+						thousandSeparator="." id="valorExcedente"
+						value="#{configuracoesBean.configuracoes.valorKmExcedente}" />
 				</p:panelGrid>
 			</div>
 		</h:form>
