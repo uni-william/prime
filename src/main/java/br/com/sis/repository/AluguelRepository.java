@@ -18,7 +18,9 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang.StringUtils;
 
 import br.com.sis.entity.Aluguel;
+import br.com.sis.entity.Modelo;
 import br.com.sis.entity.Pessoa;
+import br.com.sis.entity.Veiculo;
 import br.com.sis.repository.filter.AluguelFilter;
 import br.com.sis.util.Utils;
 import br.com.sis.util.jpa.Transactional;
@@ -36,16 +38,23 @@ public class AluguelRepository implements Serializable{
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<Aluguel> criteriaQuery = builder.createQuery(Aluguel.class);
 		Root<Aluguel> aluguelRoot = criteriaQuery.from(Aluguel.class);
-		aluguelRoot.fetch("veiculo", JoinType.INNER);
+		Join<Veiculo, Aluguel> modeloRoot = (Join) aluguelRoot.fetch("veiculo");
+		Join<Modelo, Veiculo> fabricanteRoot = (Join) modeloRoot.fetch("modelo");
+		fabricanteRoot.fetch("fabricante", JoinType.INNER);
+		Join<Pessoa, Aluguel> funcRoot = (Join) aluguelRoot.fetch("funcionario");
+		funcRoot.fetch("usuario", JoinType.INNER);
 		Join<Pessoa, Aluguel> cliRoot = (Join) aluguelRoot.fetch("cliente");
+		cliRoot.fetch("usuario", JoinType.LEFT);
+		
+		
 		criteriaQuery.select(aluguelRoot);
 		List<Predicate> predicates = new ArrayList<>();
 		if (filter.getDtIni() != null) {
-			predicates.add(builder.greaterThanOrEqualTo(aluguelRoot.get("dataPrevista"), filter.getDtIni()));
+			predicates.add(builder.greaterThanOrEqualTo(aluguelRoot.get("dataInicio"), filter.getDtIni()));
 		}
 
 		if (filter.getDtFim() != null) {
-			predicates.add(builder.lessThanOrEqualTo(aluguelRoot.get("dataPrevista"), filter.getDtFim()));
+			predicates.add(builder.lessThanOrEqualTo(aluguelRoot.get("dataInicio"), filter.getDtFim()));
 		}
 		if (StringUtils.isNotBlank(filter.getDocumentoReceita())) {
 			predicates.add(builder.equal(cliRoot.get("documentoReceita"), Utils.removerCaracter(

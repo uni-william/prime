@@ -78,22 +78,22 @@ public class AluguelBean implements Serializable {
 	public void calcularTotal() {
 		BigDecimal desconto = BigDecimal.ZERO;
 		BigDecimal acrescimo = BigDecimal.ZERO;
-		BigDecimal total = this.aluguel.getDiaria();
+		BigDecimal total = this.aluguel.getValorDiaria();
 		
-		if (this.getAluguel().getDesconto() != null) {
-			desconto = this.getAluguel().getDesconto();
+		if (this.getAluguel().getValorDesconto() != null) {
+			desconto = this.getAluguel().getValorDesconto();
 		}
-		if (this.getAluguel().getAcrescimo() != null) {
-			acrescimo = this.getAluguel().getAcrescimo();
+		if (this.getAluguel().getValorAcrescimo() != null) {
+			acrescimo = this.getAluguel().getValorAcrescimo();
 		}
 		
 		if (this.getDias().longValue() > BigDecimal.ZERO.longValue() ) {
 			total = total.multiply(this.getDias());
 			total = total.add(acrescimo);
 			total = total.subtract(desconto);
-			this.aluguel.setTotal(total);
+			this.aluguel.setValorTotal(total);
 		} else {
-			this.aluguel.setTotal(null);
+			this.aluguel.setValorTotal(null);
 		}
 	}
 	
@@ -152,7 +152,7 @@ public class AluguelBean implements Serializable {
 		Veiculo carro = (Veiculo) event.getObject();
 		carro = veiculoRepository.porId(carro.getId());
 		this.aluguel.setVeiculo(carro);
-		this.aluguel.setDiaria(carro.getValorAluguel());
+		this.aluguel.setValorDiaria(carro.getValorAluguel());
 		this.placa = carro.getPlaca();
 	}
 	
@@ -163,13 +163,13 @@ public class AluguelBean implements Serializable {
 				FacesUtil.addWarnMessage(
 						"Veículo não disponível para aluguel. Somente veículos para aluguel podem ser alugados.");
 				v = new Veiculo();
-				aluguel.setDiaria(null);
+				aluguel.setValorDiaria(null);
 			} else {
 				if (v == null) {
 					v = new Veiculo();
-					aluguel.setDiaria(null);
+					aluguel.setValorDiaria(null);
 				} else {
-					aluguel.setDiaria(v.getValorAluguel());
+					aluguel.setValorDiaria(v.getValorAluguel());
 				}
 			}
 			aluguel.setVeiculo(v);

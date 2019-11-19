@@ -132,7 +132,7 @@
 						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
 						styleClass="panelgrid-noborder">
 						<p:outputLabel value="Valor Diária" for="vldiaria" />
-						<p:outputLabel value="#{aluguelBean.aluguel.diaria}" id="vldiaria">
+						<p:outputLabel value="#{aluguelBean.aluguel.valorDiaria}" id="vldiaria">
 							<f:convertNumber type="currency" />
 						</p:outputLabel>
 						<p:outputLabel value="Dias" />
@@ -142,7 +142,7 @@
 						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
 						styleClass="panelgrid-noborder">
 						<p:outputLabel value="Total" />
-						<p:outputLabel value="#{aluguelBean.aluguel.total}"
+						<p:outputLabel value="#{aluguelBean.aluguel.valorTotal}"
 							style="font-weight: bold">
 							<f:convertNumber type="currency" />
 						</p:outputLabel>
@@ -153,14 +153,14 @@
 						styleClass="panelgrid-noborder">
 						<p:outputLabel value="Desconto" />
 						<p:inputNumber id="vldesconto"
-							value="#{aluguelBean.aluguel.desconto}" decimalPlaces="2"
+							value="#{aluguelBean.aluguel.valorDesconto}" decimalPlaces="2"
 							thousandSeparator="." decimalSeparator=",">
 							<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
 								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />
 						</p:inputNumber>
 						<p:outputLabel value="Acréscimo" />
 						<p:inputNumber id="vlacrescimo"
-							value="#{aluguelBean.aluguel.acrescimo}" decimalPlaces="2"
+							value="#{aluguelBean.aluguel.valorAcrescimo}" decimalPlaces="2"
 							thousandSeparator="." decimalSeparator=",">
 							<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
 								process="dtini dtprevista vldesconto vlacrescimo" update="@form" />

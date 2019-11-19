@@ -1,0 +1,69 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">CheckList</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaItemCheckListBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">CheckList</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo Item de CheckList"
+						outcome="/checklists/CadastroCheckList" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" closable="true" />
+			<p:dataTable value="#{pesquisaItemCheckListBean.listaItemCheckLists}"
+				var="itemCheckList" style="margin-top: 20px" selectionMode="single"
+				selection="#{pesquisaItemCheckListBean.itemCheckListSelecionado}"
+				rowKey="#{itemCheckList.id}" reflow="true"
+				emptyMessage="Nenhum itemCheckList cadastrado" id="table"
+				paginator="true" rows="20" rowsPerPageTemplate="10,20,30"
+				paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+				<p:ajax event="rowSelect" update="btnEdit btnRemove"
+					listener="#{pesquisaItemCheckListBean.onRowSelect}" />
+				<p:ajax event="rowUnselect" update="btnEdit btnRemove"
+					listener="#{pesquisaItemCheckListBean.onRowUnSelect}" />
+				<p:column headerText="Descrição">
+					<h:outputText value="#{itemCheckList.descricao}" />
+				</p:column>
+				<p:column headerText="Valor" style="text-align:right" width="15%">
+					<h:outputText value="#{itemCheckList.valor}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</p:column>
+				<f:facet name="footer">
+					<p:button icon="ui-icon-pencil" value="Visualizar/Editar"
+						id="btnEdit" outcome="/checklists/CadastroCheckList"
+						disabled="#{pesquisaItemCheckListBean.desabilitarBotoes}">
+						<f:param name="itemCheckList"
+							value="#{pesquisaItemCheckListBean.itemCheckListSelecionado.id}" />
+					</p:button>
+					<p:commandButton icon="ui-icon-trash" value="Excluir"
+						id="btnRemove"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf"
+						disabled="#{pesquisaItemCheckListBean.desabilitarBotoes}" />
+				</f:facet>
+			</p:dataTable>
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma excluir o itemCheckList #{pesquisaItemCheckListBean.itemCheckListSelecionado.descricao}?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaItemCheckListBean.excluir}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

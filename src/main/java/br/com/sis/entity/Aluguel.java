@@ -2,7 +2,9 @@ package br.com.sis.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -35,11 +38,13 @@ public class Aluguel implements Serializable {
 	private Date dataInicio;
 	private Date dataPrevista;
 	private Date dataEntrega;
-	private BigDecimal diaria;
-	private BigDecimal desconto;
-	private BigDecimal acrescimo;
-	private BigDecimal total;
+	private BigDecimal valorDiaria;
+	private BigDecimal valorDesconto;
+	private BigDecimal valorAcrescimo;
+	private BigDecimal valorTotal;
+	private BigDecimal valorLuva;
 	private StatusAluguel statusAluguel;
+	private List<CheckList> checkList = new ArrayList<CheckList>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -114,48 +119,67 @@ public class Aluguel implements Serializable {
 	}
 
 	@Column(precision = 10, scale = 2)
-	public BigDecimal getDiaria() {
-		return diaria;
+	public BigDecimal getValorDiaria() {
+		return valorDiaria;
 	}
 
-	public void setDiaria(BigDecimal diaria) {
-		this.diaria = diaria;
-	}
-
-	@Column(precision = 10, scale = 2)
-	public BigDecimal getDesconto() {
-		return desconto;
-	}
-
-	public void setDesconto(BigDecimal desconto) {
-		this.desconto = desconto;
+	public void setValorDiaria(BigDecimal valorDiaria) {
+		this.valorDiaria = valorDiaria;
 	}
 
 	@Column(precision = 10, scale = 2)
-	public BigDecimal getAcrescimo() {
-		return acrescimo;
+	public BigDecimal getValorDesconto() {
+		return valorDesconto;
 	}
 
-	public void setAcrescimo(BigDecimal acrescimo) {
-		this.acrescimo = acrescimo;
+	public void setValorDesconto(BigDecimal valorDesconto) {
+		this.valorDesconto = valorDesconto;
 	}
 
 	@Column(precision = 10, scale = 2)
-	public BigDecimal getTotal() {
-		return total;
+	public BigDecimal getValorAcrescimo() {
+		return valorAcrescimo;
 	}
 
-	public void setTotal(BigDecimal total) {
-		this.total = total;
+	public void setValorAcrescimo(BigDecimal valorAcrescimo) {
+		this.valorAcrescimo = valorAcrescimo;
+	}
+
+	@Column(precision = 10, scale = 2)
+	public BigDecimal getValorTotal() {
+		return valorTotal;
+	}
+
+	public void setValorTotal(BigDecimal valorTotal) {
+		this.valorTotal = valorTotal;
+	}
+
+	@Column(precision = 10, scale = 2)
+	public BigDecimal getValorLuva() {
+		return valorLuva;
+	}
+
+	public void setValorLuva(BigDecimal valorLuva) {
+		this.valorLuva = valorLuva;
 	}
 
 	@Enumerated(EnumType.STRING)
+	@Column(length = 30)
 	public StatusAluguel getStatusAluguel() {
 		return statusAluguel;
 	}
 
 	public void setStatusAluguel(StatusAluguel statusAluguel) {
 		this.statusAluguel = statusAluguel;
+	}
+
+	@OneToMany(mappedBy = "aluguel", cascade = CascadeType.ALL)
+	public List<CheckList> getCheckList() {
+		return checkList;
+	}
+
+	public void setCheckList(List<CheckList> checkList) {
+		this.checkList = checkList;
 	}
 
 	@Override
