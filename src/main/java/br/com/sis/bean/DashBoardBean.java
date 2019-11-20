@@ -155,7 +155,7 @@ public class DashBoardBean implements Serializable {
 		}
 		
 		for (TotalIntermediacao ti : intermediacoes) {
-			mapa.put(TipoOperacao.INTERMEDIACAO,  ti.getValor());
+			mapa.put(TipoOperacao.INTERMEDIACAO,  ti.getValor() != null ? ti.getValor() : BigDecimal.ZERO);
 		}
 		pie = new PieChartModel();
 		pie.setTitle("Total de Movimentações Realizadas nos últimos " + dias + " dias");

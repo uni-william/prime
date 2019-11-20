@@ -145,6 +145,7 @@ public class AluguelBean implements Serializable {
 	}
 
 	public void realizarAluguel() {
+		this.aluguel.setCheckList(this.checkLists);
 		this.aluguelService.realizarAluguel(this.aluguel);
 		this.placa = "";
 		FacesUtil.addInfoMessage("Aluguel realizado com sucesso!");
@@ -152,6 +153,7 @@ public class AluguelBean implements Serializable {
 		aluguel.setFuncionario(seguranca.getUsuarioLogado().getUsuario().getPessoa());
 		aluguel.setDataInicio(new Date());
 		aluguel.setStatusAluguel(StatusAluguel.ABERTO);
+		carregarLista();
 	}
 
 	public void inicializar() {
@@ -160,19 +162,23 @@ public class AluguelBean implements Serializable {
 			aluguel.setFuncionario(seguranca.getUsuarioLogado().getUsuario().getPessoa());
 			aluguel.setDataInicio(new Date());
 			aluguel.setStatusAluguel(StatusAluguel.ABERTO);
-			checkLists.clear();
-			List<ItemCheckList> lista = itemCheckListRepository.listAll();
-			for (ItemCheckList item : lista) {
-				CheckList checkList = new CheckList();
-				checkList.setAluguel(aluguel);
-				checkList.setItemCheckList(item);
-				checkList.setQuantidade(BigDecimal.ONE);
-				checkList.setEntrega(true);
-				checkList.setRecebimento(false);
-				checkLists.add(checkList);
-			}
+			carregarLista();
 		} else {
 			this.placa = this.aluguel.getVeiculo().getPlaca();
+		}
+	}
+
+	private void carregarLista() {
+		checkLists.clear();
+		List<ItemCheckList> lista = itemCheckListRepository.listAll();
+		for (ItemCheckList item : lista) {
+			CheckList checkList = new CheckList();
+			checkList.setAluguel(aluguel);
+			checkList.setItemCheckList(item);
+			checkList.setQuantidade(BigDecimal.ONE);
+			checkList.setEntrega(true);
+			checkList.setRecebimento(false);
+			checkLists.add(checkList);
 		}
 	}
 

@@ -28,7 +28,8 @@
 	<header class="aw-topbar">
 		<div>
 			<h:link outcome="/DashBoard">
-				<h:graphicImage library="images" name="logoprime.png" styleClass="logo" />
+				<h:graphicImage library="images" name="logoprime.png"
+					styleClass="logo" />
 			</h:link>
 		</div>
 		<p:link styleClass="aw-exit" href="/logout" title="Logoff">
@@ -59,8 +60,7 @@
 					<p:menuitem value="Veículos" outcome="/veiculos/PesquisaVeiculos" />
 					<p:menuitem value="Acessórios"
 						outcome="/acessorios/PesquisaAcessorios" />
-					<p:menuitem value="Bancos"
-						outcome="/bancos/PesquisaBancos" />						
+					<p:menuitem value="Bancos" outcome="/bancos/PesquisaBancos" />
 				</p:submenu>
 				<p:submenu label="Movimentação">
 					<p:menuitem value="Nova Venda"
@@ -71,28 +71,34 @@
 						outcome="/movimentacoes/PesquisaMovimentacoes" />
 				</p:submenu>
 				<p:submenu label="Parceiros">
-					<p:menuitem value="Parceiros" outcome="/parceiros/PesquisaParceiros" />
-					<p:menuitem value="Veículos de Parceiros" outcome="/veiculos_parceiros/PesquisaVeiculosParceiros" />
-					<p:menuitem value="Intermediações" outcome="/intermediacoes/PesquisaIntermediacoes" />
+					<p:menuitem value="Parceiros"
+						outcome="/parceiros/PesquisaParceiros" />
+					<p:menuitem value="Veículos de Parceiros"
+						outcome="/veiculos_parceiros/PesquisaVeiculosParceiros" />
+					<p:menuitem value="Intermediações"
+						outcome="/intermediacoes/PesquisaIntermediacoes" />
 				</p:submenu>
 				<p:submenu label="Aluguel">
-					<p:menuitem value="CheckList" outcome="/checklists/PesquisaCheckLists"/>
-					<p:menuitem value="Veículos para Aluguel" outcome="/alugueis/PesquisaVeiculosAluguel"/>
 					<p:menuitem value="Aluguel de Veículos" outcome="/alugueis/Aluguel" />
-					<p:menuitem value="Devolução de Veículos" outcome="/alugueis/PesquisaDevolucoes" />
-				</p:submenu>				
+					<p:menuitem value="Contratos de Aluguel"
+						outcome="/alugueis/ListaAlugueis" />
+					<p:menuitem value="CheckList"
+						outcome="/checklists/PesquisaCheckLists" />
+					<p:menuitem value="Veículos para Aluguel"
+						outcome="/alugueis/PesquisaVeiculosAluguel" />
+				</p:submenu>
 				<p:submenu label="Consultas">
 					<p:menuitem value="Veículos no pátio"
 						outcome="/consultas/VeiculoPatio" />
 					<p:menuitem value="Consultar Pessoa/Veículo"
-						outcome="/consultas/ConsultaPessoaVeiculo" />						
-				</p:submenu>				
+						outcome="/consultas/ConsultaPessoaVeiculo" />
+				</p:submenu>
 				<p:submenu label="Relatórios">
 					<p:menuitem value="Movimentações"
 						outcome="/relatorios/RelatorioMovimentacoes" />
 					<p:menuitem value="Veículos Vendidos"
-						outcome="/relatorios/RelatorioVeiculosVendidos" />						
-				</p:submenu>				
+						outcome="/relatorios/RelatorioVeiculosVendidos" />
+				</p:submenu>
 				<p:submenu label="Configurações">
 					<p:menuitem value="Configurações gerais"
 						outcome="/configuracoes/Configuracoes" />

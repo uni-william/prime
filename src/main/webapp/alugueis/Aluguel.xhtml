@@ -23,152 +23,160 @@
 
 			<div class="ui-fluid">
 				<p:messages id="msg" autoUpdate="false" closable="true" />
-				<p:panel header="Dados cliente" id="pncli" style="margin-top:10px">
-					<p:panelGrid columns="3" layout="grid"
-						columnClasses="ui-grid-col-1, ui-grid-col-5, ui-grid-col-1"
-						styleClass="panelgrid-noborder">
-						<p:outputLabel value="Cliente" for="cliente" />
-						<p:autoComplete id="cliente"
-							value="#{aluguelBean.aluguel.cliente}"
-							completeMethod="#{aluguelBean.completePorNome}" var="cliente"
-							itemLabel="#{cliente.nome}" itemValue="#{cliente}"
-							dropdown="true" converter="#{aluguelBean.pessoaConverter}"
-							forceSelection="true">
-							<p:ajax event="itemSelect" process="@this" update="pncli" />
-						</p:autoComplete>
-						<p:commandButton icon="ui-icon-search" style="width: 30px"
-							id="btcliente" title="Carregar cliente cadastrado"
-							process="@this" update="@none" ignoreAutoUpdate="true"
-							actionListener="#{selecaoClienteBean.abrirSelecaoCliente}">
-							<p:ajax event="dialogReturn"
-								listener="#{aluguelBean.onClienteEscolhido}" update="@form"
-								ignoreAutoUpdate="true" />
-						</p:commandButton>
-					</p:panelGrid>
-					<p:panelGrid columns="4" layout="grid"
-						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
-						styleClass="panelgrid-noborder" style="margin-top: 10px">
-						<p:outputLabel value="CPF/CNPJ" />
-						<p:outputLabel
-							value="#{aluguelBean.aluguel.cliente.documentoReceita}" />
-						<p:outputLabel value="RG" />
-						<p:outputLabel value="#{aluguelBean.aluguel.cliente.rg}" />
-					</p:panelGrid>
-				</p:panel>
-				<p:panel header="Dados veículo" id="pnveiculo">
-					<p:panelGrid columns="3" layout="grid"
-						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1"
-						styleClass="panelgrid-noborder">
-						<p:outputLabel value="Placa" for="placa" />
-						<p:inputText id="placa" value="#{aluguelBean.placa}">
-							<p:ajax event="change"
-								listener="#{aluguelBean.pesquisarPorPlaca}" process="@this"
-								update="pnveiculo pnaluguel msg" />
-						</p:inputText>
-						<p:commandButton icon="ui-icon-search" style="width: 30px"
-							id="btveiculo" title="Carregar veículo cadastrado"
-							process="@this" update="@none" ignoreAutoUpdate="true"
-							actionListener="#{selecaoVeiculoAluguelBean.abrirSelecaoVeiculoAluguel}">
-							<p:ajax event="dialogReturn"
-								listener="#{aluguelBean.onVeiculoEscolhido}" update="@form"
-								ignoreAutoUpdate="true" />
-						</p:commandButton>
-					</p:panelGrid>
-					<p:panelGrid columns="6" layout="grid"
-						columnClasses="ui-grid-col-1, ui-grid-col-4, ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
-						styleClass="panelgrid-noborder">
-						<p:outputLabel value="Modelo" />
-						<p:outputLabel
-							value="#{aluguelBean.aluguel.veiculo.modelo.modeloMotoriacao}" />
-						<p:outputLabel value="Cor" />
-						<p:outputLabel value="#{aluguelBean.aluguel.veiculo.cor}" />
-						<p:outputLabel value="Chassi" />
-						<p:outputLabel value="#{aluguelBean.aluguel.veiculo.chassi}" />
-						<p:outputLabel value="Fabricação" />
-						<p:outputLabel
-							value="#{aluguelBean.aluguel.veiculo.anoFabricacao}" />
-						<p:outputLabel value="Ano Modelo" />
-						<p:outputLabel value="#{aluguelBean.aluguel.veiculo.anoModelo}" />
-					</p:panelGrid>
-				</p:panel>
-				<p:panel header="Aluguel" id="pnaluguel">
-					<p:panelGrid columns="4" layout="grid"
-						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
-						styleClass="panelgrid-noborder">
-						<p:outputLabel value="Início" for="dtini" />
-						<p:calendar value="#{aluguelBean.aluguel.dataInicio}"
-							mask="99/99/9999" pattern="dd/MM/yyyy" id="dtini" showOn="button">
-							<p:ajax event="dateSelect"
-								listener="#{aluguelBean.calcularTotal}"
-								process="dtini dtprevista" update="@form" />
-							<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
-								process="dtini dtprevista" update="@form" />
-						</p:calendar>
-						<p:outputLabel value="Data final" for="dtprevista" />
-						<p:calendar value="#{aluguelBean.aluguel.dataPrevista}"
-							mask="99/99/9999" pattern="dd/MM/yyyy" id="dtprevista"
-							showOn="button">
-							<p:ajax event="dateSelect"
-								listener="#{aluguelBean.calcularTotal}"
-								process="dtini dtprevista" update="@form" />
-							<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
-								process="dtini dtprevista" update="@form" />
-						</p:calendar>
-					</p:panelGrid>
-					<p:panelGrid columns="4" layout="grid"
-						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
-						styleClass="panelgrid-noborder">
-						<p:outputLabel value="Valor Diária" for="vldiaria" />
-						<p:outputLabel value="#{aluguelBean.aluguel.valorDiaria}"
-							id="vldiaria">
-							<f:convertNumber type="currency" />
-						</p:outputLabel>
-						<p:outputLabel value="Dias" />
-						<p:outputLabel value="#{aluguelBean.dias}"></p:outputLabel>
-					</p:panelGrid>
-					<p:panelGrid columns="4" layout="grid"
-						columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
-						styleClass="panelgrid-noborder">
-						<p:outputLabel value="Km Inicial" />
-						<p:outputLabel value="#{aluguelBean.aluguel.kmInicial}">
-							<f:convertNumber pattern="###,###" />
-						</p:outputLabel>
-						<p:outputLabel value="Km limite" />
-						<p:outputLabel value="#{aluguelBean.aluguel.kmFinal}">
-							<f:convertNumber pattern="###,###" />
-						</p:outputLabel>
-					</p:panelGrid>
-					<p:panelGrid columns="2" layout="grid"
-						columnClasses="ui-grid-col-1, ui-grid-col-2"
-						styleClass="panelgrid-noborder">
-						<p:outputLabel value="Total" />
-						<p:outputLabel value="#{aluguelBean.aluguel.valorTotal}"
-							style="font-weight: bold">
-							<f:convertNumber type="currency" />
-						</p:outputLabel>
-						<p:outputLabel value="Valor Luva" for="luva" />
-						<p:inputNumber id="luva" value="#{aluguelBean.aluguel.valorLuva}"
-							decimalPlaces="2" decimalSeparator="," thousandSeparator="." />
-					</p:panelGrid>
-				</p:panel>
-				<p:dataTable value="#{aluguelBean.checkLists}" var="checkList">
-					<f:facet name="header">CheckList Entrega</f:facet>
-					<p:column headerText="Item">
-						<h:outputText value="#{checkList.itemCheckList.descricao}" />
-					</p:column>
-					<p:column headerText="Valor" width="10%">
-						<h:outputText value="#{checkList.itemCheckList.valor}">
-							<f:convertNumber type="currency" />
-						</h:outputText>
-					</p:column>
-					<p:column headerText="Qtd" width="6%">
-						<p:inputNumber value="#{checkList.quantidade}" decimalPlaces="0">
-						</p:inputNumber>
-					</p:column>
-					<p:column headerText="Consta" width="6%">
-						<p:selectBooleanCheckbox value="#{checkList.entrega}"  />
-					</p:column>					
-				</p:dataTable>
+				<p:tabView style="margin-top: 10px" id="tabView">
+					<p:tab title="Dados Aluguel" id="tbaluguel">
+						<p:panel header="Dados cliente" id="pncli">
+							<p:panelGrid columns="3" layout="grid"
+								columnClasses="ui-grid-col-1, ui-grid-col-5, ui-grid-col-1"
+								styleClass="panelgrid-noborder">
+								<p:outputLabel value="Cliente" for="cliente" />
+								<p:autoComplete id="cliente"
+									value="#{aluguelBean.aluguel.cliente}"
+									completeMethod="#{aluguelBean.completePorNome}" var="cliente"
+									itemLabel="#{cliente.nome}" itemValue="#{cliente}"
+									dropdown="true" converter="#{aluguelBean.pessoaConverter}"
+									forceSelection="true">
+									<p:ajax event="itemSelect" process="@this" update="pncli" />
+								</p:autoComplete>
+								<p:commandButton icon="ui-icon-search" style="width: 30px"
+									id="btcliente" title="Carregar cliente cadastrado"
+									process="@this" update="@none" ignoreAutoUpdate="true"
+									actionListener="#{selecaoClienteBean.abrirSelecaoCliente}">
+									<p:ajax event="dialogReturn"
+										listener="#{aluguelBean.onClienteEscolhido}" update="@form"
+										ignoreAutoUpdate="true" />
+								</p:commandButton>
+							</p:panelGrid>
+							<p:panelGrid columns="4" layout="grid"
+								columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
+								styleClass="panelgrid-noborder" style="margin-top: 10px">
+								<p:outputLabel value="CPF/CNPJ" />
+								<p:outputLabel
+									value="#{aluguelBean.aluguel.cliente.documentoReceita}" />
+								<p:outputLabel value="RG" />
+								<p:outputLabel value="#{aluguelBean.aluguel.cliente.rg}" />
+							</p:panelGrid>
+						</p:panel>
+						<p:panel header="Dados veículo" id="pnveiculo">
+							<p:panelGrid columns="3" layout="grid"
+								columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1"
+								styleClass="panelgrid-noborder">
+								<p:outputLabel value="Placa" for="placa" />
+								<p:inputText id="placa" value="#{aluguelBean.placa}">
+									<p:ajax event="change"
+										listener="#{aluguelBean.pesquisarPorPlaca}" process="@this"
+										update="pnveiculo pnaluguel :frm:msg" />
+								</p:inputText>
+								<p:commandButton icon="ui-icon-search" style="width: 30px"
+									id="btveiculo" title="Carregar veículo cadastrado"
+									process="@this" update="@none" ignoreAutoUpdate="true"
+									actionListener="#{selecaoVeiculoAluguelBean.abrirSelecaoVeiculoAluguel}">
+									<p:ajax event="dialogReturn"
+										listener="#{aluguelBean.onVeiculoEscolhido}" update="@form"
+										ignoreAutoUpdate="true" />
+								</p:commandButton>
+							</p:panelGrid>
+							<p:panelGrid columns="6" layout="grid"
+								columnClasses="ui-grid-col-1, ui-grid-col-4, ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
+								styleClass="panelgrid-noborder">
+								<p:outputLabel value="Modelo" />
+								<p:outputLabel
+									value="#{aluguelBean.aluguel.veiculo.modelo.modeloMotoriacao}" />
+								<p:outputLabel value="Cor" />
+								<p:outputLabel value="#{aluguelBean.aluguel.veiculo.cor}" />
+								<p:outputLabel value="Chassi" />
+								<p:outputLabel value="#{aluguelBean.aluguel.veiculo.chassi}" />
+								<p:outputLabel value="Fabricação" />
+								<p:outputLabel
+									value="#{aluguelBean.aluguel.veiculo.anoFabricacao}" />
+								<p:outputLabel value="Ano Modelo" />
+								<p:outputLabel value="#{aluguelBean.aluguel.veiculo.anoModelo}" />
+							</p:panelGrid>
+						</p:panel>
+						<p:panel header="Aluguel" id="pnaluguel">
+							<p:panelGrid columns="4" layout="grid"
+								columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
+								styleClass="panelgrid-noborder">
+								<p:outputLabel value="Início" for="dtini" />
+								<p:calendar value="#{aluguelBean.aluguel.dataInicio}"
+									mask="99/99/9999" pattern="dd/MM/yyyy" id="dtini"
+									showOn="button">
+									<p:ajax event="dateSelect"
+										listener="#{aluguelBean.calcularTotal}"
+										process="dtini dtprevista" update="@form" />
+									<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
+										process="dtini dtprevista" update="@form" />
+								</p:calendar>
+								<p:outputLabel value="Data final" for="dtprevista" />
+								<p:calendar value="#{aluguelBean.aluguel.dataPrevista}"
+									mask="99/99/9999" pattern="dd/MM/yyyy" id="dtprevista"
+									showOn="button">
+									<p:ajax event="dateSelect"
+										listener="#{aluguelBean.calcularTotal}"
+										process="dtini dtprevista" update="@form" />
+									<p:ajax event="change" listener="#{aluguelBean.calcularTotal}"
+										process="dtini dtprevista" update="@form" />
+								</p:calendar>
+							</p:panelGrid>
+							<p:panelGrid columns="4" layout="grid"
+								columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
+								styleClass="panelgrid-noborder">
+								<p:outputLabel value="Valor Diária" for="vldiaria" />
+								<p:outputLabel value="#{aluguelBean.aluguel.valorDiaria}"
+									id="vldiaria">
+									<f:convertNumber type="currency" />
+								</p:outputLabel>
+								<p:outputLabel value="Dias" />
+								<p:outputLabel value="#{aluguelBean.dias}"></p:outputLabel>
+							</p:panelGrid>
+							<p:panelGrid columns="4" layout="grid"
+								columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
+								styleClass="panelgrid-noborder">
+								<p:outputLabel value="Km Inicial" />
+								<p:outputLabel value="#{aluguelBean.aluguel.kmInicial}">
+									<f:convertNumber pattern="###,###" />
+								</p:outputLabel>
+								<p:outputLabel value="Km limite" />
+								<p:outputLabel value="#{aluguelBean.aluguel.kmFinal}">
+									<f:convertNumber pattern="###,###" />
+								</p:outputLabel>
+							</p:panelGrid>
+							<p:panelGrid columns="2" layout="grid"
+								columnClasses="ui-grid-col-1, ui-grid-col-2"
+								styleClass="panelgrid-noborder">
+								<p:outputLabel value="Total" />
+								<p:outputLabel value="#{aluguelBean.aluguel.valorTotal}"
+									style="font-weight: bold">
+									<f:convertNumber type="currency" />
+								</p:outputLabel>
+								<p:outputLabel value="Valor Luva" for="luva" />
+								<p:inputNumber id="luva"
+									value="#{aluguelBean.aluguel.valorLuva}" decimalPlaces="2"
+									decimalSeparator="," thousandSeparator="." />
+							</p:panelGrid>
+						</p:panel>
+					</p:tab>
+					<p:tab title="CheckList" id="tbchecklist">
+						<p:dataTable value="#{aluguelBean.checkLists}" var="checkList">
+							<f:facet name="header">CheckList Entrega</f:facet>
+							<p:column headerText="Item">
+								<h:outputText value="#{checkList.itemCheckList.descricao}" />
+							</p:column>
+							<p:column headerText="Valor" width="10%">
+								<h:outputText value="#{checkList.itemCheckList.valor}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Qtd" width="6%">
+								<p:inputNumber value="#{checkList.quantidade}" decimalPlaces="0">
+								</p:inputNumber>
+							</p:column>
+							<p:column headerText="Consta" width="6%">
+								<p:selectBooleanCheckbox value="#{checkList.entrega}" />
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:tabView>
 			</div>
 		</h:form>
 	</ui:define>
