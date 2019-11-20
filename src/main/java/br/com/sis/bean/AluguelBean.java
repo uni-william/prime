@@ -153,6 +153,7 @@ public class AluguelBean implements Serializable {
 		aluguel.setFuncionario(seguranca.getUsuarioLogado().getUsuario().getPessoa());
 		aluguel.setDataInicio(new Date());
 		aluguel.setStatusAluguel(StatusAluguel.ABERTO);
+		colocarDataPrevista();
 		carregarLista();
 	}
 
@@ -161,11 +162,19 @@ public class AluguelBean implements Serializable {
 			aluguel = new Aluguel();
 			aluguel.setFuncionario(seguranca.getUsuarioLogado().getUsuario().getPessoa());
 			aluguel.setDataInicio(new Date());
-			aluguel.setStatusAluguel(StatusAluguel.ABERTO);
+			colocarDataPrevista();
 			carregarLista();
 		} else {
 			this.placa = this.aluguel.getVeiculo().getPlaca();
 		}
+	}
+
+	private void colocarDataPrevista() {
+		Calendar c = Calendar.getInstance();
+		c.setTime(aluguel.getDataInicio());
+		c.add(Calendar.DAY_OF_MONTH, 29);
+		aluguel.setDataPrevista(c.getTime());
+		aluguel.setStatusAluguel(StatusAluguel.ABERTO);
 	}
 
 	private void carregarLista() {
@@ -195,6 +204,7 @@ public class AluguelBean implements Serializable {
 		this.aluguel.setKmInicial(carro.getQuilometragem());
 		this.aluguel.setKmFinal(carro.getQuilometragem() + this.config().getLimiteKmAluguel());
 		this.placa = carro.getPlaca();
+		calcularTotal();
 	}
 
 	public void pesquisarPorPlaca() {
@@ -213,6 +223,7 @@ public class AluguelBean implements Serializable {
 					aluguel.setValorDiaria(v.getValorAluguel());
 					aluguel.setKmInicial(v.getQuilometragem());
 					aluguel.setKmFinal(v.getQuilometragem() + this.config().getLimiteKmAluguel());
+					calcularTotal();
 				}
 			}
 			aluguel.setVeiculo(v);

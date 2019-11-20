@@ -48,6 +48,8 @@ public class Aluguel implements Serializable {
 	private Integer kmFinal;
 	private Integer kmReal;
 	private List<CheckList> checkList = new ArrayList<CheckList>();
+	private boolean pagamentoSemanal = false;
+	private Date dataProximoPagamento;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -207,6 +209,23 @@ public class Aluguel implements Serializable {
 
 	public void setKmReal(Integer kmReal) {
 		this.kmReal = kmReal;
+	}
+
+	public boolean isPagamentoSemanal() {
+		return pagamentoSemanal;
+	}
+
+	public void setPagamentoSemanal(boolean pagamentoSemanal) {
+		this.pagamentoSemanal = pagamentoSemanal;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getDataProximoPagamento() {
+		return dataProximoPagamento;
+	}
+
+	public void setDataProximoPagamento(Date dataProximoPagamento) {
+		this.dataProximoPagamento = dataProximoPagamento;
 	}
 
 	@Override

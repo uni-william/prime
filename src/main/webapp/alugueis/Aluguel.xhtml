@@ -153,6 +153,14 @@
 								<p:inputNumber id="luva"
 									value="#{aluguelBean.aluguel.valorLuva}" decimalPlaces="2"
 									decimalSeparator="," thousandSeparator="." />
+								<p:outputLabel value="Pagamento Semanal" for="semanal" />
+								<p:selectBooleanCheckbox id="semanal"
+									value="#{aluguelBean.aluguel.pagamentoSemanal}" />
+								<p:outputLabel value="Primeiro Pgto" for="dtProximo" />
+								<p:calendar value="#{aluguelBean.aluguel.dataProximoPagamento}"
+									mask="99/99/9999" pattern="dd/MM/yyyy" id="dtProximo"
+									showOn="button" />
+
 							</p:panelGrid>
 						</p:panel>
 					</p:tab>
