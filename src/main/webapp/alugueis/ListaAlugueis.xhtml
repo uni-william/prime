@@ -81,8 +81,13 @@
 					<h:outputText value="#{aluguel.veiculo.placa}" />
 				</p:column>
 				<p:column width="12%">
-					<p:button icon="ui-icon-info" style="width: 30px" outcome="/alugueis/Devolucao">
+					<p:button icon="ui-icon-info" style="width: 30px"
+						title="Devolução / Renovação / Cancelamento"
+						outcome="/alugueis/Devolucao">
 						<f:param name="aluguel" value="#{aluguel.id}" />
+					</p:button>
+					<p:button icon="ui-icon-calculator" style="width: 30px" title="Informar pagamento semanal" disabled="#{aluguel.pagamentoSemanal == false}">
+
 					</p:button>
 				</p:column>
 			</p:dataTable>

@@ -44,7 +44,7 @@ public class AluguelBean implements Serializable {
 	private VeiculoRepository veiculoRepository;
 	@Inject
 	private ItemCheckListRepository itemCheckListRepository;
-	
+
 	@Inject
 	private PessoaConverter pessoaConverter;
 	@Inject
@@ -145,16 +145,23 @@ public class AluguelBean implements Serializable {
 	}
 
 	public void realizarAluguel() {
-		this.aluguel.setCheckList(this.checkLists);
-		this.aluguelService.realizarAluguel(this.aluguel);
-		this.placa = "";
-		FacesUtil.addInfoMessage("Aluguel realizado com sucesso!");
-		aluguel = new Aluguel();
-		aluguel.setFuncionario(seguranca.getUsuarioLogado().getUsuario().getPessoa());
-		aluguel.setDataInicio(new Date());
-		aluguel.setStatusAluguel(StatusAluguel.ABERTO);
-		colocarDataPrevista();
-		carregarLista();
+		if (this.aluguel.getVeiculo() == null) {
+			FacesUtil.addErroMessage("Informe o veículo");
+		} else if (this.aluguel.isPagamentoSemanal() && this.aluguel.getDataProximoPagamento() == null) {
+			FacesUtil.addErroMessage(
+					"Contratos com pagamento semanal é necessário informar o dia de pagamento da primeira semana");
+		} else {
+			this.aluguel.setCheckList(this.checkLists);
+			this.aluguelService.realizarAluguel(this.aluguel);
+			this.placa = "";
+			FacesUtil.addInfoMessage("Aluguel realizado com sucesso!");
+			aluguel = new Aluguel();
+			aluguel.setFuncionario(seguranca.getUsuarioLogado().getUsuario().getPessoa());
+			aluguel.setDataInicio(new Date());
+			aluguel.setStatusAluguel(StatusAluguel.ABERTO);
+			colocarDataPrevista();
+			carregarLista();
+		}
 	}
 
 	public void inicializar() {
