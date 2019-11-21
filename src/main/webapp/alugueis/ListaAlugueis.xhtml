@@ -86,8 +86,11 @@
 						outcome="/alugueis/Devolucao">
 						<f:param name="aluguel" value="#{aluguel.id}" />
 					</p:button>
-					<p:button icon="ui-icon-calculator" style="width: 30px" title="Informar pagamento semanal" disabled="#{aluguel.pagamentoSemanal == false}">
-
+					<p:button icon="ui-icon-calculator" style="width: 30px"
+						title="Informar pagamento semanal"
+						disabled="#{aluguel.pagamentoSemanal == false}"
+						outcome="/alugueis/PagamentoSemanal">
+						<f:param name="aluguel" value="#{aluguel.id}" />
 					</p:button>
 				</p:column>
 			</p:dataTable>

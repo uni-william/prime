@@ -31,7 +31,7 @@ public class DevolucaoBean implements Serializable {
 	
 	public void inicializar() {
 		if (this.aluguel == null) {
-			FacesUtil.redirecionarPagina("/alugueis/PesquisaDevolucoes.xhtml");
+			FacesUtil.redirecionarPagina("/alugueis/ListaAlugueis.xhtml");
 		}
 	}
 

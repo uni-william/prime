@@ -59,6 +59,19 @@ public class FacesUtil {
         }
     }
 	
+	public static void redirecionarPaginaComMensagem(String pagina, String msg) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String url = context.getExternalContext().getRequestContextPath();
+        try {
+        	context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, msg, msg));
+        	context.getExternalContext().getFlash().setKeepMessages(true);
+            context.getExternalContext().redirect(url + "/" + pagina);
+        } catch (java.io.IOException ex) {
+            System.out.println(ex.getMessage());
+        }		
+		
+	}
+	
 	public static boolean validarTamanhoImagem(byte[] imagem) {
 		return imagem.length < 999999;
 	}
