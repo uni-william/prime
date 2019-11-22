@@ -86,8 +86,12 @@
 					</h:outputText>
 				</p:column>				
 				<p:column width="12%">
-					<p:button icon="ui-icon-info" style="width: 30px"
-						title="Devolução / Renovação / Cancelamento"
+					<p:button icon="ui-icon-calendar" style="width: 30px"
+						title="Renovação" outcome="/alugueis/Renovacao">						
+						<f:param name="aluguel" value="#{aluguel.id}" />
+					</p:button>				
+					<p:button icon="ui-icon-check" style="width: 30px"
+						title="Devolução"
 						outcome="/alugueis/Devolucao">
 						<f:param name="aluguel" value="#{aluguel.id}" />
 					</p:button>

@@ -242,5 +242,9 @@ public class AluguelBean implements Serializable {
 	private Configuracoes config() {
 		return configuracoesRepository.configuracoesGerais();
 	}
+	
+	public void atualizaKm() {
+		aluguel.setKmFinal(aluguel.getKmInicial() + this.config().getLimiteKmAluguel());
+	}
 
 }

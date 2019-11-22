@@ -132,10 +132,13 @@
 							<p:panelGrid columns="4" layout="grid"
 								columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
 								styleClass="panelgrid-noborder">
-								<p:outputLabel value="Km Inicial" />
-								<p:outputLabel value="#{aluguelBean.aluguel.kmInicial}">
-									<f:convertNumber pattern="###,###" />
-								</p:outputLabel>
+								<p:outputLabel value="Km Inicial" for="kmInicial" />
+								<p:inputNumber id="kmInicial" 
+									value="#{aluguelBean.aluguel.kmInicial}" decimalPlaces="0"
+									decimalSeparator="" thousandSeparator="">
+									<p:ajax event="blur" listener="#{aluguelBean.atualizaKm}"
+										process="@this" update="@form" />									
+									</p:inputNumber>									
 								<p:outputLabel value="Km limite" />
 								<p:outputLabel value="#{aluguelBean.aluguel.kmFinal}">
 									<f:convertNumber pattern="###,###" />

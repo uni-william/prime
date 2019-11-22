@@ -74,6 +74,11 @@
 					<p:inputNumber decimalPlaces="2" decimalSeparator=","
 						thousandSeparator="." id="valorExcedente"
 						value="#{configuracoesBean.configuracoes.valorKmExcedente}" />
+					<p:outputLabel value="Limite gráfico vendas" for="limiteGraficoVendas" />
+					<p:inputNumber decimalPlaces="0" decimalSeparator=","
+						thousandSeparator="." id="limiteGraficoVendas"
+						value="#{configuracoesBean.configuracoes.limiteGraficoVendas}" />
+						
 				</p:panelGrid>
 			</div>
 		</h:form>

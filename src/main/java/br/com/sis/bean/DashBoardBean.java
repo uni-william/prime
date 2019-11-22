@@ -72,6 +72,7 @@ public class DashBoardBean implements Serializable {
 	private BarChartModel barModel;
 	private int dias;
 	private int meses;
+	private Configuracoes configuracoes = new Configuracoes();
 
 	public BarChartModel getBarModel() {
 		return barModel;
@@ -131,7 +132,7 @@ public class DashBoardBean implements Serializable {
 			}
 		}
 
-		Configuracoes configuracoes = configuracoesRepository.configuracoesGerais();
+		configuracoes = configuracoesRepository.configuracoesGerais();
 		dias = configuracoes.getDiasRetroativosGraficoPizzaELinhas();
 		meses = configuracoes.getMesesRetroativosGrficoBarras();
 		Calendar dt = Calendar.getInstance();
@@ -240,7 +241,7 @@ public class DashBoardBean implements Serializable {
 		lines.getAxes().put(AxisType.X, new CategoryAxis("Dias"));
 		yAxis.setLabel("Valores");
 		yAxis.setMin(0);
-		yAxis.setMax(150000);
+		yAxis.setMax(configuracoes.getLimiteGraficoVendas());
 	}
 
 	private static Map<String, BigDecimal> criarMapaVazio(Calendar dtIni, Calendar dtFim) {

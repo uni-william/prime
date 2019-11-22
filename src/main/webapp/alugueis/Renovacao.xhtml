@@ -1,0 +1,86 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Renovação</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{renovacaoBean.inicializar}" />
+			<f:viewParam name="aluguel" value="#{renovacaoBean.aluguel}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Renovação</h1>
+		<h:form id="frm">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Renovar contrato" update="@form"
+						action="#{renovacaoBean.realizarRenovacao}" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<div class="ui-fluid">
+				<p:messages id="msg" autoUpdate="false" closable="true" />
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-4"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Cliente" />
+					<p:outputLabel value="#{renovacaoBean.cliente.nome}" />
+				</p:panelGrid>
+				<p:panelGrid columns="4" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-1, ui-grid-col-1, ui-grid-col-1"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Data início" />
+					<p:outputLabel value="#{renovacaoBean.aluguel.dataInicio}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</p:outputLabel>
+					<p:outputLabel value="Data fim" />
+					<p:outputLabel value="#{renovacaoBean.aluguel.dataPrevista}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</p:outputLabel>
+				</p:panelGrid>
+				<p:panelGrid columns="6" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Fabricante" />
+					<p:outputLabel
+						value="#{renovacaoBean.veiculo.modelo.fabricante.descricao}" />
+					<p:outputLabel value="Veículo" />
+					<p:outputLabel
+						value="#{renovacaoBean.veiculo.modelo.modeloMotoriacao}" />
+					<p:outputLabel value="Placa" />
+					<p:outputLabel value="#{renovacaoBean.veiculo.placa}" />
+					<p:outputLabel value="Km Inicial" />
+					<p:outputLabel value="#{renovacaoBean.aluguel.kmInicial}" />
+					<p:outputLabel value="Km Final" />
+					<p:outputLabel value="#{renovacaoBean.aluguel.kmFinal}" />
+					<p:outputLabel value="Pagto Semanal" />
+					<p:outputLabel
+						value="#{renovacaoBean.aluguel.descricaoPagamentoSemanal}" />
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Valor contrato" />
+					<p:outputLabel value="#{renovacaoBean.aluguel.valorTotal}">
+						<f:convertNumber type="currency" />
+					</p:outputLabel>
+				</p:panelGrid>
+				<p:separator />
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-1"
+					styleClass="panelgrid-noborder">
+
+					<p:outputLabel value="Informe a quantidade de dias para renovação"
+						for="dias" />
+					<p:inputNumber id="dias" value="#{renovacaoBean.diasRenovacao}"
+						decimalPlaces="0" decimalSeparator="" thousandSeparator="" />
+				</p:panelGrid>
+			</div>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

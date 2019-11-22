@@ -21,6 +21,7 @@ public class AluguelService implements Serializable {
 	@Transactional
 	public Aluguel realizarAluguel(Aluguel aluguel) {
 		aluguel.getVeiculo().setStatusVeiculo(StatusVeiculo.ALUGADO);
+		aluguel.getVeiculo().setQuilometragem(aluguel.getKmInicial());
 		return aluguelRepository.salvar(aluguel);
 		
 	}

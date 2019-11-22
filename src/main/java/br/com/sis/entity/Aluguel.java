@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import br.com.sis.enuns.StatusAluguel;
@@ -187,6 +188,7 @@ public class Aluguel implements Serializable {
 		this.checkList = checkList;
 	}
 
+	@NotNull
 	public Integer getKmInicial() {
 		return kmInicial;
 	}
@@ -226,6 +228,11 @@ public class Aluguel implements Serializable {
 
 	public void setDataProximoPagamento(Date dataProximoPagamento) {
 		this.dataProximoPagamento = dataProximoPagamento;
+	}
+	
+	@Transient
+	public String getDescricaoPagamentoSemanal() {
+		return this.isPagamentoSemanal() ? "Sim" : "Não";
 	}
 
 	@Override

@@ -31,6 +31,7 @@ public class Configuracoes implements Serializable {
 	private boolean enviarSenhaEmail = true;
 	private Integer limiteKmAluguel = 7000;
 	private BigDecimal valorKmExcedente;
+	private Integer limiteGraficoVendas;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -147,6 +148,14 @@ public class Configuracoes implements Serializable {
 
 	public void setValorKmExcedente(BigDecimal valorKmExcedente) {
 		this.valorKmExcedente = valorKmExcedente;
+	}
+
+	public Integer getLimiteGraficoVendas() {
+		return limiteGraficoVendas;
+	}
+
+	public void setLimiteGraficoVendas(Integer limiteGraficoVendas) {
+		this.limiteGraficoVendas = limiteGraficoVendas;
 	}
 
 	@Override

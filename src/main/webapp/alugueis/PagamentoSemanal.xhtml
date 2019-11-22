@@ -95,6 +95,7 @@
 				<p:dataTable value="#{pagamentoSemanalBean.pagtosRealizados}"
 					var="pagto" emptyMessage="Nenhum pagamento realizado"
 					style="margin-top:10px" id="table">
+					<f:facet name="header">Pagamentos semanais realizados</f:facet>
 					<p:column headerText="Data pagamento">
 						<h:outputText value="#{pagto.dataPagto}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
