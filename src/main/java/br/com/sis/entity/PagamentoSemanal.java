@@ -50,7 +50,7 @@ public class PagamentoSemanal implements Serializable {
 		this.aluguel = aluguel;
 	}
 
-	@NotNull
+	
 	@Column(precision = 10, scale = 2)
 	public BigDecimal getValorPago() {
 		return valorPago;
@@ -60,7 +60,7 @@ public class PagamentoSemanal implements Serializable {
 		this.valorPago = valorPago;
 	}
 
-	@NotNull
+	
 	@Temporal(TemporalType.DATE)
 	public Date getDataPagto() {
 		return dataPagto;

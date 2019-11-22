@@ -55,7 +55,6 @@ public class PagamentoSemanalRepository implements Serializable{
 		}
 	}
 
-	@Transactional
 	public PagamentoSemanal salvar(PagamentoSemanal pagamentoSemanal) {
 		return manager.merge(pagamentoSemanal);
 	}

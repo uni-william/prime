@@ -80,6 +80,11 @@
 				<p:column headerText="Placa" width="10%">
 					<h:outputText value="#{aluguel.veiculo.placa}" />
 				</p:column>
+				<p:column headerText="Próximo pagto semanal" width="15%">
+					<h:outputText value="#{aluguel.dataProximoPagamento}">
+						<f:convertDateTime pattern="dd/MM/yyyy"/>
+					</h:outputText>
+				</p:column>				
 				<p:column width="12%">
 					<p:button icon="ui-icon-info" style="width: 30px"
 						title="Devolução / Renovação / Cancelamento"

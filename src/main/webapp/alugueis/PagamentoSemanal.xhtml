@@ -18,7 +18,8 @@
 			<p:focus context="frm" />
 			<p:toolbar>
 				<p:toolbarGroup>
-					<p:commandButton value="Realizar Pagamento" update="@form"
+					<p:commandButton value="Realizar Pagamento"
+						update="dados table msg"
 						action="#{pagamentoSemanalBean.salvarPagamento}" />
 				</p:toolbarGroup>
 			</p:toolbar>
@@ -29,7 +30,7 @@
 					styleClass="panelgrid-noborder">
 					<p:outputLabel value="Cliente" />
 					<p:outputLabel
-						value="#{pagamentoSemanalBean.contratoAluguel.cliente.nome}" />
+						value="#{pagamentoSemanalBean.cliente.nome}" />
 				</p:panelGrid>
 				<p:panelGrid columns="4" layout="grid"
 					columnClasses="ui-grid-col-1, ui-grid-col-1, ui-grid-col-1, ui-grid-col-1"
@@ -50,13 +51,13 @@
 					styleClass="panelgrid-noborder">
 					<p:outputLabel value="Fabricante" />
 					<p:outputLabel
-						value="#{pagamentoSemanalBean.contratoAluguel.veiculo.modelo.fabricante.descricao}" />
+						value="#{pagamentoSemanalBean.veiculo.modelo.fabricante.descricao}" />
 					<p:outputLabel value="Veículo" />
 					<p:outputLabel
-						value="#{pagamentoSemanalBean.contratoAluguel.veiculo.modelo.modeloMotoriacao}" />
+						value="#{pagamentoSemanalBean.veiculo.modelo.modeloMotoriacao}" />
 					<p:outputLabel value="Placa" />
 					<p:outputLabel
-						value="#{pagamentoSemanalBean.contratoAluguel.veiculo.placa}" />
+						value="#{pagamentoSemanalBean.veiculo.placa}" />
 				</p:panelGrid>
 				<p:panelGrid columns="2" layout="grid"
 					columnClasses="ui-grid-col-1, ui-grid-col-2"
@@ -68,7 +69,7 @@
 					</p:outputLabel>
 				</p:panelGrid>
 				<p:separator />
-				<p:fieldset legend="Dados pagamento">
+				<p:fieldset legend="Dados pagamento" id="dados">
 					<p:panelGrid columns="2" layout="grid"
 						columnClasses="ui-grid-col-1, ui-grid-col-2"
 						styleClass="panelgrid-noborder">
@@ -93,7 +94,7 @@
 				</p:fieldset>
 				<p:dataTable value="#{pagamentoSemanalBean.pagtosRealizados}"
 					var="pagto" emptyMessage="Nenhum pagamento realizado"
-					style="margin-top:10px">
+					style="margin-top:10px" id="table">
 					<p:column headerText="Data pagamento">
 						<h:outputText value="#{pagto.dataPagto}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
@@ -104,8 +105,33 @@
 							<f:convertNumber type="currency" />
 						</h:outputText>
 					</p:column>
+					<p:column width="12%">
+						<p:commandButton icon="ui-icon-print" style="width: 30px"
+							title="Imprimir recido" ajax="false" process="@this"
+							action="#{pagamentoSemanalBean.imprimirRecibo()}">
+							<f:setPropertyActionListener value="#{pagto}"
+								target="#{pagamentoSemanalBean.pagamentoSelecionado}" />
+						</p:commandButton>
+						<p:commandButton icon="ui-icon-trash" title="Excluir"
+							oncomplete="PF('confirmacao').show(); return false;"
+							process="@this" update=":frm:conf" style="width: 30px">
+							<f:setPropertyActionListener value="#{pagto}"
+								target="#{pagamentoSemanalBean.pagamentoSelecionado}" />
+						</p:commandButton>
+					</p:column>
+
 				</p:dataTable>
 			</div>
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma exclusão deste pagamento?" widgetVar="confirmacao"
+				id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="table msg"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pagamentoSemanalBean.excluirPagto()}" />
+			</p:confirmDialog>
+
 		</h:form>
 	</ui:define>
 
