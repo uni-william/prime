@@ -43,6 +43,7 @@ public class RenovacaoBean implements Serializable {
 	private Pessoa cliente;
 	private Integer diasRenovacao;
 
+
 	public Aluguel getAluguel() {
 		return aluguel;
 	}

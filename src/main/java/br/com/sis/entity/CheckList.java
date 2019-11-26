@@ -85,11 +85,16 @@ public class CheckList implements Serializable {
 	
 	@Transient
 	public BigDecimal getValorItemCheckList() {
-		if (this.recebimento == true && this.entrega == false) {
+		if (this.recebimento == false && this.entrega == true) {
 			return this.quantidade.multiply(this.itemCheckList.getValor());
 		} else {
 			return BigDecimal.ZERO;
 		}
+	}
+	
+	@Transient
+	public String getConstaNoAluguel() {
+		return this.entrega? "X" : "";
 	}
 	
 
