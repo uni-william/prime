@@ -55,54 +55,86 @@
 					<p:calendar value="#{pesquisaDevolucoesBean.filter.dtFim}"
 						mask="99/99/9999" pattern="dd/MM/yyyy" id="dtfim" showOn="button" />
 				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Status" />
+					<p:selectOneMenu
+						value="#{pesquisaDevolucoesBean.filter.statusAluguel}">
+						<f:selectItem itemLabel="Todos" />
+						<f:selectItems value="#{pesquisaDevolucoesBean.statusAluguel}"
+							var="status" itemLabel="#{status.descricao}"
+							itemValue="#{status}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+
+				<p:dataTable value="#{pesquisaDevolucoesBean.alugueis}"
+					var="aluguel" style="margin-top: 10px" reflow="true"
+					emptyMessage="Nenhum aluguel encontrado" id="table"
+					paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+					paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+					<p:column headerText="Cliente">
+						<h:outputText value="#{aluguel.cliente.nome}" />
+					</p:column>
+					<p:column headerText="Dt. Aluguel" width="10%">
+						<h:outputText value="#{aluguel.dataInicio}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Previsão" width="10%">
+						<h:outputText value="#{aluguel.dataPrevista}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Veículo">
+						<h:outputText value="#{aluguel.veiculo.modelo.modeloMotoriacao}" />
+					</p:column>
+					<p:column headerText="Placa" width="10%">
+						<h:outputText value="#{aluguel.veiculo.placa}" />
+					</p:column>
+					<p:column headerText="Próximo pagto semanal" width="15%">
+						<h:outputText value="#{aluguel.dataProximoPagamento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Status" width="10%">
+						<h:outputText value="#{aluguel.statusAluguel.descricao}" />
+					</p:column>
+					<p:column width="15%">
+						<p:button icon="ui-icon-calendar" style="width: 30px"
+							title="Renovação" outcome="/alugueis/Renovacao" disabled="#{!aluguel.emAberto}">
+							<f:param name="aluguel" value="#{aluguel.id}" />
+						</p:button>
+						<p:button icon="ui-icon-check" style="width: 30px"
+							title="Devolução" outcome="/alugueis/Devolucao" disabled="#{!aluguel.emAberto}">
+							<f:param name="aluguel" value="#{aluguel.id}" />
+						</p:button>
+						<p:button icon="ui-icon-calculator" style="width: 30px"
+							title="Informar pagamento semanal"
+							disabled="#{aluguel.pagamentoSemanal == false or !aluguel.emAberto}"
+							outcome="/alugueis/PagamentoSemanal">
+							<f:param name="aluguel" value="#{aluguel.id}" />
+						</p:button>
+						<p:commandButton icon="ui-icon-cancel" title="Cancelar contrato"
+							oncomplete="PF('confirmacao').show(); return false;"
+							process="@this" update=":frm:conf" style="width: 30px"
+							disabled="#{!aluguel.emAberto}">
+							<f:setPropertyActionListener value="#{aluguel}"
+								target="#{pesquisaDevolucoesBean.aluguelSelecionado}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
 			</div>
-			<p:dataTable value="#{pesquisaDevolucoesBean.alugueis}" var="aluguel"
-				style="margin-top: 20px" reflow="true"
-				emptyMessage="Nenhum aluguel encontrado" id="table" paginator="true"
-				rows="10" rowsPerPageTemplate="10,20,30" paginatorPosition="bottom"
-				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
-				<p:column headerText="Cliente">
-					<h:outputText value="#{aluguel.cliente.nome}" />
-				</p:column>
-				<p:column headerText="Dt. Aluguel" width="10%">
-					<h:outputText value="#{aluguel.dataInicio}">
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputText>
-				</p:column>
-				<p:column headerText="Previsão" width="10%">
-					<h:outputText value="#{aluguel.dataPrevista}">
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputText>
-				</p:column>
-				<p:column headerText="Veículo">
-					<h:outputText value="#{aluguel.veiculo.modelo.modeloMotoriacao}" />
-				</p:column>
-				<p:column headerText="Placa" width="10%">
-					<h:outputText value="#{aluguel.veiculo.placa}" />
-				</p:column>
-				<p:column headerText="Próximo pagto semanal" width="15%">
-					<h:outputText value="#{aluguel.dataProximoPagamento}">
-						<f:convertDateTime pattern="dd/MM/yyyy"/>
-					</h:outputText>
-				</p:column>				
-				<p:column width="12%">
-					<p:button icon="ui-icon-calendar" style="width: 30px"
-						title="Renovação" outcome="/alugueis/Renovacao">						
-						<f:param name="aluguel" value="#{aluguel.id}" />
-					</p:button>				
-					<p:button icon="ui-icon-check" style="width: 30px"
-						title="Devolução"
-						outcome="/alugueis/Devolucao">
-						<f:param name="aluguel" value="#{aluguel.id}" />
-					</p:button>
-					<p:button icon="ui-icon-calculator" style="width: 30px"
-						title="Informar pagamento semanal"
-						disabled="#{aluguel.pagamentoSemanal == false}"
-						outcome="/alugueis/PagamentoSemanal">
-						<f:param name="aluguel" value="#{aluguel.id}" />
-					</p:button>
-				</p:column>
-			</p:dataTable>
+			<p:confirmDialog header="Cancelamento"
+				message="Confirma o cancelamento deste contrato?"
+				widgetVar="confirmacao" id="conf">
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaDevolucoesBean.cancelarAluguel}" />
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+			</p:confirmDialog>
 		</h:form>
 	</ui:define>
 

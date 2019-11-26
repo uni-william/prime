@@ -2,19 +2,17 @@ package br.com.sis.bean;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import br.com.sis.entity.Aluguel;
 import br.com.sis.entity.Configuracoes;
 import br.com.sis.entity.Pessoa;
 import br.com.sis.entity.Veiculo;
-import br.com.sis.enuns.StatusAluguel;
 import br.com.sis.repository.AluguelRepository;
 import br.com.sis.repository.ConfiguracoesRepository;
 import br.com.sis.repository.PessoaRepository;
@@ -36,9 +34,9 @@ public class RenovacaoBean implements Serializable {
 	private AluguelRepository aluguelRepository;
 	@Inject
 	private VeiculoRepository veiculoRepository;
-	
+
 	@Inject
-	private ConfiguracoesRepository configuracoesRepository;	
+	private ConfiguracoesRepository configuracoesRepository;
 
 	private Aluguel aluguel;
 	private Veiculo veiculo;
@@ -70,6 +68,7 @@ public class RenovacaoBean implements Serializable {
 		this.diasRenovacao = diasRenovacao;
 	}
 
+
 	public void prepararDados() {
 		cliente = pessoaRepository.porId(aluguel.getCliente().getId());
 		veiculo = veiculoRepository.porId(aluguel.getVeiculo().getId());
@@ -82,7 +81,7 @@ public class RenovacaoBean implements Serializable {
 			prepararDados();
 		}
 	}
-	
+
 	public void realizarRenovacao() {
 		veiculo = veiculoRepository.porId(veiculo.getId());
 		veiculo.setQuilometragem(aluguel.getKmFinal());
@@ -91,20 +90,38 @@ public class RenovacaoBean implements Serializable {
 		aluguel.setKmFinal(aluguel.getKmInicial() + config().getLimiteKmAluguel());
 		aluguel.setDataInicio(aluguel.getDataPrevista());
 		colocarDataPrevista();
+		if (aluguel.isPagamentoSemanal()) {
+			Calendar c = Calendar.getInstance();
+			c.setTime(this.aluguel.getDataInicio());
+			c.add(Calendar.DAY_OF_MONTH, 1);
+			Date data = c.getTime();
+			int diaSemana = mostrarDiaSemana(data); 
+			while ( diaSemana != 2) {
+				c.add(Calendar.DAY_OF_MONTH, 1);
+				diaSemana = mostrarDiaSemana(c.getTime());
+			}
+			aluguel.setDataProximoPagamento(c.getTime());
+		}
 		aluguel = aluguelService.realizarAluguel(aluguel);
 		FacesUtil.addInfoMessage("Contrato renovado com sucesso!");
 		diasRenovacao = null;
 	}
-	
+
 	private Configuracoes config() {
 		return configuracoesRepository.configuracoesGerais();
 	}
-	
+
 	private void colocarDataPrevista() {
 		Calendar c = Calendar.getInstance();
 		c.setTime(aluguel.getDataInicio());
 		c.add(Calendar.DAY_OF_MONTH, diasRenovacao);
 		aluguel.setDataPrevista(c.getTime());
-	}	
+	}
+
+	private int mostrarDiaSemana(Date data) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(data);
+		return c.get(Calendar.DAY_OF_WEEK);
+	}
 
 }

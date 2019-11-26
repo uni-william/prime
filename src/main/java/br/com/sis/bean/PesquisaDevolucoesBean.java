@@ -12,6 +12,8 @@ import br.com.sis.entity.Aluguel;
 import br.com.sis.enuns.StatusAluguel;
 import br.com.sis.repository.AluguelRepository;
 import br.com.sis.repository.filter.AluguelFilter;
+import br.com.sis.service.AluguelService;
+import br.com.sis.util.jsf.FacesUtil;
 
 @Named
 @ViewScoped
@@ -21,10 +23,15 @@ public class PesquisaDevolucoesBean implements Serializable {
 
 	@Inject
 	private AluguelRepository aluguelRepository;
+	
+	@Inject
+	private AluguelService aluguelService;
 
 	private AluguelFilter filter;
 	private int indicePessoa = 0;
 	private List<Aluguel> alugueis = new ArrayList<>();
+
+	private Aluguel aluguelSelecionado;
 
 	public AluguelFilter getFilter() {
 		return filter;
@@ -53,13 +60,30 @@ public class PesquisaDevolucoesBean implements Serializable {
 		return alugueis;
 	}
 
-	public void iniciliazar() {
-		filter = new AluguelFilter();
-		filter.setStatusAluguel(StatusAluguel.ABERTO);
+	public Aluguel getAluguelSelecionado() {
+		return aluguelSelecionado;
+	}
+
+	public void setAluguelSelecionado(Aluguel aluguelSelecionado) {
+		this.aluguelSelecionado = aluguelSelecionado;
 	}
 	
+	public StatusAluguel[] getStatusAluguel() {
+		return StatusAluguel.values();
+	}
+
+	public void iniciliazar() {
+		filter = new AluguelFilter();
+	}
+
 	public void pesquisar() {
 		this.alugueis = aluguelRepository.filtrados(filter);
+	}
+	
+	public void cancelarAluguel() {
+		aluguelService.cancelarAluguel(aluguelSelecionado);
+		FacesUtil.addInfoMessage("Contrato de aluguel cancelado com sucesso!");
+		pesquisar();
 	}
 
 }

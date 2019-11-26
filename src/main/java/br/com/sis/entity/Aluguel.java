@@ -234,6 +234,21 @@ public class Aluguel implements Serializable {
 	public String getDescricaoPagamentoSemanal() {
 		return this.isPagamentoSemanal() ? "Sim" : "Não";
 	}
+	
+	@Transient
+	public boolean isCancelado() {
+		return this.statusAluguel.equals(StatusAluguel.CANCELADO);
+	}
+	
+	@Transient
+	public boolean isEmAberto() {
+		return this.statusAluguel.equals(StatusAluguel.ABERTO);
+	}	
+
+	@Transient
+	public boolean isFinalizado() {
+		return this.statusAluguel.equals(StatusAluguel.FINALIZADO);
+	}
 
 	@Override
 	public int hashCode() {

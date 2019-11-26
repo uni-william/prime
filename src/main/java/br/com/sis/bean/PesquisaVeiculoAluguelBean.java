@@ -10,6 +10,7 @@ import javax.inject.Named;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
+import br.com.sis.entity.Aluguel;
 import br.com.sis.entity.Modelo;
 import br.com.sis.entity.Veiculo;
 import br.com.sis.repository.ModeloRepository;
@@ -95,6 +96,5 @@ public class PesquisaVeiculoAluguelBean implements Serializable {
 	public void pesquisar() {
 		listaVeiculos = repository.filtradosAluguel(filter);
 	}
-	
 
 }
