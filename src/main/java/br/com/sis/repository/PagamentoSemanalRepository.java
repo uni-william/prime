@@ -11,9 +11,9 @@ import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
 import br.com.sis.entity.Aluguel;
 import br.com.sis.entity.PagamentoSemanal;
 import br.com.sis.util.jpa.Transactional;
@@ -44,15 +44,13 @@ public class PagamentoSemanalRepository implements Serializable{
 		return query.getResultList();		
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public BigDecimal totalPagoSemana(Aluguel aluguel) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<BigDecimal> criteriaQuery = builder.createQuery(BigDecimal.class);
 		Root<PagamentoSemanal> pgtoRoot = criteriaQuery.from(PagamentoSemanal.class);
-		Join<Aluguel, PagamentoSemanal> aluguelRoot = (Join) pgtoRoot.fetch("aluguel");
-		criteriaQuery.select(builder.construct(BigDecimal.class, builder.sum(pgtoRoot.get("valorPago"))));
+		criteriaQuery.select(builder.sum(pgtoRoot.<BigDecimal>get("valorPago")));
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(builder.greaterThan(pgtoRoot.get("dataPagto"), aluguelRoot.get("dataInicio")));
+		predicates.add(builder.greaterThan(pgtoRoot.get("dataPagto"), pgtoRoot.get("aluguel").get("dataInicio")));
 		predicates.add(builder.equal(pgtoRoot.get("aluguel"), aluguel));
 		criteriaQuery.where(predicates.toArray(new Predicate[0]));
 		TypedQuery<BigDecimal> query = manager.createQuery(criteriaQuery);

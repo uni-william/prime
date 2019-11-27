@@ -44,6 +44,7 @@ public class Aluguel implements Serializable {
 	private BigDecimal valorAcrescimo;
 	private BigDecimal valorTotal;
 	private BigDecimal valorLuva;
+	private BigDecimal valorDevolvido;
 	private StatusAluguel statusAluguel;
 	private Integer kmInicial;
 	private Integer kmFinal;
@@ -51,6 +52,7 @@ public class Aluguel implements Serializable {
 	private List<CheckList> checkList = new ArrayList<CheckList>();
 	private boolean pagamentoSemanal = false;
 	private Date dataProximoPagamento;
+	private List<PagamentoSemanal> pagamentos;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -165,8 +167,17 @@ public class Aluguel implements Serializable {
 		return valorLuva;
 	}
 
+	@Column(precision = 10, scale = 2)
 	public void setValorLuva(BigDecimal valorLuva) {
 		this.valorLuva = valorLuva;
+	}
+
+	public BigDecimal getValorDevolvido() {
+		return valorDevolvido;
+	}
+
+	public void setValorDevolvido(BigDecimal valorDevolvido) {
+		this.valorDevolvido = valorDevolvido;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -229,21 +240,30 @@ public class Aluguel implements Serializable {
 	public void setDataProximoPagamento(Date dataProximoPagamento) {
 		this.dataProximoPagamento = dataProximoPagamento;
 	}
-	
+
+	@OneToMany(mappedBy = "aluguel", fetch = FetchType.LAZY)
+	public List<PagamentoSemanal> getPagamentos() {
+		return pagamentos;
+	}
+
+	public void setPagamentos(List<PagamentoSemanal> pagamentos) {
+		this.pagamentos = pagamentos;
+	}
+
 	@Transient
 	public String getDescricaoPagamentoSemanal() {
 		return this.isPagamentoSemanal() ? "Sim" : "Não";
 	}
-	
+
 	@Transient
 	public boolean isCancelado() {
 		return this.statusAluguel.equals(StatusAluguel.CANCELADO);
 	}
-	
+
 	@Transient
 	public boolean isEmAberto() {
 		return this.statusAluguel.equals(StatusAluguel.ABERTO);
-	}	
+	}
 
 	@Transient
 	public boolean isFinalizado() {

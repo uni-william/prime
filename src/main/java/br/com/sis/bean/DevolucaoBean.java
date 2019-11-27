@@ -17,8 +17,11 @@ import javax.inject.Named;
 import br.com.sis.entity.Aluguel;
 import br.com.sis.entity.CheckList;
 import br.com.sis.entity.Configuracoes;
+import br.com.sis.entity.PagamentoSemanal;
 import br.com.sis.entity.Pessoa;
 import br.com.sis.entity.Veiculo;
+import br.com.sis.enuns.StatusAluguel;
+import br.com.sis.enuns.StatusVeiculo;
 import br.com.sis.repository.AluguelRepository;
 import br.com.sis.repository.ConfiguracoesRepository;
 import br.com.sis.repository.PagamentoSemanalRepository;
@@ -54,6 +57,7 @@ public class DevolucaoBean implements Serializable {
 	private Aluguel aluguel;
 	private Veiculo veiculo;
 	private Pessoa cliente;
+	private boolean marcarTodos;
 
 	public List<CheckList> getCheckList() {
 		return checkList;
@@ -103,21 +107,29 @@ public class DevolucaoBean implements Serializable {
 		this.cliente = cliente;
 	}
 
+	public boolean isMarcarTodos() {
+		return marcarTodos;
+	}
+
+	public void setMarcarTodos(boolean marcarTodos) {
+		this.marcarTodos = marcarTodos;
+	}
+
 	public BigDecimal getTotalCheckList() {
 		double total = 0;
 		for (CheckList item : checkList) {
 			if (item.isEntrega() && !item.isRecebimento()) {
-			  total = total + item.getValorItemCheckList().doubleValue();
+				total = total + item.getValorItemCheckList().doubleValue();
 			}
 		}
 		return new BigDecimal(total);
 	}
-	
+
 	public String getFormatoMoeda() {
-		NumberFormat nf = NumberFormat.getCurrencyInstance();  
-		String formatado = nf.format (this.getTotalCheckList());		
-		return formatado; 
-	}	
+		NumberFormat nf = NumberFormat.getCurrencyInstance();
+		String formatado = nf.format(this.getTotalCheckList());
+		return formatado;
+	}
 
 	public void inicializar() {
 		if (this.aluguel == null) {
@@ -127,17 +139,17 @@ public class DevolucaoBean implements Serializable {
 			prepararDados();
 		}
 	}
-	
+
 	public void prepararDados() {
 		cliente = pessoaRepository.porId(aluguel.getCliente().getId());
 		veiculo = veiculoRepository.porId(aluguel.getVeiculo().getId());
 	}
-	
+
 	public Long getDiasAtraso() {
 		Calendar dtPrevista = Calendar.getInstance();
 		dtPrevista.setTime(aluguel.getDataPrevista());
 		Calendar dtEntrega = Calendar.getInstance();
-		if (diaEntrega == null) {	
+		if (diaEntrega == null) {
 			return 0l;
 		} else {
 			dtEntrega.setTime(diaEntrega);
@@ -149,17 +161,17 @@ public class DevolucaoBean implements Serializable {
 			int mesf = dtEntrega.get(Calendar.MONTH);
 			int anof = dtEntrega.get(Calendar.YEAR);
 
-			LocalDate di = LocalDate.of(anoi, mesi, diai);
-			LocalDate df = LocalDate.of(anof, mesf, diaf);
+			LocalDate di = LocalDate.of(anoi, mesi+1, diai);
+			LocalDate df = LocalDate.of(anof, mesf+1, diaf);
 
 			Long dias = ChronoUnit.DAYS.between(di, df);
 			if (dias < 0l)
 				dias = 0l;
-			
-			return dias;			
+
+			return dias;
 		}
 	}
-	
+
 	public Integer getKmExcedente() {
 		if (kmEntrega == null) {
 			return 0;
@@ -173,16 +185,63 @@ public class DevolucaoBean implements Serializable {
 			return retorno;
 		}
 	}
-	
+
 	public BigDecimal getValorDiasAtraso() {
 		BigDecimal diaria = veiculo.getValorAluguel();
 		return diaria.multiply(new BigDecimal(this.getDiasAtraso()));
 	}
-	
+
 	public BigDecimal getValorKmExcedente() {
 		Configuracoes configuracoes = configuracoesRepository.configuracoesGerais();
 		BigDecimal valorKmExcedente = configuracoes.getValorKmExcedente();
 		return valorKmExcedente.multiply(new BigDecimal(this.getKmExcedente()));
+	}
+
+	public BigDecimal getValorPagtoSemanal() {
+		return pagamentoSemanalRepository.totalPagoSemana(this.aluguel);
+	}
+
+	public BigDecimal getSomaTotal() {
+		return this.aluguel.getValorTotal().add(getTotalCheckList()).add(getValorDiasAtraso())
+				.add(getValorKmExcedente()).subtract(getValorPagtoSemanal());
+	}
+
+	public BigDecimal getSaldo() {
+		return this.getSomaTotal().subtract(this.aluguel.getValorLuva());
+	}
+	
+	public void marcarDesmarcarTodos() {
+		this.checkList.forEach(item -> {
+			item.setRecebimento(this.marcarTodos);
+		});
+	}
+	
+	public void salvar() {
+		BigDecimal saldo = this.getSaldo();
+		if (this.diaEntrega == null || this.kmEntrega == null) {
+			FacesUtil.addErroMessage("Data da entrega e quilometragm são orbigatórios");
+		} else {
+			this.aluguel = aluguelRepository.porId(this.aluguel.getId());
+			if (saldo.compareTo(BigDecimal.ZERO) == -1) {
+				Double valor = saldo.doubleValue() * -1; 
+				this.aluguel.setValorDevolvido(new BigDecimal(valor));
+			} else {
+				this.aluguel.setValorAcrescimo(saldo);
+			}
+			this.aluguel.setCheckList(this.checkList);
+			this.veiculo = veiculoRepository.porId(this.veiculo.getId());
+			this.aluguel.setVeiculo(this.veiculo);
+			this.aluguel.getVeiculo().setStatusVeiculo(StatusVeiculo.PARA_ALUGUEL);
+			this.aluguel.getVeiculo().setQuilometragem(this.kmEntrega);
+			this.aluguel.setDataEntrega(this.diaEntrega);
+			this.aluguel.setStatusAluguel(StatusAluguel.FINALIZADO);
+			this.aluguel = this.aluguelService.realizarEntregaVeiculo(aluguel);
+			FacesUtil.addInfoMessage("Devolução realizada com sucesso!");
+		}
+	}
+	
+	public List<PagamentoSemanal> getPagamentos() {
+		return pagamentoSemanalRepository.pagamentosPorContrato(this.aluguel);
 	}
 
 }

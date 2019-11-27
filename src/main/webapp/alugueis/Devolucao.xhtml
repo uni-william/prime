@@ -12,12 +12,15 @@
 			<f:viewAction action="#{devolucaoBean.inicializar}" />
 			<f:viewParam name="aluguel" value="#{devolucaoBean.aluguel}" />
 		</f:metadata>
-		<h1 class="aw-page-title">Devolução de veículo</h1>
+		<h1 class="aw-page-title">#{devolucaoBean.aluguel.emAberto ?
+			'Devolução de veículo' : 'Visualizar contrato'}</h1>
 		<h:form id="frm">
 			<p:focus context="frm" />
 			<p:toolbar>
 				<p:toolbarGroup>
-					<p:commandButton value="Realizar Devolução" update="@form" />
+					<p:commandButton value="Realizar Devolução" update="@form"
+						action="#{devolucaoBean.salvar}"
+						disabled="#{!devolucaoBean.aluguel.emAberto}" />
 				</p:toolbarGroup>
 			</p:toolbar>
 
@@ -43,7 +46,7 @@
 					</p:outputLabel>
 				</p:panelGrid>
 				<p:panelGrid columns="6" layout="grid"
-					columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
+					columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2, ui-grid-col-2, ui-grid-col-2"
 					styleClass="panelgrid-noborder">
 					<p:outputLabel value="Fabricante" />
 					<p:outputLabel
@@ -60,13 +63,12 @@
 					<p:outputLabel value="Pagto Semanal" />
 					<p:outputLabel
 						value="#{devolucaoBean.aluguel.descricaoPagamentoSemanal}" />
-				</p:panelGrid>
-				<p:panelGrid columns="2" layout="grid"
-					columnClasses="ui-grid-col-1, ui-grid-col-2"
-					styleClass="panelgrid-noborder">
-					<p:outputLabel value="Valor contrato" />
-					<p:outputLabel value="#{devolucaoBean.aluguel.valorTotal}">
-						<f:convertNumber type="currency" />
+					<p:outputLabel value="Status" />
+					<p:outputLabel
+						value="#{devolucaoBean.aluguel.statusAluguel.descricao}" />
+					<p:outputLabel value="Entrega" />
+					<p:outputLabel value="#{devolucaoBean.aluguel.dataEntrega}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
 					</p:outputLabel>
 				</p:panelGrid>
 				<p:separator />
@@ -77,13 +79,15 @@
 							styleClass="panelgrid-noborder">
 							<p:outputLabel value="Data entrega" />
 							<p:calendar value="#{devolucaoBean.diaEntrega}" mask="99/99/9999"
-								pattern="dd/MM/yyyy" id="dtentrega" showOn="button">
+								pattern="dd/MM/yyyy" id="dtentrega" showOn="button"
+								disabled="#{!devolucaoBean.aluguel.emAberto}">
 								<p:ajax event="dateSelect" process="@this" update="@form" />
 								<p:ajax event="change" process="@this" update="@form" />
 							</p:calendar>
 							<p:outputLabel value="Km entrega" />
 							<p:inputNumber id="kmentrega" value="#{devolucaoBean.kmEntrega}"
-								decimalPlaces="0" decimalSeparator="" thousandSeparator="">
+								decimalPlaces="0" decimalSeparator="" thousandSeparator=""
+								disabled="#{!devolucaoBean.aluguel.emAberto}">
 								<p:ajax event="blur" process="@this" update="@form" />
 							</p:inputNumber>
 						</p:panelGrid>
@@ -91,6 +95,10 @@
 						<p:panelGrid columns="2" layout="grid"
 							columnClasses="ui-grid-col-2, ui-grid-col-2"
 							styleClass="panelgrid-noborder">
+							<p:outputLabel value="Valor contrato" />
+							<p:outputLabel value="#{devolucaoBean.aluguel.valorTotal}">
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
 							<p:outputLabel value="Dias atraso" />
 							<p:outputLabel value="#{devolucaoBean.diasAtraso}" />
 							<p:outputLabel value="Valor dias atraso" />
@@ -104,9 +112,33 @@
 								<f:convertNumber type="currency" />
 							</p:outputLabel>
 							<p:outputLabel value="Valor CheckList" />
-							<p:outputLabel value="#{devolucaoBean.totalCheckList}" id="vlrchecklist">
+							<p:outputLabel value="#{devolucaoBean.totalCheckList}"
+								id="vlrchecklist">
 								<f:convertNumber type="currency" />
-							</p:outputLabel>							
+							</p:outputLabel>
+							<p:outputLabel value="Valor Pagto Semanal" />
+							<p:outputLabel value="#{devolucaoBean.valorPagtoSemanal}"
+								id="vlpgto">
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
+						</p:panelGrid>
+						<p:separator />
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-2"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel value="Valor Total" />
+							<p:outputLabel value="#{devolucaoBean.somaTotal}" id="vlsoma">
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
+							<p:outputLabel value="Valor Luva" />
+							<p:outputLabel value="#{devolucaoBean.aluguel.valorLuva}"
+								id="vlluva">
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
+							<p:outputLabel value="Saldo" />
+							<p:outputLabel value="#{devolucaoBean.saldo}" id="vlsaldo">
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
 						</p:panelGrid>
 					</p:tab>
 					<p:tab title="CheckList" id="tbcheck">
@@ -121,19 +153,21 @@
 								</h:outputText>
 							</p:column>
 							<p:column headerText="Qtd" width="6%">
-								<p:inputNumber value="#{checkList.quantidade}" decimalPlaces="0">
+								<p:inputNumber value="#{checkList.quantidade}" decimalPlaces="0"
+									disabled="#{!devolucaoBean.aluguel.emAberto}">
 									<p:ajax event="change" process="@this table"
-										update=":frm:tabView:table :frm:tabView:vlrchecklist" />
+										update=":frm:tabView:table :frm:tabView:vlrchecklist :frm:tabView:vlsoma :frm:tabView:vlsaldo" />
 								</p:inputNumber>
 							</p:column>
 							<p:column headerText="Consta" width="6%"
 								style="text-align:center">
 								<h:outputText value="#{checkList.constaNoAluguel}" />
 							</p:column>
-							<p:column headerText="Consta" width="6%">
-								<p:selectBooleanCheckbox value="#{checkList.recebimento}">
+							<p:column headerText="OK" width="4%">
+								<p:selectBooleanCheckbox value="#{checkList.recebimento}"
+									disabled="#{!devolucaoBean.aluguel.emAberto}">
 									<p:ajax event="change" process="@this table"
-										update=":frm:tabView:table :frm:tabView:vlrchecklist" />
+										update=":frm:tabView:table :frm:tabView:vlrchecklist :frm:tabView:vlsoma :frm:tabView:vlsaldo" />
 								</p:selectBooleanCheckbox>
 							</p:column>
 							<p:column headerText="Total" width="12%" style="text-align:right">
@@ -151,6 +185,36 @@
 								</p:row>
 							</p:columnGroup>
 						</p:dataTable>
+						<p:selectBooleanCheckbox itemLabel="Marcar/Desmarcar todos"
+							value="#{devolucaoBean.marcarTodos}" style="margin-top:10px"
+							disabled="#{!devolucaoBean.aluguel.emAberto}">
+							<p:ajax listener="#{devolucaoBean.marcarDesmarcarTodos}"
+								process="@this"
+								update=":frm:tabView:table :frm:tabView:vlrchecklist :frm:tabView:vlsoma :frm:tabView:vlsaldo" />
+						</p:selectBooleanCheckbox>
+					</p:tab>
+					<p:tab title="Pagamentos realizados" id="tbpgto">
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-2"
+							styleClass="panelgrid-noborder" style="margin-bottom:10px">
+							<p:outputLabel value="Data Pagamento" />
+							<p:outputLabel value="Valor Pagamento" />
+						</p:panelGrid>
+						<p:repeat value="#{devolucaoBean.pagamentos}" var="pagto"
+							emptyMessage="Nenhum pagamento realizado">
+							<p:panelGrid columns="2" layout="grid"
+								columnClasses="ui-grid-col-2, ui-grid-col-2"
+								styleClass="panelgrid-noborder">
+								<h:outputText value="#{pagto.dataPagto}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+
+								<h:outputText value="#{pagto.valorPago}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:panelGrid>
+
+						</p:repeat>
 					</p:tab>
 				</p:tabView>
 
