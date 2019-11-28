@@ -110,7 +110,18 @@ public class PagamentoSemanalBean implements Serializable {
 		pagtosRealizados = pagamentoSemanalRepository.pagamentosPorContrato(contratoAluguel);
 		pagamentoSemanal = new PagamentoSemanal();
 		pagamentoSemanal.setAluguel(contratoAluguel);
+		pagamentoSemanal.setDataPagto(contratoAluguel.getDataProximoPagamento());
+		
+		Calendar cProximo = Calendar.getInstance();
+		cProximo.setTime(contratoAluguel.getDataProximoPagamento());
+		cProximo.add(Calendar.DAY_OF_MONTH,7);
+		Calendar cLimite = Calendar.getInstance();
+		cLimite.setTime(contratoAluguel.getDataPrevista());
 		dataProximoPagamento = null;
+		if (!cProximo.after(cLimite)) {
+			dataProximoPagamento = cProximo.getTime();
+		}
+		
 	}
 
 	public void excluirPagto() {

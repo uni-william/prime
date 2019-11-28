@@ -11,6 +11,7 @@ public class AluguelFilter {
 	private String documentoReceita;
 	private String nome;
 	private StatusAluguel statusAluguel;
+	private Boolean pagtoSemanal;
 
 	public Date getDtIni() {
 		return dtIni;
@@ -50,6 +51,14 @@ public class AluguelFilter {
 
 	public void setStatusAluguel(StatusAluguel statusAluguel) {
 		this.statusAluguel = statusAluguel;
+	}
+
+	public Boolean getPagtoSemanal() {
+		return pagtoSemanal;
+	}
+
+	public void setPagtoSemanal(Boolean pagtoSemanal) {
+		this.pagtoSemanal = pagtoSemanal;
 	}
 
 }

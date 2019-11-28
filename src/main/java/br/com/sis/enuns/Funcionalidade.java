@@ -40,7 +40,14 @@ public enum Funcionalidade {
 	COMPRA("Nova Compra"),
 	PARCEIRO_ACESS("Parceiros"),
 	VEICULO_PARC_ACESS("Veículos de Parceiros"),
-	ITERMEDIACAO_ACESS("Intermediações");	
+	ITERMEDIACAO_ACESS("Intermediações"),
+	VEICULO_ALUG_ACESS("Aluguel - Veículos"),
+	ALUGUEL_VEICULO("Aluguel - Realizar Aluguel de Veículos"),
+	ALUGUEL_RENOVACAO("Aluguel - Renovação"),
+	ALUGUEL_DEVOLUCAO("Aluguel - Devolução"),
+	ALUGUEL_SEMANAL("Aluguel - Pagamento Semanal"),
+	ALUGUEL_LISTA("Aluguel - Contratos de Aluguel"),
+	ALUGUEL_CHECKLIST("Aluguel - ChekcList");	
 
 	Funcionalidade(String descricao) {
 		this.descricao = descricao;

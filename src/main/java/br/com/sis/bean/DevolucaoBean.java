@@ -198,16 +198,26 @@ public class DevolucaoBean implements Serializable {
 	}
 
 	public BigDecimal getValorPagtoSemanal() {
-		return pagamentoSemanalRepository.totalPagoSemana(this.aluguel);
+		BigDecimal total = pagamentoSemanalRepository.totalPagoSemana(this.aluguel); 
+		return total != null ? total : BigDecimal.ZERO;
 	}
 
 	public BigDecimal getSomaTotal() {
-		return this.aluguel.getValorTotal().add(getTotalCheckList()).add(getValorDiasAtraso())
+		BigDecimal checkList = getTotalCheckList();
+		if (checkList == null) {
+			checkList = BigDecimal.ZERO;
+		}
+			
+		return this.aluguel.getValorTotal().add(checkList).add(getValorDiasAtraso())
 				.add(getValorKmExcedente()).subtract(getValorPagtoSemanal());
 	}
 
 	public BigDecimal getSaldo() {
-		return this.getSomaTotal().subtract(this.aluguel.getValorLuva());
+		BigDecimal luva = this.aluguel.getValorLuva();
+		if (luva == null) {
+			luva = BigDecimal.ZERO;
+		}
+		return this.getSomaTotal().subtract(luva);
 	}
 	
 	public void marcarDesmarcarTodos() {

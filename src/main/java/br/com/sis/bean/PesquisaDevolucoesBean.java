@@ -23,7 +23,7 @@ public class PesquisaDevolucoesBean implements Serializable {
 
 	@Inject
 	private AluguelRepository aluguelRepository;
-	
+
 	@Inject
 	private AluguelService aluguelService;
 
@@ -32,6 +32,7 @@ public class PesquisaDevolucoesBean implements Serializable {
 	private List<Aluguel> alugueis = new ArrayList<>();
 
 	private Aluguel aluguelSelecionado;
+	private String value = "0";
 
 	public AluguelFilter getFilter() {
 		return filter;
@@ -67,9 +68,17 @@ public class PesquisaDevolucoesBean implements Serializable {
 	public void setAluguelSelecionado(Aluguel aluguelSelecionado) {
 		this.aluguelSelecionado = aluguelSelecionado;
 	}
-	
+
 	public StatusAluguel[] getStatusAluguel() {
 		return StatusAluguel.values();
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public void iniciliazar() {
@@ -77,9 +86,15 @@ public class PesquisaDevolucoesBean implements Serializable {
 	}
 
 	public void pesquisar() {
+		filter.setPagtoSemanal(null);
+		if ("1".equals(value)) {
+			filter.setPagtoSemanal(true);
+		} else if ("2".equals(value)) {
+			filter.setPagtoSemanal(false);
+		}
 		this.alugueis = aluguelRepository.filtrados(filter);
 	}
-	
+
 	public void cancelarAluguel() {
 		aluguelService.cancelarAluguel(aluguelSelecionado);
 		FacesUtil.addInfoMessage("Contrato de aluguel cancelado com sucesso!");

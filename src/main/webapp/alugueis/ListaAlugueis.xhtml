@@ -55,8 +55,8 @@
 					<p:calendar value="#{pesquisaDevolucoesBean.filter.dtFim}"
 						mask="99/99/9999" pattern="dd/MM/yyyy" id="dtfim" showOn="button" />
 				</p:panelGrid>
-				<p:panelGrid columns="2" layout="grid"
-					columnClasses="ui-grid-col-1, ui-grid-col-2"
+				<p:panelGrid columns="3" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-2"
 					styleClass="panelgrid-noborder">
 					<p:outputLabel value="Status" />
 					<p:selectOneMenu
@@ -66,6 +66,8 @@
 							var="status" itemLabel="#{status.descricao}"
 							itemValue="#{status}" />
 					</p:selectOneMenu>
+
+					<p:triStateCheckbox value="#{pesquisaDevolucoesBean.value}" itemLabel="Pagamento Semanal" />
 				</p:panelGrid>
 
 				<p:dataTable value="#{pesquisaDevolucoesBean.alugueis}"

@@ -1,0 +1,75 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Consulta alugueis</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+
+		</f:metadata>
+		<h1 class="aw-page-title">Alugueis Previsão</h1>
+		<h:form id="frm">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Pesquisar" update="@form"
+						action="#{consultasAlugueis.topAlugueisDevolucao}" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages id="msg" autoUpdate="false" closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-1"
+					styleClass="panelgrid-noborder" style="margin-top:10px">
+					<p:outputLabel value="Dias" />
+					<p:inputNumber value="#{consultasAlugueis.dias}" decimalPlaces="0"
+						decimalSeparator="" thousandSeparator="" />
+					<p:outputLabel value="Limite linhas" />
+					<p:inputNumber value="#{consultasAlugueis.top}" decimalPlaces="0"
+						decimalSeparator="" thousandSeparator="" />					
+				</p:panelGrid>
+				<p:dataTable value="#{consultasAlugueis.topAlugueis}" var="aluguel">
+					<p:column headerText="Cliente">
+						<h:outputText value="#{aluguel.cliente.nome}" />
+					</p:column>
+					<p:column headerText="Dt. Aluguel" width="10%">
+						<h:outputText value="#{aluguel.dataInicio}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Previsão" width="10%">
+						<h:outputText value="#{aluguel.dataPrevista}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Veículo">
+						<h:outputText value="#{aluguel.veiculo.modelo.modeloMotoriacao}" />
+					</p:column>
+					<p:column headerText="Placa" width="10%">
+						<h:outputText value="#{aluguel.veiculo.placa}" />
+					</p:column>
+					<p:column headerText="Valor contrato" width="15%">
+						<h:outputText value="#{aluguel.valorTotal}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<p:link outcome="/alugueis/Devolucao"
+							value="Devolução" style="margin-right:10px">
+							<f:param name="aluguel" value="#{aluguel.id}" />
+						</p:link>
+						<p:link outcome="/alugueis/Renovacao"
+							value="Renovação">
+							<f:param name="aluguel" value="#{aluguel.id}" />
+						</p:link>						
+					</p:column>					
+				</p:dataTable>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

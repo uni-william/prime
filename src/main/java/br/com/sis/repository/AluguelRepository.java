@@ -2,6 +2,7 @@ package br.com.sis.repository;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -21,6 +22,7 @@ import br.com.sis.entity.Aluguel;
 import br.com.sis.entity.Modelo;
 import br.com.sis.entity.Pessoa;
 import br.com.sis.entity.Veiculo;
+import br.com.sis.enuns.StatusAluguel;
 import br.com.sis.repository.filter.AluguelFilter;
 import br.com.sis.util.Utils;
 import br.com.sis.util.jpa.Transactional;
@@ -67,10 +69,72 @@ public class AluguelRepository implements Serializable{
 		if (filter.getStatusAluguel() != null) {
 			predicates.add(builder.equal(aluguelRoot.get("statusAluguel"), filter.getStatusAluguel()));
 		}
+		
+		if (filter.getPagtoSemanal() != null) {
+			predicates.add(builder.equal(aluguelRoot.get("pagamentoSemanal"), filter.getPagtoSemanal()));
+		}
+		
 		criteriaQuery.where(predicates.toArray(new Predicate[0]));
 		TypedQuery<Aluguel> query = manager.createQuery(criteriaQuery);
 		return query.getResultList();
 	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<Aluguel> topContratosAVencerVencidos(int top, int dias) {
+		Calendar dt = Calendar.getInstance();
+		Calendar dtf = Calendar.getInstance();
+		dt.add(Calendar.DAY_OF_MONTH, dias);
+		dtf.setTime(dt.getTime());
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<Aluguel> criteriaQuery = builder.createQuery(Aluguel.class);
+		Root<Aluguel> aluguelRoot = criteriaQuery.from(Aluguel.class);
+		Join<Veiculo, Aluguel> modeloRoot = (Join) aluguelRoot.fetch("veiculo");
+		Join<Modelo, Veiculo> fabricanteRoot = (Join) modeloRoot.fetch("modelo");
+		fabricanteRoot.fetch("fabricante", JoinType.INNER);
+		Join<Pessoa, Aluguel> funcRoot = (Join) aluguelRoot.fetch("funcionario");
+		funcRoot.fetch("usuario", JoinType.INNER);
+		Join<Pessoa, Aluguel> cliRoot = (Join) aluguelRoot.fetch("cliente");
+		cliRoot.fetch("usuario", JoinType.LEFT);
+		
+		criteriaQuery.select(aluguelRoot);
+		
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(builder.equal(aluguelRoot.get("statusAluguel"), StatusAluguel.ABERTO));
+		predicates.add(builder.lessThanOrEqualTo(aluguelRoot.get("dataPrevista"), dtf.getTime()));
+		criteriaQuery.where(predicates.toArray(new Predicate[0]));
+		criteriaQuery.orderBy(builder.asc(aluguelRoot.get("dataPrevista")));
+		TypedQuery<Aluguel> query = manager.createQuery(criteriaQuery).setMaxResults(top);
+		return query.getResultList();		
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<Aluguel> topPagamentosSemanalAVencerVencidos(int top, int dias) {
+		Calendar dt = Calendar.getInstance();
+		Calendar dtf = Calendar.getInstance();
+		dt.add(Calendar.DAY_OF_MONTH, dias);
+		dtf.setTime(dt.getTime());
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<Aluguel> criteriaQuery = builder.createQuery(Aluguel.class);
+		Root<Aluguel> aluguelRoot = criteriaQuery.from(Aluguel.class);
+		Join<Veiculo, Aluguel> modeloRoot = (Join) aluguelRoot.fetch("veiculo");
+		Join<Modelo, Veiculo> fabricanteRoot = (Join) modeloRoot.fetch("modelo");
+		fabricanteRoot.fetch("fabricante", JoinType.INNER);
+		Join<Pessoa, Aluguel> funcRoot = (Join) aluguelRoot.fetch("funcionario");
+		funcRoot.fetch("usuario", JoinType.INNER);
+		Join<Pessoa, Aluguel> cliRoot = (Join) aluguelRoot.fetch("cliente");
+		cliRoot.fetch("usuario", JoinType.LEFT);
+		
+		criteriaQuery.select(aluguelRoot);
+		
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(builder.equal(aluguelRoot.get("statusAluguel"), StatusAluguel.ABERTO));
+		predicates.add(builder.equal(aluguelRoot.get("pagamentoSemanal"), true));
+		predicates.add(builder.lessThanOrEqualTo(aluguelRoot.get("dataProximoPagamento"), dtf.getTime()));
+		criteriaQuery.where(predicates.toArray(new Predicate[0]));
+		criteriaQuery.orderBy(builder.asc(aluguelRoot.get("dataProximoPagamento")));
+		TypedQuery<Aluguel> query = manager.createQuery(criteriaQuery).setMaxResults(top);
+		return query.getResultList();		
+	}	
 	
 
 	public Aluguel porId(Long id) {
