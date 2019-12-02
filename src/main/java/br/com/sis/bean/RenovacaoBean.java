@@ -1,8 +1,10 @@
 package br.com.sis.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -12,10 +14,12 @@ import javax.validation.constraints.NotNull;
 import br.com.sis.entity.Aluguel;
 import br.com.sis.entity.Configuracoes;
 import br.com.sis.entity.Pessoa;
+import br.com.sis.entity.Renovacao;
 import br.com.sis.entity.Veiculo;
 import br.com.sis.repository.AluguelRepository;
 import br.com.sis.repository.ConfiguracoesRepository;
 import br.com.sis.repository.PessoaRepository;
+import br.com.sis.repository.RenovacaoRepository;
 import br.com.sis.repository.VeiculoRepository;
 import br.com.sis.service.AluguelService;
 import br.com.sis.util.jsf.FacesUtil;
@@ -34,6 +38,9 @@ public class RenovacaoBean implements Serializable {
 	private AluguelRepository aluguelRepository;
 	@Inject
 	private VeiculoRepository veiculoRepository;
+	
+	@Inject
+	private RenovacaoRepository renovacaoRepository;
 
 	@Inject
 	private ConfiguracoesRepository configuracoesRepository;
@@ -43,6 +50,7 @@ public class RenovacaoBean implements Serializable {
 	private Pessoa cliente;
 	private Integer diasRenovacao;
 
+	private List<Renovacao> renovacoes = new ArrayList<Renovacao>();
 
 	public Aluguel getAluguel() {
 		return aluguel;
@@ -69,10 +77,14 @@ public class RenovacaoBean implements Serializable {
 		this.diasRenovacao = diasRenovacao;
 	}
 
+	public List<Renovacao> getRenovacoes() {
+		return renovacoes;
+	}
 
 	public void prepararDados() {
 		cliente = pessoaRepository.porId(aluguel.getCliente().getId());
 		veiculo = veiculoRepository.porId(aluguel.getVeiculo().getId());
+		renovacoes = renovacaoRepository.renovacoesPorContrato(aluguel);
 	}
 
 	public void inicializar() {
@@ -96,14 +108,15 @@ public class RenovacaoBean implements Serializable {
 			c.setTime(this.aluguel.getDataInicio());
 			c.add(Calendar.DAY_OF_MONTH, 1);
 			Date data = c.getTime();
-			int diaSemana = mostrarDiaSemana(data); 
-			while ( diaSemana != 2) {
+			int diaSemana = mostrarDiaSemana(data);
+			while (diaSemana != 2) {
 				c.add(Calendar.DAY_OF_MONTH, 1);
 				diaSemana = mostrarDiaSemana(c.getTime());
 			}
 			aluguel.setDataProximoPagamento(c.getTime());
 		}
-		aluguel = aluguelService.realizarAluguel(aluguel);
+		aluguel = aluguelService.realizarRenovacao(aluguel);
+		renovacoes = renovacaoRepository.renovacoesPorContrato(aluguel);
 		FacesUtil.addInfoMessage("Contrato renovado com sucesso!");
 		diasRenovacao = null;
 	}

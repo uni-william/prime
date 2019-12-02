@@ -5,9 +5,11 @@ import java.io.Serializable;
 import javax.inject.Inject;
 
 import br.com.sis.entity.Aluguel;
+import br.com.sis.entity.Renovacao;
 import br.com.sis.enuns.StatusAluguel;
 import br.com.sis.enuns.StatusVeiculo;
 import br.com.sis.repository.AluguelRepository;
+import br.com.sis.repository.RenovacaoRepository;
 import br.com.sis.util.jpa.Transactional;
 
 public class AluguelService implements Serializable {
@@ -17,6 +19,9 @@ public class AluguelService implements Serializable {
 	@Inject
 	private AluguelRepository aluguelRepository;
 	
+	@Inject
+	private RenovacaoRepository renovacaoRepository;
+	
 	
 	@Transactional
 	public Aluguel realizarAluguel(Aluguel aluguel) {
@@ -25,6 +30,20 @@ public class AluguelService implements Serializable {
 		return aluguelRepository.salvar(aluguel);
 		
 	}
+	
+	@Transactional
+	public Aluguel realizarRenovacao(Aluguel aluguel) {
+		Aluguel aluguelAnt = aluguelRepository.porId(aluguel.getId());
+		Renovacao renovacao = new Renovacao();
+		renovacao.setAluguel(aluguel);
+		renovacao.setDataInicioAnterior(aluguelAnt.getDataInicio());
+		renovacao.setDataPrevistaAnterior(aluguelAnt.getDataPrevista());
+		renovacaoRepository.salvar(renovacao);
+		aluguel.getVeiculo().setStatusVeiculo(StatusVeiculo.ALUGADO);
+		aluguel.getVeiculo().setQuilometragem(aluguel.getKmInicial());
+		return aluguelRepository.salvar(aluguel);
+		
+	}	
 	
 	@Transactional
 	public Aluguel realizarEntregaVeiculo(Aluguel aluguel) {

@@ -109,7 +109,7 @@
 					<p:column width="12%">
 						<p:commandButton icon="ui-icon-print" style="width: 30px"
 							title="Imprimir recido" ajax="false" process="@this"
-							action="#{pagamentoSemanalBean.imprimirRecibo()}">
+							action="#{pagamentoSemanalBean.emitirRecibo()}">
 							<f:setPropertyActionListener value="#{pagto}"
 								target="#{pagamentoSemanalBean.pagamentoSelecionado}" />
 						</p:commandButton>

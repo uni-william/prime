@@ -78,6 +78,23 @@
 					<p:inputNumber id="dias" value="#{renovacaoBean.diasRenovacao}"
 						decimalPlaces="0" decimalSeparator="" thousandSeparator="" />
 				</p:panelGrid>
+				<p:separator />
+				<p:dataTable value="#{renovacaoBean.renovacoes}" var="renovacao"
+					emptyMessage="Contrato sem renovações" style="margin-top:10px"
+					id="table">
+					<f:facet name="header">Renovações</f:facet>
+					<p:column headerText="Data Início anterior">
+						<h:outputText value="#{renovacao.dataInicioAnterior}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Data prevista anterior">
+						<h:outputText value="#{renovacao.dataPrevistaAnterior}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+				</p:dataTable>
 			</div>
 
 		</h:form>

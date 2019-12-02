@@ -4,21 +4,31 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletResponse;
+
+import org.hibernate.Session;
 
 import br.com.sis.entity.Aluguel;
 import br.com.sis.entity.PagamentoSemanal;
 import br.com.sis.entity.Pessoa;
 import br.com.sis.entity.Veiculo;
+import br.com.sis.report.ExecutorRelatorio;
 import br.com.sis.repository.AluguelRepository;
 import br.com.sis.repository.PagamentoSemanalRepository;
 import br.com.sis.repository.PessoaRepository;
 import br.com.sis.repository.VeiculoRepository;
 import br.com.sis.service.PagamentoSemanalService;
+import br.com.sis.util.Extenso;
+import br.com.sis.util.Utils;
 import br.com.sis.util.jsf.FacesUtil;
 
 @Named
@@ -26,6 +36,16 @@ import br.com.sis.util.jsf.FacesUtil;
 public class PagamentoSemanalBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	@Inject
+	private FacesContext facesContext;	
+	
+	@Inject
+	private HttpServletResponse response;
+
+	@Inject
+	private EntityManager manager;
+	
 
 	@Inject
 	private PagamentoSemanalRepository pagamentoSemanalRepository;
@@ -130,10 +150,30 @@ public class PagamentoSemanalBean implements Serializable {
 		FacesUtil.addInfoMessage("Pagamnto excluído com sucesso!");
 	}
 
-	public void imprimirRecibo() {
-		FacesUtil.redirecionarPagina("alugueis/PagamentoSemanal.xhtml?aluguel=" + contratoAluguel.getId().toString());
-		System.out.println("Recibo impresso " + pagamentoSelecionado.getId().toString());
+	public void emitirRecibo() {
+		Long id = pagamentoSelecionado.getId();
+		String nomeRel = "Recibo_" + numeroFormatado(pagamentoSelecionado.getId()) + ".pdf";
+		String dataExtenso = "Manaus, " + Utils.dataPorExtenso(pagamentoSelecionado.getDataPagto()) + ".";
+		String caminhoLogo = FacesUtil.localFotos() + "/logoprime.png";	
+		String extenso = "(" + new Extenso(this.pagamentoSelecionado.getValorPago()).toString() + ")";
+		Map<String, Object> parametros = new HashMap<>();
+		parametros.put("id", id);
+		parametros.put("logo", caminhoLogo);
+		parametros.put("dataExtenso", dataExtenso);
+		parametros.put("extenso", extenso);
+		ExecutorRelatorio executor = new ExecutorRelatorio("/relatorios/recibo_semanal.jasper", this.response, parametros,
+				nomeRel);
+
+		Session session = manager.unwrap(Session.class);
+		session.doWork(executor);
+
+		if (executor.isRelatorioGerado()) {
+			facesContext.responseComplete();
+		} else {	
+			FacesUtil.addErroMessage("A execução do relatório não retornou dados.");
+		}
 	}
+
 
 	public void salvarPagamento() {
 		contratoAluguel = aluguelRepository.porId(pagamentoSemanal.getAluguel().getId());
@@ -163,5 +203,10 @@ public class PagamentoSemanalBean implements Serializable {
 			}
 		}
 	}
+	
+	private String numeroFormatado(Long id) {
+		return String.format("%06d", id);
+	}	
+		
 
 }

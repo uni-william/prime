@@ -133,7 +133,16 @@ public class AluguelBean implements Serializable {
 			int diaf = cf.get(Calendar.DAY_OF_MONTH);
 			int mesf = cf.get(Calendar.MONTH);
 			int anof = cf.get(Calendar.YEAR);
-
+			mesi = mesi+1;
+			mesf = mesf+1;
+			if ((mesf == 4 || mesf == 6 || mesf == 9|| mesf == 11) && (diaf == 31)) {
+				diaf = 30;
+			}
+			if (mesf == 2 && diaf == 31) {
+				diaf = 28;
+			}
+			
+			
 			LocalDate di = LocalDate.of(anoi, mesi, diai);
 			LocalDate df = LocalDate.of(anof, mesf, diaf);
 
@@ -179,7 +188,7 @@ public class AluguelBean implements Serializable {
 	private void colocarDataPrevista() {
 		Calendar c = Calendar.getInstance();
 		c.setTime(aluguel.getDataInicio());
-		c.add(Calendar.DAY_OF_MONTH, 29);
+		c.add(Calendar.DAY_OF_MONTH, 30);
 		aluguel.setDataPrevista(c.getTime());
 		aluguel.setStatusAluguel(StatusAluguel.ABERTO);
 	}
