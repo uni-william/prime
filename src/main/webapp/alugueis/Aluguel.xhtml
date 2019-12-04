@@ -122,10 +122,12 @@
 								columnClasses="ui-grid-col-1, ui-grid-col-2, ui-grid-col-1, ui-grid-col-2"
 								styleClass="panelgrid-noborder">
 								<p:outputLabel value="Valor Diária" for="vldiaria" />
-								<p:outputLabel value="#{aluguelBean.aluguel.valorDiaria}"
-									id="vldiaria">
-									<f:convertNumber type="currency" />
-								</p:outputLabel>
+								<p:inputNumber id="vldiaria" 
+									value="#{aluguelBean.aluguel.valorDiaria}" decimalPlaces="2"
+									decimalSeparator="," thousandSeparator=".">
+									<p:ajax event="blur" listener="#{aluguelBean.calcularTotal}"
+										process="@this" update="@form" />									
+									</p:inputNumber>									
 								<p:outputLabel value="Dias" />
 								<p:outputLabel value="#{aluguelBean.dias}"></p:outputLabel>
 							</p:panelGrid>
