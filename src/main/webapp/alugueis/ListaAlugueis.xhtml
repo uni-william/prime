@@ -67,7 +67,8 @@
 							itemValue="#{status}" />
 					</p:selectOneMenu>
 
-					<p:triStateCheckbox value="#{pesquisaDevolucoesBean.value}" itemLabel="Pagamento Semanal" />
+					<p:triStateCheckbox value="#{pesquisaDevolucoesBean.value}"
+						itemLabel="Pagamento Semanal" />
 				</p:panelGrid>
 
 				<p:dataTable value="#{pesquisaDevolucoesBean.alugueis}"
@@ -105,7 +106,8 @@
 					</p:column>
 					<p:column width="15%">
 						<p:button icon="ui-icon-calendar" style="width: 30px"
-							title="Renovação" outcome="/alugueis/Renovacao" disabled="#{!aluguel.emAberto}">
+							title="Renovação" outcome="/alugueis/Renovacao"
+							disabled="#{!aluguel.emAberto}">
 							<f:param name="aluguel" value="#{aluguel.id}" />
 						</p:button>
 						<p:button icon="ui-icon-check" style="width: 30px"
@@ -118,6 +120,13 @@
 							outcome="/alugueis/PagamentoSemanal">
 							<f:param name="aluguel" value="#{aluguel.id}" />
 						</p:button>
+
+						<p:commandButton icon="ui-icon-print" style="width: 30px"
+							title="Imprimir contrato" ajax="false" process="@this"
+							action="#{pesquisaDevolucoesBean.emitirContrato()}">
+							<f:setPropertyActionListener value="#{aluguel}"
+								target="#{pesquisaDevolucoesBean.aluguelSelecionado}" />
+						</p:commandButton>
 						<p:commandButton icon="ui-icon-cancel" title="Cancelar contrato"
 							oncomplete="PF('confirmacao').show(); return false;"
 							process="@this" update=":frm:conf" style="width: 30px"
@@ -125,6 +134,7 @@
 							<f:setPropertyActionListener value="#{aluguel}"
 								target="#{pesquisaDevolucoesBean.aluguelSelecionado}" />
 						</p:commandButton>
+
 					</p:column>
 				</p:dataTable>
 			</div>

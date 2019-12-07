@@ -134,7 +134,13 @@
 						decimalPlaces="2" thousandSeparator="." decimalSeparator="," />
 					<p:outputLabel value="" />
 					<p:outputLabel value="Situação Veículo" for="statusVeiculo" />
-					<p:outputLabel id="statusVeiculo" value="#{cadastroVeiculoAluguelBean.veiculo.statusVeiculo.descricao}" />
+					<p:selectOneMenu id="statusVeiculo"
+						value="#{cadastroVeiculoAluguelBean.veiculo.statusVeiculo}">
+						<f:selectItems
+							value="#{cadastroVeiculoAluguelBean.statusVeiculos}"
+							var="status" itemLabel="#{status.descricao}"
+							itemValue="#{status}" />
+					</p:selectOneMenu>
 				</p:panelGrid>
 				<p:panelGrid columns="2" layout="grid"
 					columnClasses="ui-grid-col-2, ui-grid-col-10"

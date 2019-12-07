@@ -146,8 +146,9 @@ public class CadastroVeiculoAluguelBean implements Serializable {
 		if (service.salvar(veiculo) != null) {
 			FacesUtil.addInfoMessage("Veículo salvo com sucesso!");
 			veiculo = new Veiculo();
-			veiculo.setVeiculoDeParceiro(true);
-			veiculo.setStatusVeiculo(StatusVeiculo.PATIO);
+			veiculo.setVeiculoDeParceiro(false);
+			veiculo.setVeiculoAluguel(true);
+			veiculo.setStatusVeiculo(StatusVeiculo.PARA_ALUGUEL);
 		}
 	}
 
@@ -177,6 +178,9 @@ public class CadastroVeiculoAluguelBean implements Serializable {
 		return (isEditando() && seguranca.isVeiculoEditar()) || (!isEditando() && seguranca.isVeiculoInserir());
 	}
 	
+	public StatusVeiculo[] getStatusVeiculos() {
+		return StatusVeiculo.values();
+	}	
 	
 
 }
