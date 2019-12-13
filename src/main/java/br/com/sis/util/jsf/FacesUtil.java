@@ -49,6 +49,10 @@ public class FacesUtil {
 		return FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/images/");
 	}
 	
+	public static String localFiles() {
+		return FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/files/");
+	}	
+	
 	public static void redirecionarPagina(String pagina) {
         FacesContext context = FacesContext.getCurrentInstance();
         String url = context.getExternalContext().getRequestContextPath();

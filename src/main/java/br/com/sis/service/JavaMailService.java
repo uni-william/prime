@@ -3,15 +3,22 @@ package br.com.sis.service;
 import java.io.Serializable;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.inject.Inject;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Part;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import br.com.sis.entity.Configuracoes;
 import br.com.sis.repository.ConfiguracoesRepository;
@@ -26,7 +33,7 @@ public class JavaMailService implements Serializable {
 
 	private Configuracoes configuracaoEmail;
 
-	public boolean enviarEmail(String emailDestinatario, String subject, String content) {
+	public boolean enviarEmail(String emailDestinatario, String subject, String content, String anexo) {
 		configuracaoEmail = configuracoesEmail.configuracoesGerais();
 
 		String senha = Utils.decripto(configuracaoEmail.getSenhaUsuarioEmail());
@@ -53,13 +60,26 @@ public class JavaMailService implements Serializable {
 
 		try {
 			Message message = new MimeMessage(session);
+			MimeBodyPart mbpText = new MimeBodyPart();
+			MimeBodyPart mbp = new MimeBodyPart();
+			Multipart mp = new MimeMultipart();
 
 			message.setFrom(new InternetAddress(configuracaoEmail.getEmailEnvio()));
 			Address[] toUser = InternetAddress // Destinatário(s)
 					.parse(emailDestinatario);
 			message.setRecipients(Message.RecipientType.TO, toUser);
 			message.setSubject(subject);// Assunto
-			message.setText(content);
+			mbpText.setText(content);
+			mp.addBodyPart(mbpText);
+
+			if (anexo != null) {
+				//enviando anexo
+				DataSource fds = new FileDataSource(anexo);
+				mbp.setDataHandler(new DataHandler(fds));
+				mbp.setFileName(fds.getName());   
+				mp.addBodyPart(mbp);
+			}
+			message.setContent(mp);
 
 			Transport.send(message);
 			return true;
