@@ -62,20 +62,27 @@ public class BackupBean implements Serializable {
 		this.content = content;
 	}
 	
-	public void enviarBackup() {
+	public void enviarBackup() {		
 		if (fazerBackup()) {
 			String caminhoBackup = FacesUtil.localFiles() +  "db_prime_backup.sql";
 			javaMailService.enviarEmail(destinatario, subject, content, caminhoBackup);
 			FacesUtil.addInfoMessage("Backup enviado com sucesso");
 		}
+		
 	}
 	
 	public boolean fazerBackup() {
+		String system = System.getProperty("os.name");
+		String mydump = "mysqldump";
+		if (system.contains("Windows")) {
+			mydump = "C:\\Program Files\\MySQL\\MySQL Server 5.7\\bin\\" + mydump;
+		}
+		
 		String caminhoBackup = FacesUtil.localFiles() +  "db_prime_backup.sql";
 		Process proc = null;
 		Map<String, String> result = new HashMap<>(); 
 		try {
-			proc = Runtime.getRuntime().exec("mysqldump --databases primedb -u primeroot -pprime > " + caminhoBackup);
+			proc = Runtime.getRuntime().exec(mydump + " --databases primedb -u primeroot -pprime > " + caminhoBackup);
 			result.put("input", inputStreamToString(proc.getInputStream()));
 			FileWriter arq = new FileWriter(caminhoBackup);
 			PrintWriter gravarArq = new PrintWriter(arq);
