@@ -11,7 +11,6 @@ import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.Part;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -56,7 +55,7 @@ public class JavaMailService implements Serializable {
 			}
 		});
 
-		session.setDebug(true);
+		session.setDebug(false);
 
 		try {
 			Message message = new MimeMessage(session);

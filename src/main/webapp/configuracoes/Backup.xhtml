@@ -23,14 +23,13 @@
 			<p:messages id="msg" autoUpdate="true" closable="true" />
 			<div class="ui-fluid">
 				<p:panelGrid columns="2" layout="grid"
-					columnClasses="ui-grid-col-2, ui-grid-col-4"
+					columnClasses="ui-grid-col-2, ui-grid-col-10"
 					styleClass="panelgrid-withmargin">
-					<p:outputLabel value="Destinatário" for="email" />
-					<p:inputText id="email" value="#{backupBean.destinatario}"/>
-					<p:outputLabel value="Assunto" for="assunto" />
-					<p:inputText id="assunto" value="#{backupBean.subject}"/>
-					<p:outputLabel value="Conteúdo" for="conteudo" />
-					<p:inputTextarea id="conteudo" value="#{backupBean.content}" rows="5" />										
+					<p:outputLabel value="Sucesso" />
+					<p:outputLabel value="#{backupBean.sucess}" />
+					<p:outputLabel value="Erros ou avisos" />
+					<p:outputLabel value="#{backupBean.errors}" />
+										
 				</p:panelGrid>
 			</div>
 		</h:form>

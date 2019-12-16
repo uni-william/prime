@@ -32,6 +32,7 @@ public class Configuracoes implements Serializable {
 	private Integer limiteKmAluguel = 7000;
 	private BigDecimal valorKmExcedente;
 	private Integer limiteGraficoVendas;
+	private String emailRecebimentoSistema;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -156,6 +157,16 @@ public class Configuracoes implements Serializable {
 
 	public void setLimiteGraficoVendas(Integer limiteGraficoVendas) {
 		this.limiteGraficoVendas = limiteGraficoVendas;
+	}
+	
+	
+	@Column(length = 100)
+	public String getEmailRecebimentoSistema() {
+		return emailRecebimentoSistema;
+	}
+
+	public void setEmailRecebimentoSistema(String emailRecebimentoSistema) {
+		this.emailRecebimentoSistema = emailRecebimentoSistema;
 	}
 
 	@Override
