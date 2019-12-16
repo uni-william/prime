@@ -13,7 +13,6 @@
 		</f:metadata>
 		<h1 class="aw-page-title">Backup</h1>
 		<h:form id="frm">
-			<p:focus context="frm" />
 			<p:toolbar>
 				<p:toolbarGroup>
 					<p:commandButton value="Realizar Backup" update="@form"
@@ -25,11 +24,7 @@
 				<p:panelGrid columns="2" layout="grid"
 					columnClasses="ui-grid-col-2, ui-grid-col-10"
 					styleClass="panelgrid-withmargin">
-					<p:outputLabel value="Sucesso" />
-					<p:outputLabel value="#{backupBean.sucess}" />
-					<p:outputLabel value="Erros ou avisos" />
-					<p:outputLabel value="#{backupBean.errors}" />
-										
+									
 				</p:panelGrid>
 			</div>
 		</h:form>

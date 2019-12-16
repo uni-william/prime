@@ -55,7 +55,7 @@ public class JavaMailService implements Serializable {
 			}
 		});
 
-		session.setDebug(false);
+		session.setDebug(true);
 
 		try {
 			Message message = new MimeMessage(session);
