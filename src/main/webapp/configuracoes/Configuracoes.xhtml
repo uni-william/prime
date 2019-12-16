@@ -53,6 +53,11 @@
 						for="enviarEmail" />
 					<p:selectBooleanCheckbox id="enviarEmail"
 						value="#{configuracoesBean.configuracoes.enviarSenhaEmail}" />
+						
+					<p:outputLabel value="E-mail de recebimento automático"
+						for="emailRec" />
+					<p:inputText id="emailRec"
+						value="#{configuracoesBean.configuracoes.emailRecebimentoSistema}" />						
 
 				</p:panelGrid>
 				<p:separator />
