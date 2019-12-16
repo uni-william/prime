@@ -3,6 +3,7 @@ package br.com.sis.bean;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.nio.file.Files;
@@ -48,28 +49,42 @@ public class BackupBean implements Serializable {
 			diretorio.mkdir();
 		}
 		caminhoBackup = FacesUtil.localFiles() +  "db_prime_backup.sql";
+		File arq = new File(caminhoBackup);
+		if (arq.exists())
+			arq.delete();
 		Process proc = null;
 		 
 		try {
 			proc = Runtime.getRuntime().exec("mysqldump --databases primedb -u primeroot -pprime > " + caminhoBackup);
 
 			Path path = Paths.get(caminhoBackup);
-			BufferedReader stdInput = new BufferedReader(new 
-		            InputStreamReader(proc.getInputStream()));
-			String line;
+			String line = inputStreamToString(proc.getInputStream());
 			Files.createFile(path);
 		    //printa o retorno
-		    while ((line = stdInput.readLine()) != null) {
-		    	Files.write(path, line.getBytes(), StandardOpenOption.APPEND);
-
-		    }
-		    stdInput.close();
+		   	Files.write(path, line.getBytes(), StandardOpenOption.APPEND);
 			return true;
 		} catch (IOException | UnknownFormatConversionException e) {
 			FacesUtil.addErroMessage(e.getMessage() != null ? e.getMessage(): e.getCause().toString());		
 			return false;
 		}
 	}
+	
+	private String inputStreamToString(InputStream isr) {
+	     try {
+	        BufferedReader br = new BufferedReader(new InputStreamReader(isr));
+	        StringBuilder sb = new StringBuilder();
+	        String s = null;
+	        while ((s = br.readLine()) != null) {
+	                  sb.append(s + "\n");
+	        }
+	        return sb.toString();
+	     } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	        return null;
+	     }
+	  }	
+	
 	
 
 }
