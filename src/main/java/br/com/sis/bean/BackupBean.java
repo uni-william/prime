@@ -53,10 +53,13 @@ public class BackupBean implements Serializable {
 		if (arq.exists())
 			arq.delete();
 		Process proc = null;
-		 
+		String mysqldump = "mysqldump";
+		String system = System.getProperty("os.name");
+		if (system.toLowerCase().contains("windows")) {
+			mysqldump = "C:\\Program Files\\MySQL\\MySQL Server 5.7\\bin\\" + mysqldump;
+		}
 		try {
-			proc = Runtime.getRuntime().exec("mysqldump --databases primedb -u primeroot -pprime > " + caminhoBackup);
-
+			proc = Runtime.getRuntime().exec(mysqldump + " --databases primedb -u primeroot -pprime > " + caminhoBackup);
 			Path path = Paths.get(caminhoBackup);
 			String line = inputStreamToString(proc.getInputStream());
 			Files.createFile(path);
