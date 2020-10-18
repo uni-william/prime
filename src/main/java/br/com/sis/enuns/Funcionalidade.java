@@ -47,8 +47,7 @@ public enum Funcionalidade {
 	ALUGUEL_DEVOLUCAO("Aluguel - Devolução"),
 	ALUGUEL_SEMANAL("Aluguel - Pagamento Semanal"),
 	ALUGUEL_LISTA("Aluguel - Contratos de Aluguel"),
-	ALUGUEL_CHECKLIST("Aluguel - ChekcList"),
-	BACKUP_ACESS("Backup - Backup da base de dados");	
+	ALUGUEL_CHECKLIST("Aluguel - ChekcList");	
 
 	Funcionalidade(String descricao) {
 		this.descricao = descricao;

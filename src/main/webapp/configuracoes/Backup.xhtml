@@ -13,6 +13,7 @@
 		</f:metadata>
 		<h1 class="aw-page-title">Backup</h1>
 		<h:form id="frm">
+			<p:focus context="frm" />
 			<p:toolbar>
 				<p:toolbarGroup>
 					<p:commandButton value="Realizar Backup" update="@form"
@@ -22,9 +23,14 @@
 			<p:messages id="msg" autoUpdate="true" closable="true" />
 			<div class="ui-fluid">
 				<p:panelGrid columns="2" layout="grid"
-					columnClasses="ui-grid-col-2, ui-grid-col-10"
+					columnClasses="ui-grid-col-2, ui-grid-col-4"
 					styleClass="panelgrid-withmargin">
-									
+					<p:outputLabel value="Destinatário" for="email" />
+					<p:inputText id="email" value="#{backupBean.destinatario}"/>
+					<p:outputLabel value="Assunto" for="assunto" />
+					<p:inputText id="assunto" value="#{backupBean.subject}"/>
+					<p:outputLabel value="Conteúdo" for="conteudo" />
+					<p:inputTextarea id="conteudo" value="#{backupBean.content}" rows="5" />										
 				</p:panelGrid>
 			</div>
 		</h:form>

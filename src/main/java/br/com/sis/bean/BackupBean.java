@@ -1,23 +1,22 @@
 package br.com.sis.bean;
 
 import java.io.BufferedReader;
-import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.UnknownFormatConversionException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import br.com.sis.entity.Configuracoes;
-import br.com.sis.repository.ConfiguracoesRepository;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import br.com.sis.service.JavaMailService;
 import br.com.sis.util.jsf.FacesUtil;
 
@@ -29,45 +28,69 @@ public class BackupBean implements Serializable {
 
 	@Inject
 	private JavaMailService javaMailService;
+
+	@NotEmpty
+	@Email
+	private String destinatario;
+
+	@NotEmpty
+	private String subject;
+	@NotEmpty
+	private String content;
+
+	public String getDestinatario() {
+		return destinatario;
+	}
+
+	public void setDestinatario(String destinatario) {
+		this.destinatario = destinatario;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 	
-	@Inject
-	private ConfiguracoesRepository configuracoesRepository;
-	
-	public void enviarBackup() {
-		Configuracoes configuracoes = configuracoesRepository.configuracoesGerais();
+	public void enviarBackup() {		
 		if (fazerBackup()) {
 			String caminhoBackup = FacesUtil.localFiles() +  "db_prime_backup.sql";
-			javaMailService.enviarEmail(configuracoes.getEmailRecebimentoSistema(), "Backup Base", "Backup da base", caminhoBackup);
+			javaMailService.enviarEmail(destinatario, subject, content, caminhoBackup);
 			FacesUtil.addInfoMessage("Backup enviado com sucesso");
 		}
+		
 	}
 	
 	public boolean fazerBackup() {
-		String caminhoBackup = FacesUtil.localFiles();
-		File diretorio = new File(caminhoBackup);
-		if(!diretorio.exists()) {
-			diretorio.mkdir();
-		}
-		caminhoBackup = FacesUtil.localFiles() +  "db_prime_backup.sql";
-		File arq = new File(caminhoBackup);
-		if (arq.exists())
-			arq.delete();
-		Process proc = null;
-		String mysqldump = "mysqldump";
 		String system = System.getProperty("os.name");
-		if (system.toLowerCase().contains("windows")) {
-			mysqldump = "C:\\Program Files\\MySQL\\MySQL Server 5.7\\bin\\" + mysqldump;
+		String mydump = "mysqldump";
+		if (system.contains("Windows")) {
+			mydump = "C:\\Program Files\\MySQL\\MySQL Server 5.7\\bin\\" + mydump;
 		}
+		
+		String caminhoBackup = FacesUtil.localFiles() +  "db_prime_backup.sql";
+		Process proc = null;
+		Map<String, String> result = new HashMap<>(); 
 		try {
-			proc = Runtime.getRuntime().exec(mysqldump + " --databases primedb -u primeroot -pprime > " + caminhoBackup);
-			Path path = Paths.get(caminhoBackup);
-			String line = inputStreamToString(proc.getInputStream());
-			Files.createFile(path);
-		    //printa o retorno
-		   	Files.write(path, line.getBytes(), StandardOpenOption.APPEND);
+			proc = Runtime.getRuntime().exec(mydump + " --databases primedb -u primeroot -pprime > " + caminhoBackup);
+			result.put("input", inputStreamToString(proc.getInputStream()));
+			FileWriter arq = new FileWriter(caminhoBackup);
+			PrintWriter gravarArq = new PrintWriter(arq);
+			gravarArq.printf(result.get("input"));
+			arq.close();
 			return true;
-		} catch (IOException | UnknownFormatConversionException e) {
-			FacesUtil.addErroMessage(e.getMessage() != null ? e.getMessage(): e.getCause().toString());		
+		} catch (IOException e) {
+			FacesUtil.addErroMessage(e.getMessage());
 			return false;
 		}
 	}
