@@ -1,0 +1,60 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Acessórios</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaTipoDespesaBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Acessórios</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo acessório" outcome="/tipos/CadastroTipoDespesa" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" closable="true" />
+			<p:dataTable value="#{pesquisaTipoDespesaBean.listaTipoDespesas}" var="tipoDespesa"
+				style="margin-top: 20px" selectionMode="single"
+				selection="#{pesquisaTipoDespesaBean.tipoDespesaSelecionado}"
+				rowKey="#{tipoDespesa.id}" reflow="true"
+				emptyMessage="Nenhum tipoDespesa cadastrado" id="table">
+				<p:ajax event="rowSelect" update="btnEdit btnRemove"
+					listener="#{pesquisaTipoDespesaBean.onRowSelect}" />
+				<p:ajax event="rowUnselect" update="btnEdit btnRemove"
+					listener="#{pesquisaTipoDespesaBean.onRowUnSelect}" />
+				<p:column headerText="TipoDespesas cadastrados">
+					<h:outputText value="#{tipoDespesa.descricao}" />
+				</p:column>
+				<f:facet name="footer">
+					<p:button icon="ui-icon-pencil" value="Visualizar/Editar" id="btnEdit"
+						outcome="/tipos/CadastroTipoDespesa"
+						disabled="#{pesquisaTipoDespesaBean.desabilitarBotoes}">
+						<f:param name="tipoDespesa"
+							value="#{pesquisaTipoDespesaBean.tipoDespesaSelecionado.id}" />
+					</p:button>
+					<p:commandButton icon="ui-icon-trash" value="Excluir"
+						id="btnRemove"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf"
+						disabled="#{pesquisaTipoDespesaBean.desabilitarBotoes or not seguranca.tipoDespesaExcluir}" />
+				</f:facet>
+			</p:dataTable>
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma excluir o tipoDespesa #{pesquisaTipoDespesaBean.tipoDespesaSelecionado.descricao}?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaTipoDespesaBean.excluir}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

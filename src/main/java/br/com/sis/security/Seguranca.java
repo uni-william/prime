@@ -134,5 +134,17 @@ public class Seguranca {
 	public boolean isBancoEditar() {
 		return externalContext.isUserInRole(Funcionalidade.BANCO_EDIT.toString());
 	}
+	
+	public boolean isTipoDespesaInserir() {
+		return externalContext.isUserInRole(Funcionalidade.TIPO_DESPESA_INSERT.toString());
+	}
+
+	public boolean isTipoDespesaExcluir() {
+		return externalContext.isUserInRole(Funcionalidade.TIPO_DESPESA_DEL.toString());
+	}
+
+	public boolean isTipoDespesaEditar() {
+		return externalContext.isUserInRole(Funcionalidade.TIPO_DESPESA_EDIT.toString());
+	}
 
 }

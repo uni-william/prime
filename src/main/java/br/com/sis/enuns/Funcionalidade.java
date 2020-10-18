@@ -47,13 +47,21 @@ public enum Funcionalidade {
 	ALUGUEL_DEVOLUCAO("Aluguel - Devolução"),
 	ALUGUEL_SEMANAL("Aluguel - Pagamento Semanal"),
 	ALUGUEL_LISTA("Aluguel - Contratos de Aluguel"),
-	ALUGUEL_CHECKLIST("Aluguel - ChekcList");	
+	ALUGUEL_CHECKLIST("Aluguel - ChekcList"),
+	BACKUP_ACESS("Backup - Efetuar backup"),
+	DESPESA_ACESS("Despesa - Acesso"),
+	DESPESA_INSERT("Despesa - Inserir"),
+	DESPESA_EDIT("Despesa - Editar"),
+	DESPESA_DEL("Despesa - Excluir"),
+	TIPO_DESPESA_ACESS("Tipo de despesa - Acesso"),
+	TIPO_DESPESA_INSERT("Tipo de despesa - Inserir"),
+	TIPO_DESPESA_EDIT("Tipo de despesa - Editar"),
+	TIPO_DESPESA_DEL("Tipo de despesa - Excluir");	
 
 	Funcionalidade(String descricao) {
 		this.descricao = descricao;
 	}
-	
-	private String descricao;
+		private String descricao;
 	
 	public String getDescricao() {
 		return descricao;
