@@ -1,0 +1,57 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cadastro de Vendedor</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{cadastroVendedorBean.inicializar}" />
+			<f:viewParam name="vendedor" value="#{cadastroVendedorBean.vendedor}" />
+		</f:metadata>
+		<h1 class="aw-page-title">#{cadastroVendedorBean.editando ?
+			'Edição de vendedor' : 'Novo vendedor'}</h1>
+		<br />
+		<h:form id="frm">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Salvar"
+						action="#{cadastroVendedorBean.salvar}" update="@form" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo" outcome="/vendedores/CadastroVendedor" />
+					<p:button value="Pesquisa" outcome="/vendedores/PesquisaVendedor" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:messages autoUpdate="true" closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-4"
+					styleClass="panelgrid-noborder" style="margin-top: 10px">
+					<p:outputLabel value="Nome" for="vendedor" />
+					<p:inputText id="vendedor"
+						value="#{cadastroVendedorBean.vendedor.nome}" />
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-2"
+					styleClass="panelgrid-noborder" style="margin-top: 10px">
+					<p:outputLabel value="Comissão" for="comissao" />
+					<p:inputNumber id="comissao"
+						value="#{cadastroVendedorBean.vendedor.valorComissao}"
+						symbol="R$ " symbolPosition="p" decimalSeparator=","
+						thousandSeparator="." />
+					<p:outputLabel value="Ativo" for="ativo" />
+					<p:selectBooleanCheckbox id="ativo"
+						value="#{cadastroVendedorBean.vendedor.ativo}" />
+				</p:panelGrid>
+
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

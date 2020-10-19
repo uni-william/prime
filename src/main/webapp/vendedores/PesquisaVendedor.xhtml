@@ -5,54 +5,59 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 
-	<ui:define name="titulo">Tipos de despesas</ui:define>
+	<ui:define name="titulo">Vendedores</ui:define>
 
 	<ui:define name="content">
 		<f:metadata>
-			<f:viewAction action="#{pesquisaTipoDespesaBean.inicializar}" />
+			<f:viewAction action="#{pesquisaVendedorBean.inicializar}" />
 		</f:metadata>
-		<h1 class="aw-page-title">Tipos de despesas</h1>
+		<h1 class="aw-page-title">Vendedores</h1>
 		<h:form id="frm">
 			<p:toolbar>
 				<p:toolbarGroup align="right">
-					<p:button value="Novo" outcome="/tipos/CadastroTipoDespesa" />
+					<p:button value="Novo" outcome="/vendedores/CadastroVendedor" />
 				</p:toolbarGroup>
 			</p:toolbar>
 			<p:messages autoUpdate="true" closable="true" />
-			<p:dataTable value="#{pesquisaTipoDespesaBean.listaTipoDespesas}" var="tipoDespesa"
+			<p:dataTable value="#{pesquisaVendedorBean.listaVendedores}" var="vendedor"
 				style="margin-top: 20px" selectionMode="single"
-				selection="#{pesquisaTipoDespesaBean.tipoDespesaSelecionado}"
-				rowKey="#{tipoDespesa.id}" reflow="true"
-				emptyMessage="Nenhum tipo cadastrado" id="table">
+				selection="#{pesquisaVendedorBean.vendedorSelecionado}"
+				rowKey="#{vendedor.id}" reflow="true"
+				emptyMessage="Nenhum vendedor cadastrado" id="table">
 				<p:ajax event="rowSelect" update="btnEdit btnRemove"
-					listener="#{pesquisaTipoDespesaBean.onRowSelect}" />
+					listener="#{pesquisaVendedorBean.onRowSelect}" />
 				<p:ajax event="rowUnselect" update="btnEdit btnRemove"
-					listener="#{pesquisaTipoDespesaBean.onRowUnSelect}" />
-				<p:column headerText="Tipos cadastrados">
-					<h:outputText value="#{tipoDespesa.descricao}" />
+					listener="#{pesquisaVendedorBean.onRowUnSelect}" />
+				<p:column headerText="Nome">
+					<h:outputText value="#{vendedor.nome}" />
 				</p:column>
+				<p:column headerText="Comissão">
+					<h:outputText value="#{vendedor.valorComissao}">
+						<f:convertNumber type="currency"/>
+					</h:outputText>
+				</p:column>				
 				<f:facet name="footer">
 					<p:button icon="ui-icon-pencil" value="Visualizar/Editar" id="btnEdit"
-						outcome="/tipos/CadastroTipoDespesa"
-						disabled="#{pesquisaTipoDespesaBean.desabilitarBotoes}">
-						<f:param name="tipoDespesa"
-							value="#{pesquisaTipoDespesaBean.tipoDespesaSelecionado.id}" />
+						outcome="/vendedores/CadastroVendedor"
+						disabled="#{pesquisaVendedorBean.desabilitarBotoes}">
+						<f:param name="vendedor"
+							value="#{pesquisaVendedorBean.vendedorSelecionado.id}" />
 					</p:button>
 					<p:commandButton icon="ui-icon-trash" value="Excluir"
 						id="btnRemove"
 						oncomplete="PF('confirmacao').show(); return false;"
 						process="@this" update=":frm:conf"
-						disabled="#{pesquisaTipoDespesaBean.desabilitarBotoes or not seguranca.tipoDespesaExcluir}" />
+						disabled="#{pesquisaVendedorBean.desabilitarBotoes or not seguranca.vendedorExcluir}" />
 				</f:facet>
 			</p:dataTable>
 			<p:confirmDialog header="Excluão de Registro"
-				message="Confirma excluir o tipoDespesa #{pesquisaTipoDespesaBean.tipoDespesaSelecionado.descricao}?"
+				message="Confirma excluir o vendedor #{pesquisaVendedorBean.vendedorSelecionado.nome}?"
 				widgetVar="confirmacao" id="conf">
 				<p:button value="Não"
 					onclick="PF('confirmacao').hide(); return false;" />
 				<p:commandButton value="Sim" update="@form"
 					oncomplete="PF('confirmacao').hide()" process="@this"
-					action="#{pesquisaTipoDespesaBean.excluir}" />
+					action="#{pesquisaVendedorBean.excluir}" />
 			</p:confirmDialog>
 		</h:form>
 	</ui:define>

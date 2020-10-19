@@ -158,5 +158,17 @@ public class Seguranca {
 	public boolean isDespesaEditar() {
 		return externalContext.isUserInRole(Funcionalidade.DESPESA_EDIT.toString());
 	}
+	
+	public boolean isVendedorInserir() {
+		return externalContext.isUserInRole(Funcionalidade.VENDEDOR_INSERT.toString());
+	}
+
+	public boolean isVendedorExcluir() {
+		return externalContext.isUserInRole(Funcionalidade.VENDEDOR_DEL.toString());
+	}
+
+	public boolean isVendedorEditar() {
+		return externalContext.isUserInRole(Funcionalidade.VENDEDOR_EDIT.toString());
+	}
 
 }

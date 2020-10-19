@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/tipos/**").hasAnyRole("TIPO_DESPESA_ACESS")
 			.antMatchers("/depesas/**").hasAnyRole("DESPESA_ACESS")
 			.antMatchers("/veiculos/**").hasAnyRole("VEICULO_ACESS")
+			.antMatchers("/vendedores/**").hasAnyRole("VENDEDOR_ACESS")
 			.antMatchers("/bancos/**").hasAnyRole("BANCO_ACESS")
 			.antMatchers("/parceiros/**").hasAnyRole("PARCEIRO_ACESS")
 			.antMatchers("/veiculos_parceiros/**").hasAnyRole("VEICULO_PARC_ACESS")

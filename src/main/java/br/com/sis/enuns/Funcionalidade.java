@@ -56,7 +56,11 @@ public enum Funcionalidade {
 	TIPO_DESPESA_ACESS("Tipo de despesa - Acesso"),
 	TIPO_DESPESA_INSERT("Tipo de despesa - Inserir"),
 	TIPO_DESPESA_EDIT("Tipo de despesa - Editar"),
-	TIPO_DESPESA_DEL("Tipo de despesa - Excluir");	
+	TIPO_DESPESA_DEL("Tipo de despesa - Excluir"),
+	VENDEDOR_ACESS("Vendedor - Acesso"),
+	VENDEDOR_INSERT("Vendedor - Inserir"),
+	VENDEDOR_EDIT("Vendedor - Editar"),
+	VENDEDOR_DEL("Vendedor - Excluir");	
 
 	Funcionalidade(String descricao) {
 		this.descricao = descricao;
