@@ -7,10 +7,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.sis.entity.Pessoa;
+import br.com.sis.entity.vo.CepVO;
 import br.com.sis.enuns.Estado;
 import br.com.sis.enuns.Tipo;
 import br.com.sis.enuns.TipoPessoa;
 import br.com.sis.service.PessoaService;
+import br.com.sis.util.Utils;
 
 @Named
 @ViewScoped
@@ -78,6 +80,16 @@ public class CadastroClienteBean implements Serializable {
 			} else {
 				indicePessoa = 1;
 			}
+		}
+	}
+	
+	public void carregarDadosCep() {
+		CepVO cepVO = Utils.retonaDadosEndereco(this.pessoa.getCep());
+		if (cepVO != null) {
+			this.pessoa.setLogradouro(cepVO.getLogradouro());
+			this.pessoa.setBairro(cepVO.getBairro());
+			this.pessoa.setCidade(cepVO.getLocalidade());
+			this.pessoa.setEstado(Estado.valueOf(cepVO.getUf()));
 		}
 	}
 

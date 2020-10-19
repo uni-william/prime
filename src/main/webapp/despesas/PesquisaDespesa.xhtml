@@ -1,0 +1,107 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Despesas</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaDespesaBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Despesas</h1>
+		<h:form id="frm">
+			<div class="ui-fluid">
+				<p:toolbar>
+					<p:toolbarGroup>
+						<p:button value="Nova" outcome="/despesas/CadastroDespesa" />
+					</p:toolbarGroup>
+					<p:toolbarGroup align="right">
+						<p:commandButton value="Consultar"
+							action="#{pesquisaDespesaBean.consultar}" update="@form" />
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:messages autoUpdate="true" closable="true" />
+
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-8"
+					styleClass="panelgrid-noborder" style="margin-top: 10px;">
+					<p:outputLabel value="Descrição" />
+					<p:inputText value="#{pesquisaDespesaBean.filter.descricao}" />
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-3"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Data início" />
+					<p:calendar value="#{pesquisaDespesaBean.filter.dtIni}"
+						showIcon="true" pattern="dd/MM/yyyy" locale="pt" />
+					<p:outputLabel value="Data fim" />
+					<p:calendar value="#{pesquisaDespesaBean.filter.dtFim}"
+						showIcon="true" pattern="dd/MM/yyyy" locale="pt" />
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-6"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Tipo" />
+					<p:selectOneMenu value="#{pesquisaDespesaBean.filter.tipoDespesa}">
+						<f:selectItem itemLabel="Todos" />
+						<f:selectItems value="#{pesquisaDespesaBean.tipoDespesas}"
+							var="tipo" itemValue="#{tipo}" itemLabel="#{tipo.descricao}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+			</div>
+			<p:dataTable value="#{pesquisaDespesaBean.listaDespesas}"
+				var="despesa" style="margin-top: 20px" selectionMode="single"
+				selection="#{pesquisaDespesaBean.despesaSelecionado}"
+				rowKey="#{despesa.id}" reflow="true"
+				emptyMessage="Nenhuma despesa cadastrada" id="table">
+				<p:ajax event="rowSelect" update="btnEdit btnRemove"
+					listener="#{pesquisaDespesaBean.onRowSelect}" />
+				<p:ajax event="rowUnselect" update="btnEdit btnRemove"
+					listener="#{pesquisaDespesaBean.onRowUnSelect}" />
+				<p:column headerText="Descrição">
+					<h:outputText value="#{despesa.descricao}" />
+				</p:column>
+				<p:column headerText="Tipo" width="30%">
+					<h:outputText value="#{despesa.tipoDespesa.descricao}" />
+				</p:column>
+				<p:column headerText="Valor" width="10%">
+					<h:outputText value="#{despesa.valor}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Data" width="10%">
+					<h:outputText value="#{despesa.data}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<f:facet name="footer">
+					<p:button icon="ui-icon-pencil" value="Visualizar/Editar"
+						id="btnEdit" outcome="/despesas/CadastroDespesa"
+						disabled="#{pesquisaDespesaBean.desabilitarBotoes}">
+						<f:param name="despesa"
+							value="#{pesquisaDespesaBean.despesaSelecionado.id}" />
+					</p:button>
+					<p:commandButton icon="ui-icon-trash" value="Excluir"
+						id="btnRemove"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf"
+						disabled="#{pesquisaDespesaBean.desabilitarBotoes or not seguranca.despesaExcluir}" />
+				</f:facet>
+			</p:dataTable>
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma excluir o despesa #{pesquisaDespesaBean.despesaSelecionado.descricao}?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaDespesaBean.excluir}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -5,13 +5,13 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 
-	<ui:define name="titulo">Acessórios</ui:define>
+	<ui:define name="titulo">Tipos de despesas</ui:define>
 
 	<ui:define name="content">
 		<f:metadata>
 			<f:viewAction action="#{pesquisaTipoDespesaBean.inicializar}" />
 		</f:metadata>
-		<h1 class="aw-page-title">Acessórios</h1>
+		<h1 class="aw-page-title">Tipos de despesas</h1>
 		<h:form id="frm">
 			<p:toolbar>
 				<p:toolbarGroup align="right">
@@ -23,12 +23,12 @@
 				style="margin-top: 20px" selectionMode="single"
 				selection="#{pesquisaTipoDespesaBean.tipoDespesaSelecionado}"
 				rowKey="#{tipoDespesa.id}" reflow="true"
-				emptyMessage="Nenhum tipoDespesa cadastrado" id="table">
+				emptyMessage="Nenhum tipo cadastrado" id="table">
 				<p:ajax event="rowSelect" update="btnEdit btnRemove"
 					listener="#{pesquisaTipoDespesaBean.onRowSelect}" />
 				<p:ajax event="rowUnselect" update="btnEdit btnRemove"
 					listener="#{pesquisaTipoDespesaBean.onRowUnSelect}" />
-				<p:column headerText="TipoDespesas cadastrados">
+				<p:column headerText="Tipos cadastrados">
 					<h:outputText value="#{tipoDespesa.descricao}" />
 				</p:column>
 				<f:facet name="footer">

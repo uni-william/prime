@@ -1,0 +1,73 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cadastro despesa</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{cadastroDespesaBean.inicializar}" />
+			<f:viewParam name="despesa" value="#{cadastroDespesaBean.despesa}" />
+		</f:metadata>
+		<h1 class="aw-page-title">#{cadastroDespesaBean.editando ?
+			'Edição de despesa' : 'Nova despesa'}</h1>
+		<br />
+		<h:form id="frm">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Salvar"
+						action="#{cadastroDespesaBean.salvar}" update="@form" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Nova" outcome="/despesas/CadastroDespesa" />
+					<p:button value="Pesquisa" outcome="/despesas/PesquisaDespesa" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:messages autoUpdate="true" closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-10"
+					styleClass="panelgrid-noborder" style="margin-top: 10px;">
+					<p:outputLabel value="Tipo despesa" for="tipo" />
+					<p:selectOneMenu id="tipo"
+						value="#{cadastroDespesaBean.despesa.tipoDespesa}">
+						<f:selectItems value="#{cadastroDespesaBean.tipoDespesas}"
+							var="tipo" itemValue="#{tipo}" itemLabel="#{tipo.descricao}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-10"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Descrição" for="descricao" />
+					<p:inputTextarea id="descricao"
+						value="#{cadastroDespesaBean.despesa.descricao}" rows="5" />
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-3"
+					styleClass="panelgrid-noborder">
+
+					<p:outputLabel value="Data da despesa" for="data" />
+					<p:calendar value="#{cadastroDespesaBean.despesa.data}" id="data"
+						required="true" requiredMessage="Data da despesa é obrigatória"
+						showIcon="true" pattern="dd/MM/yyyy" locale="pt" />
+
+					<p:outputLabel value="Valor" for="valor" />
+					<p:inputNumber id="valor"
+						value="#{cadastroDespesaBean.despesa.valor}" symbol="R$ "
+						symbolPosition="p" decimalSeparator="," thousandSeparator="." />
+
+					<p:outputLabel value="Comprovante" />
+					<p:inputText value="#{cadastroDespesaBean.despesa.comprovante}" />
+
+				</p:panelGrid>
+
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -9,8 +9,7 @@
 
 	<ui:define name="content">
 		<f:metadata>
-			<f:viewParam name="pessoa"
-				value="#{cadastroFuncionarioBean.pessoa}" />
+			<f:viewParam name="pessoa" value="#{cadastroFuncionarioBean.pessoa}" />
 			<f:viewAction action="#{cadastroFuncionarioBean.inicializar}" />
 		</f:metadata>
 		<h1 class="aw-page-title">#{cadastroFuncionarioBean.editando ?
@@ -56,8 +55,7 @@
 							<p:inputMask id="cpf" mask="999.999.999-99"
 								value="#{cadastroFuncionarioBean.pessoa.documentoReceita}" />
 							<p:outputLabel value="RG" for="rg" />
-							<p:inputText id="rg"
-								value="#{cadastroFuncionarioBean.pessoa.rg}" />
+							<p:inputText id="rg" value="#{cadastroFuncionarioBean.pessoa.rg}" />
 
 						</p:panelGrid>
 						<p:panelGrid columns="4" layout="grid"
@@ -85,29 +83,26 @@
 					<p:tab title="Endereço" id="tbEndereco">
 						<p:panelGrid columns="2" layout="grid"
 							columnClasses="ui-grid-col-1, ui-grid-col-8"
-							styleClass="panelgrid-noborder">
-							<p:outputLabel value="Logradouro" />
-							<p:inputText
-								value="#{cadastroFuncionarioBean.pessoa.logradouro}" />
-							<p:outputLabel value="Número" />
-							<p:inputText
-								value="#{cadastroFuncionarioBean.pessoa.numero}"
-								style="width: 20%" />
+							styleClass="panelgrid-noborder" id="pnend">
 							<p:outputLabel value="CEP" />
 							<p:inputMask mask="99999-999"
-								value="#{cadastroFuncionarioBean.pessoa.cep}"
+								value="#{cadastroFuncionarioBean.pessoa.cep}" style="width: 20%">
+								<p:ajax listener="#{cadastroFuncionarioBean.carregarDadosCep}"
+									event="change" process="@this" update="pnend" />
+							</p:inputMask>
+							<p:outputLabel value="Logradouro" />
+							<p:inputText value="#{cadastroFuncionarioBean.pessoa.logradouro}" />
+							<p:outputLabel value="Número" />
+							<p:inputText value="#{cadastroFuncionarioBean.pessoa.numero}"
 								style="width: 20%" />
 							<p:outputLabel value="Bairro" />
-							<p:inputText
-								value="#{cadastroFuncionarioBean.pessoa.bairro}"
+							<p:inputText value="#{cadastroFuncionarioBean.pessoa.bairro}"
 								style="width: 50%" />
 							<p:outputLabel value="Cidade" />
-							<p:inputText
-								value="#{cadastroFuncionarioBean.pessoa.cidade}"
+							<p:inputText value="#{cadastroFuncionarioBean.pessoa.cidade}"
 								style="width: 70%" />
 							<p:outputLabel value="Estado" />
-							<p:selectOneMenu
-								value="#{cadastroFuncionarioBean.pessoa.estado}"
+							<p:selectOneMenu value="#{cadastroFuncionarioBean.pessoa.estado}"
 								style="width: 30%">
 								<f:selectItems value="#{cadastroFuncionarioBean.estados}"
 									var="estado" itemValue="#{estado}"
