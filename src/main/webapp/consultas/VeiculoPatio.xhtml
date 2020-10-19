@@ -13,6 +13,7 @@
 		</f:metadata>
 		<h1 class="aw-page-title">Listagem de Veículos no Pátio</h1>
 		<h:form id="frm">
+		<p:messages autoUpdate="true" closable="true" />
 			<p:dataTable value="#{consultaVeiculosBean.listaVeiculos}"
 				var="veiculo" style="margin-top: 20px" reflow="true"
 				emptyMessage="Sem registros" id="table" paginator="true" rows="10"
@@ -34,7 +35,7 @@
 				</p:column>
 				<p:column headerText="Placa">
 					<h:outputText value="#{veiculo.placa}" />
-				</p:column>				
+				</p:column>
 				<p:column headerText="Cor">
 					<h:outputText value="#{veiculo.cor}" />
 				</p:column>
@@ -46,7 +47,26 @@
 						<f:convertNumber type="currency" />
 					</h:outputText>
 				</p:column>
+				<p:column width="5%" exportable="false">
+					<p:commandButton icon="ui-icon-trash" title="Excluir"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf" style="width: 30px"
+						disabled="#{!seguranca.veiculoExcluir}">
+						<f:setPropertyActionListener value="#{veiculo}"
+							target="#{consultaVeiculosBean.veiculoSelecionado}" />
+					</p:commandButton>
+				</p:column>
 			</p:dataTable>
+
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma excluir o veículo de placa #{consultaVeiculosBean.veiculoSelecionado.placa}?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{consultaVeiculosBean.excluir}" />
+			</p:confirmDialog>
 		</h:form>
 	</ui:define>
 

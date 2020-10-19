@@ -115,6 +115,21 @@ public class MovimentacaoRepository implements Serializable {
 		criteriaQuery.orderBy(builder.desc(movimentacaoRoot.get("data")));
 		TypedQuery<Movimentacao> query = manager.createQuery(criteriaQuery);
 		return query.getResultList();		
+	}
+	
+	public boolean possuiVendaAtiva(Veiculo veiculo) {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<Long> criteriaQuery = builder.createQuery(Long.class);
+		Root<Movimentacao> movimentacaoRoot = criteriaQuery.from(Movimentacao.class);
+		criteriaQuery.select(builder.count(movimentacaoRoot));
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(builder.equal(movimentacaoRoot.get("veiculo"), veiculo));
+		predicates.add(builder.equal(movimentacaoRoot.get("tipoOperacao"), TipoOperacao.VENDA));
+		predicates.add(builder.equal(movimentacaoRoot.get("statusVenda"), StatusVenda.CONCLUIDA));
+		criteriaQuery.where(predicates.toArray(new Predicate[0]));
+		TypedQuery<Long> query = manager.createQuery(criteriaQuery);
+		Long total = query.getSingleResult();
+		return total > 0;		
 	}	
 
 	public Movimentacao porId(Long id) {

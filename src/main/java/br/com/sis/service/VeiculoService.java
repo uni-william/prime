@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import br.com.sis.entity.Veiculo;
 import br.com.sis.enuns.StatusVeiculo;
+import br.com.sis.repository.MovimentacaoRepository;
 import br.com.sis.repository.VeiculoRepository;
 import br.com.sis.util.jpa.Transactional;
 import br.com.sis.util.jsf.FacesUtil;
@@ -16,6 +17,9 @@ public class VeiculoService implements Serializable {
 
 	@Inject
 	private VeiculoRepository veiculoRepository;
+	
+	@Inject
+	private MovimentacaoRepository movimentacaoRepository;
 
 	@Transactional
 	public Veiculo salvar(Veiculo veiculo) {
@@ -32,6 +36,15 @@ public class VeiculoService implements Serializable {
 			}
 		}
 
+	}
+	
+	@Transactional
+	public boolean removerVeiculo(Veiculo veiculo) {
+		if (movimentacaoRepository.possuiVendaAtiva(veiculo)) {
+			FacesUtil.addWarnMessage("Veículo não pode ser excluído por possuir venda concluída para o mesmo!");
+			return false;
+		}
+		return veiculoRepository.remover(veiculo);
 	}
 
 }

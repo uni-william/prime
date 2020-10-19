@@ -22,7 +22,6 @@ import br.com.sis.entity.Modelo;
 import br.com.sis.entity.Veiculo;
 import br.com.sis.enuns.StatusVeiculo;
 import br.com.sis.repository.filter.VeiculoFilter;
-import br.com.sis.util.jpa.Transactional;
 import br.com.sis.util.jsf.FacesUtil;
 
 public class VeiculoRepository implements Serializable {
@@ -151,7 +150,7 @@ public class VeiculoRepository implements Serializable {
 		return manager.find(Veiculo.class, id);
 	}
 
-	@Transactional
+
 	public boolean remover(Veiculo veiculo) {
 		try {
 			veiculo = porId(veiculo.getId());
