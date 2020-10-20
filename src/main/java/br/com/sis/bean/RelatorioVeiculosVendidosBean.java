@@ -1,7 +1,9 @@
 package br.com.sis.bean;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +15,9 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.Session;
 
-import br.com.sis.entity.Configuracoes;
 import br.com.sis.report.ExecutorRelatorio;
-import br.com.sis.repository.ConfiguracoesRepository;
 import br.com.sis.util.jsf.FacesUtil;
 
 @Named
@@ -36,9 +35,6 @@ public class RelatorioVeiculosVendidosBean implements Serializable {
 	@Inject
 	private EntityManager manager;
 	
-	@Inject
-	private ConfiguracoesRepository configuracoesRepository;
-
 	private Date dtInicial;
 	private Date dtFinal;
 
@@ -63,10 +59,10 @@ public class RelatorioVeiculosVendidosBean implements Serializable {
 		Map<String, Object> parametros = new HashMap<>();
 		parametros.put("logo", caminhoLogo);
 		if (dtInicial != null) {
-			parametros.put("dti", dtInicial);
+			parametros.put("data_ini", dtInicial);
 		}
 		if (dtFinal != null) {
-			parametros.put("dtf", dtFinal);
+			parametros.put("data_fim", dtFinal);
 		}		
 		ExecutorRelatorio executor = new ExecutorRelatorio("/relatorios/rel_veiculos_vendidos.jasper", this.response, parametros,
 				"Relatorio Veiculos Vendidos.pdf");
@@ -82,12 +78,12 @@ public class RelatorioVeiculosVendidosBean implements Serializable {
 	}
 	
 	public void inicializar() {
-		Configuracoes configuracoes = configuracoesRepository.configuracoesGerais();
-		Calendar dt = Calendar.getInstance();
-		dt = DateUtils.truncate(dt, Calendar.DAY_OF_MONTH);
-		dt.add(Calendar.MONTH, - configuracoes.getMesesRetroativosGrficoBarras());
-		dtInicial = dt.getTime();
-		dtFinal = new Date();		
+		LocalDate dateIni = LocalDate.now();
+		LocalDate dateFim = LocalDate.now();
+		dateIni = dateIni.with(TemporalAdjusters.firstDayOfMonth());
+		dateFim = dateFim.with(TemporalAdjusters.lastDayOfMonth());
+		dtInicial = Date.from(dateIni.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		dtFinal = Date.from(dateFim.atStartOfDay(ZoneId.systemDefault()).toInstant());		
 	}
 
 }
