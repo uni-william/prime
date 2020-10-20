@@ -2,7 +2,9 @@ package br.com.sis.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -42,6 +45,7 @@ public class Movimentacao implements Serializable {
 	private byte[] termoAssinado;
 	private Banco banco;
 	private StatusVenda statusVenda = StatusVenda.ANDAMENTO;
+	private List<ComissaoVenda> comissoes = new ArrayList<ComissaoVenda>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -152,6 +156,15 @@ public class Movimentacao implements Serializable {
 		this.statusVenda = statusVenda;
 	}
 
+	@OneToMany(mappedBy = "movimentacao", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<ComissaoVenda> getComissoes() {
+		return comissoes;
+	}
+
+	public void setComissoes(List<ComissaoVenda> comissoes) {
+		this.comissoes = comissoes;
+	}
+
 	@Transient
 	public boolean isPossuiTermoAssindo() {
 		return this.termoAssinado != null;
@@ -179,21 +192,21 @@ public class Movimentacao implements Serializable {
 			return this.getValor().subtract(this.getEntrada());
 		}
 	}
-	
+
 	@Transient
 	public boolean isConcluida() {
 		return this.statusVenda.equals(StatusVenda.CONCLUIDA);
 	}
-	
+
 	@Transient
 	public boolean isCancelada() {
 		return this.statusVenda.equals(StatusVenda.CANCELADA);
 	}
-	
+
 	@Transient
 	public boolean isEmAndamento() {
 		return this.statusVenda.equals(StatusVenda.ANDAMENTO);
-	}	
+	}
 
 	@Override
 	public int hashCode() {

@@ -34,6 +34,17 @@ public class VendedorRepository implements Serializable{
 		return query.getResultList();
 	}
 	
+	public List<Vendedor> listAllAtivos() {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<Vendedor> criteriaQuery = builder.createQuery(Vendedor.class);
+		Root<Vendedor> vendedorRoot = criteriaQuery.from(Vendedor.class);
+		criteriaQuery.select(vendedorRoot);
+		criteriaQuery.where(builder.equal(vendedorRoot.get("ativo"), true));
+		criteriaQuery.orderBy(builder.asc(vendedorRoot.get("nome")));
+		TypedQuery<Vendedor> query = manager.createQuery(criteriaQuery);
+		return query.getResultList();
+	}
+	
 	public Vendedor porId(Long id) {
 		return manager.find(Vendedor.class, id);
 	}

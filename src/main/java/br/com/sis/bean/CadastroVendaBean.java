@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,15 +31,18 @@ import org.primefaces.model.StreamedContent;
 
 import br.com.sis.converter.PessoaConverter;
 import br.com.sis.entity.Banco;
+import br.com.sis.entity.ComissaoVenda;
 import br.com.sis.entity.Movimentacao;
 import br.com.sis.entity.Pessoa;
 import br.com.sis.entity.Veiculo;
+import br.com.sis.entity.Vendedor;
 import br.com.sis.enuns.TipoOperacao;
 import br.com.sis.report.ExecutorRelatorio;
 import br.com.sis.repository.BancoRepository;
 import br.com.sis.repository.MovimentacaoRepository;
 import br.com.sis.repository.PessoaRepository;
 import br.com.sis.repository.VeiculoRepository;
+import br.com.sis.repository.VendedorRepository;
 import br.com.sis.security.Seguranca;
 import br.com.sis.service.MovimentacaoService;
 import br.com.sis.util.Utils;
@@ -62,6 +66,8 @@ public class CadastroVendaBean implements Serializable {
 	private MovimentacaoRepository movimentacaoRepository;
 	@Inject
 	private BancoRepository bancoRepository;
+	@Inject
+	private VendedorRepository vendedorRepository;
 
 	@Inject
 	private PessoaConverter pessoaConverter;
@@ -83,6 +89,9 @@ public class CadastroVendaBean implements Serializable {
 	private List<Banco> bancos;
 
 	private String labelBotao;
+	private List<ComissaoVenda> comissoes = new ArrayList<ComissaoVenda>();
+	private Vendedor vendedor = new Vendedor();
+	private List<Vendedor> vendedores;
 
 	public List<Banco> getBancos() {
 		return bancos;
@@ -136,8 +145,33 @@ public class CadastroVendaBean implements Serializable {
 		return labelBotao;
 	}
 
+	public List<ComissaoVenda> getComissoes() {
+		return comissoes;
+	}
+
+	public void setComissoes(List<ComissaoVenda> comissoes) {
+		this.comissoes = comissoes;
+	}
+
+	public Vendedor getVendedor() {
+		return vendedor;
+	}
+
+	public void setVendedor(Vendedor vendedor) {
+		this.vendedor = vendedor;
+	}
+
+	public List<Vendedor> getVendedores() {
+		return vendedores;
+	}
+
+	public void setVendedores(List<Vendedor> vendedores) {
+		this.vendedores = vendedores;
+	}
+
 	public void inicializar() {
 		bancos = bancoRepository.listAll();
+		vendedores = vendedorRepository.listAllAtivos();
 		if (movimentacao == null) {
 			movimentacao = new Movimentacao();
 			movimentacao.setFuncionario(seguranca.getUsuarioLogado().getUsuario().getPessoa());
@@ -146,6 +180,7 @@ public class CadastroVendaBean implements Serializable {
 			this.labelBotao = "Efetuar Venda";
 		} else {
 			this.placa = this.movimentacao.getVeiculo().getPlaca();
+			this.comissoes = this.movimentacao.getComissoes();
 			this.labelBotao = "Atualizar Venda";
 		}
 	}
@@ -155,18 +190,19 @@ public class CadastroVendaBean implements Serializable {
 	}
 
 	public void efetuarVenda() {
+		movimentacao.setComissoes(this.comissoes);
 		movimentacao = service.efetuarVenda(movimentacao);
 		if (movimentacao != null) {
 			FacesUtil.addInfoMessage("Operação realizada com sucesso");
 		}
 	}
-	
+
 	public void cancelarVenda() {
 		movimentacao = service.cancelarVenda(movimentacao);
 		if (movimentacao != null) {
 			FacesUtil.addInfoMessage("Operação realizada com sucesso");
 		}
-		
+
 	}
 
 	public void onClienteEscolhido(SelectEvent event) {
@@ -209,14 +245,14 @@ public class CadastroVendaBean implements Serializable {
 	public boolean isVendaEfetuada() {
 		return this.movimentacao.isConcluida();
 	}
-	
+
 	public boolean isVendaCancelada() {
 		return this.movimentacao.isCancelada();
 	}
-	
+
 	public boolean isVendaEmAndamento() {
 		return this.movimentacao.isEmAndamento();
-	}	
+	}
 
 	public boolean isPossuiEntrada() {
 		return isVendaEfetuada() && this.movimentacao.getEntrada() != null
@@ -309,6 +345,26 @@ public class CadastroVendaBean implements Serializable {
 		} else {
 			FacesUtil.addErroMessage("A execução do relatório não retornou dados.");
 		}
+	}
+
+	public void adicionarVendedor() {
+		boolean encontrou = false;
+		for (ComissaoVenda comissaoVenda : comissoes) {
+			if (comissaoVenda.getVendedor().equals(this.vendedor))
+				encontrou = true;
+		}
+		if (encontrou == false) {
+			ComissaoVenda comissaoVenda = new ComissaoVenda();
+			comissaoVenda.setVendedor(this.vendedor);
+			comissaoVenda.setComissao(this.vendedor.getValorComissao());
+			comissaoVenda.setMovimentacao(this.movimentacao);
+			this.comissoes.add(comissaoVenda);
+			this.vendedor = new Vendedor();
+		}
+	}
+
+	public void removerVendedor(ComissaoVenda comissaoVenda) {
+		this.comissoes.remove(comissaoVenda);
 	}
 
 }

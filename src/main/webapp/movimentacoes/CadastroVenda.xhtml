@@ -172,7 +172,6 @@
 							<f:selectItems value="#{cadastroVendaBean.bancos}" var="banco"
 								itemValue="#{banco}" itemLabel="#{banco.descricao}"></f:selectItems>
 						</p:selectOneMenu>
-
 					</p:panelGrid>
 					<p:panelGrid columns="3" layout="grid"
 						columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-2"
@@ -194,6 +193,45 @@
 							process="@this" update="@form">
 						</p:commandButton>
 					</p:panelGrid>
+				</p:panel>
+				<p:panel header="Vendedores" id="pnvendedor">
+					<p:panelGrid columns="3" layout="grid"
+						columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-2"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Vendedor" />
+						<p:selectOneMenu value="#{cadastroVendaBean.vendedor}"
+							id="cbvendedor">
+							<f:selectItems value="#{cadastroVendaBean.vendedores}"
+								var="vendedor" itemValue="#{vendedor}"
+								itemLabel="#{vendedor.nome}" />
+						</p:selectOneMenu>
+						<p:commandButton icon="ui-icon-circle-plus" style="width: 30px"
+							id="btAddVend" title="Adicionar Vendedor"
+							process="@this cbvendedor"
+							action="#{cadastroVendaBean.adicionarVendedor}" update="@form"
+							disabled="#{cadastroVendaBean.vendaEfetuada}">
+
+						</p:commandButton>
+					</p:panelGrid>
+					<p:separator />
+
+					<p:panelGrid columns="1" layout="grid"
+						columnClasses="ui-grid-col-4"
+						styleClass="panelgrid-noborder">
+						<p:dataTable value="#{cadastroVendaBean.comissoes}" var="comissao"
+						emptyMessage="Sem vendedores">
+							<p:column headerText="Vendedores">
+								<h:outputText value="#{comissao.vendedor.nome}" />
+							</p:column>
+							<p:column style="width: 32px">
+								<p:commandButton icon=" ui-icon-minus" style="width: 30px"
+									action="#{cadastroVendaBean.removerVendedor(comissao)}"
+									process="@this" update="@form"
+									disabled="#{cadastroVendaBean.vendaEfetuada}"/>
+							</p:column>
+						</p:dataTable>
+					</p:panelGrid>
+
 				</p:panel>
 			</div>
 
