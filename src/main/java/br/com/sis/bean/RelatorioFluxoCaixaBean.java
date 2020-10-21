@@ -1,7 +1,6 @@
 package br.com.sis.bean;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
@@ -23,7 +22,7 @@ import br.com.sis.util.jsf.FacesUtil;
 
 @Named
 @ViewScoped
-public class RelatorioMovimentacoesBean implements Serializable {
+public class RelatorioFluxoCaixaBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,10 +34,9 @@ public class RelatorioMovimentacoesBean implements Serializable {
 
 	@Inject
 	private EntityManager manager;
+	
 	private Date dtInicial;
 	private Date dtFinal;
-
-	private BigDecimal valor;
 
 	public Date getDtInicial() {
 		return dtInicial;
@@ -55,27 +53,19 @@ public class RelatorioMovimentacoesBean implements Serializable {
 	public void setDtFinal(Date dtFinal) {
 		this.dtFinal = dtFinal;
 	}
-
-	public BigDecimal getValor() {
-		return valor;
-	}
-
-	public void setValor(BigDecimal valor) {
-		this.valor = valor;
-	}
-
+	
 	public void emitirRelatorio() {
 		String caminhoLogo = FacesUtil.localFotos() + "/logoprime.png";
 		Map<String, Object> parametros = new HashMap<>();
 		parametros.put("logo", caminhoLogo);
 		if (dtInicial != null) {
-			parametros.put("dti", dtInicial);
+			parametros.put("data_ini", dtInicial);
 		}
 		if (dtFinal != null) {
-			parametros.put("dtf", dtFinal);
-		}
-		ExecutorRelatorio executor = new ExecutorRelatorio("/relatorios/rel_movimentacoes.jasper", this.response,
-				parametros, "Relatorio Movimentações.pdf");
+			parametros.put("data_fim", dtFinal);
+		}		
+		ExecutorRelatorio executor = new ExecutorRelatorio("/relatorios/rel_saldo_periodo.jasper", this.response, parametros,
+				"Relatorio Fluxo de Caixa.pdf");
 
 		Session session = manager.unwrap(Session.class);
 		session.doWork(executor);
@@ -84,16 +74,16 @@ public class RelatorioMovimentacoesBean implements Serializable {
 			facesContext.responseComplete();
 		} else {
 			FacesUtil.addErroMessage("A execução do relatório não retornou dados.");
-		}
+		}		
 	}
-
+	
 	public void inicializar() {
 		LocalDate dateIni = LocalDate.now();
 		LocalDate dateFim = LocalDate.now();
 		dateIni = dateIni.with(TemporalAdjusters.firstDayOfMonth());
 		dateFim = dateFim.with(TemporalAdjusters.lastDayOfMonth());
 		dtInicial = Date.from(dateIni.atStartOfDay(ZoneId.systemDefault()).toInstant());
-		dtFinal = Date.from(dateFim.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		dtFinal = Date.from(dateFim.atStartOfDay(ZoneId.systemDefault()).toInstant());		
 	}
 
 }

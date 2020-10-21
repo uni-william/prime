@@ -216,13 +216,18 @@
 					<p:separator />
 
 					<p:panelGrid columns="1" layout="grid"
-						columnClasses="ui-grid-col-4"
+						columnClasses="ui-grid-col-6"
 						styleClass="panelgrid-noborder">
 						<p:dataTable value="#{cadastroVendaBean.comissoes}" var="comissao"
 						emptyMessage="Sem vendedores">
 							<p:column headerText="Vendedores">
 								<h:outputText value="#{comissao.vendedor.nome}" />
 							</p:column>
+							<p:column headerText="Comissão" style="width: 100px">
+								<h:outputText value="#{comissao.comissao}">
+									<f:convertNumber type="currency"/>
+								</h:outputText>
+							</p:column>							
 							<p:column style="width: 32px">
 								<p:commandButton icon=" ui-icon-minus" style="width: 30px"
 									action="#{cadastroVendaBean.removerVendedor(comissao)}"

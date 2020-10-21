@@ -1,0 +1,41 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Relatório Fluxo de Caixa</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{relatorioFluxoCaixaBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Relatório Fluxo de Caixa</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Emitir Relatório"
+						action="#{relatorioFluxoCaixaBean.emitirRelatorio}"
+						ajax="false" update="@form" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" closable="true" id="msg" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2"
+					styleClass="panelgrid-withmargin">
+					<p:outputLabel value="Data inicial" for="dtini" />
+					<p:calendar value="#{relatorioFluxoCaixaBean.dtInicial}"
+						mask="99/99/9999" pattern="dd/MM/yyyy" id="dtini" showOn="button" />
+					<p:outputLabel value="Data final" for="dtfim" />
+					<p:calendar value="#{relatorioFluxoCaixaBean.dtFinal}"
+						mask="99/99/9999" pattern="dd/MM/yyyy" id="dtfim" showOn="button" />
+
+				</p:panelGrid>
+
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

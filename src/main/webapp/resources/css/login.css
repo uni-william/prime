@@ -3,28 +3,39 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 	margin: 0px;
 	font-weight: normal;
-	background-color: #1e94d2; /*#3B240B;*/
+	background-color: #2E2E2E;
+}
+.fundo-escuro {
+	background-color: #2E2E2E;
 }
 
 .div-central {
 	margin-left: 30%;
-	margin-top: 15%;
-	width: 40%;
-	height: 30%;
-	background-color: white;
+	margin-top: 10%;
+	width: 60%;
+	height: 40%;
+	background-color: #2E2E2E;
+	font-size: 15px;
+}
+
+.div-central2 {
+	margin-left: 20%;
+	margin-top: 20%;
+	width: 60%;
+	height: 40%;
+	background-color: #2E2E2E;
 	font-size: 15px;
 }
 
 .centralizado {
 	text-align: center;
-	margin: 10% 25%;
+	margin: 10% 10%;
 }
 
 .logo {
-	margin-top: 10px;
 	margin-bottom: 20px;
-	width: 180px;
-	height: 100px;
+	width: 350px;
+	height: 200px;
 }
 
 @media ( max-width : 640px) {

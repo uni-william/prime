@@ -60,7 +60,12 @@ public enum Funcionalidade {
 	VENDEDOR_ACESS("Vendedor - Acesso"),
 	VENDEDOR_INSERT("Vendedor - Inserir"),
 	VENDEDOR_EDIT("Vendedor - Editar"),
-	VENDEDOR_DEL("Vendedor - Excluir");	
+	VENDEDOR_DEL("Vendedor - Excluir"),
+	REL_FLUXO_CAIXA("Relatório - Fluxo de Caixa"),
+	REL_MOVIMENTACOES("Relatório - Movimentações"),
+	REL_COMISSAO("Relatório - Comissões por Vendedor"),
+	REL_DESPESAS("Relatório - Resumo Despesas"),
+	REL_VEIC_VEND("Relatório - Veículos Vendidos");	
 
 	Funcionalidade(String descricao) {
 		this.descricao = descricao;
