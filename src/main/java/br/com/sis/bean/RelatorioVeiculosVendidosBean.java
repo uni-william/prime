@@ -55,7 +55,7 @@ public class RelatorioVeiculosVendidosBean implements Serializable {
 	}
 	
 	public void emitirRelatorio() {
-		String caminhoLogo = FacesUtil.localFotos() + "/logoprime.png";
+		String caminhoLogo = FacesUtil.localFotos() + "/logo_prime_short.png";
 		Map<String, Object> parametros = new HashMap<>();
 		parametros.put("logo", caminhoLogo);
 		if (dtInicial != null) {
