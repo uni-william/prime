@@ -263,7 +263,7 @@ public class CadastroVendaBean implements Serializable {
 		String dataExtenso = "Manaus, " + Utils.dataPorExtenso(new Date()) + ".";
 		Long id = movimentacao.getId();
 		String nomeRel = "Contrato_" + numeroFormatado(movimentacao.getId()) + ".pdf";
-		String caminhoLogo = FacesUtil.localFotos() + "/logoprime.png";
+		String caminhoLogo = FacesUtil.localFotos() + "/logo_prime_short.png";
 		Map<String, Object> parametros = new HashMap<>();
 		parametros.put("codigo", id);
 		parametros.put("logo", caminhoLogo);
@@ -330,7 +330,7 @@ public class CadastroVendaBean implements Serializable {
 	public void emitirRecibo() {
 		Long id = movimentacao.getId();
 		String nomeRel = "Recibo_" + numeroFormatado(movimentacao.getId()) + ".pdf";
-		String caminhoLogo = FacesUtil.localFotos() + "/logoprime.png";
+		String caminhoLogo = FacesUtil.localFotos() + "/logo_prime_short.png";
 		Map<String, Object> parametros = new HashMap<>();
 		parametros.put("codigo", id);
 		parametros.put("logo", caminhoLogo);
