@@ -3,11 +3,26 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rel_veiculos_vendidos" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3470678a-c91e-4931-8d32-8f47e67d0658">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="primedb"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<parameter name="logo" class="java.lang.String"/>
 	<parameter name="data_ini" class="java.util.Date"/>
 	<parameter name="data_fim" class="java.util.Date"/>
 	<queryString language="SQL">
 		<![CDATA[select
+x.data,
+x.fabricante,
+x.modelo,
+x.anoModelo,
+x.cor,
+x.placa,
+x.nome,
+x.valor,
+x.valorCompra,
+x.manutencao,
+x.comissao,
+(x.valor - (x.valorCompra + x.manutencao + x.comissao)) saldo
+ from (select
   m.data,
   f.descricao fabricante,
   mo.descricao modelo,
@@ -17,21 +32,25 @@
   cli.nome,
   ifnull(m.valor, 0) valor,
   ifnull(v.valorCompra,0) valorCompra,
-  ifnull(sum(man.valor), 0) manutencao,
-  ifnull(sum(com.comissao), 0) comissao,
-  m.valor - (ifnull(v.valorCompra, 0) + ifnull(sum(man.valor), 0) + ifnull(sum(com.comissao), 0)) saldo
-from movimentacoes m
+  ifnull((select sum(man2.valor)
+  from manutencoes man2
+  inner join veiculos v2 on man2.veiculo_id = v2.id
+  inner join movimentacoes m2 on v2.id = m2.veiculo_id
+  where m2.tipoOperacao = 1
+    and m2.statusVenda = 'CONCLUIDA'
+    and m.id = m2.id
+    and m2.data between $P{data_ini}  and   $P{data_fim}), 0) manutencao,
+  ifnull(sum(com.comissao), 0) comissao
+  from movimentacoes m
 inner join veiculos v on m.veiculo_id = v.id
 inner join modelos mo on v.modelo_id = mo.id
 inner join fabricantes f on mo.fabricante_id = f.id
 inner join pessoas cli on m.cliente_id = cli.id
-left outer join manutencoes man on v.id = man.veiculo_id
 left outer join comissao_venda com on m.id = com.movimentacao_id
 where m.tipoOperacao = 1
   and m.statusVenda = 'CONCLUIDA'
-  and m.data between  $P{data_ini} and  $P{data_fim} 
-group by
- data,
+  and m.data between $P{data_ini}  and   $P{data_fim} 
+group by 
   f.descricao,
   mo.descricao,
   v.anoFabricacao, v.anoModelo,
@@ -39,7 +58,8 @@ group by
   v.placa,
   cli.nome,
   m.valor,
-  v.valorCompra]]>
+  v.valorCompra) x
+  order by x.data]]>
 	</queryString>
 	<field name="data" class="java.sql.Date">
 		<property name="com.jaspersoft.studio.field.label" value="data"/>
