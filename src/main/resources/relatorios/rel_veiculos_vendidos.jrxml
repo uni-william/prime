@@ -15,7 +15,7 @@
   v.cor,
   v.placa,
   cli.nome,
-  m.valor,
+  ifnull(m.valor, 0) valor,
   ifnull(v.valorCompra,0) valorCompra,
   ifnull(sum(man.valor), 0) manutencao,
   ifnull(sum(com.comissao), 0) comissao,
@@ -312,7 +312,7 @@ group by
 				<text><![CDATA[Saldo Total]]></text>
 			</staticText>
 			<textField pattern="¤ #,##0.##;¤ -#,##0.##">
-				<reportElement x="135" y="33" width="95" height="18" uuid="e6cdcf5c-6207-47ad-b300-542718fc2b8b"/>
+				<reportElement x="135" y="33" width="145" height="18" uuid="e6cdcf5c-6207-47ad-b300-542718fc2b8b"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>

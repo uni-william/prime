@@ -8,7 +8,7 @@
 	<parameter name="logo" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[select
-  'Vendas (valor venda - valor compra)' descricao, count(1) qtde, sum(m.valor) - ifnull(sum(v.valorCompra), 0) valor
+  'Vendas (valor venda - valor compra)' descricao, count(1) qtde, sum(ifnull(m.valor, 0)) - ifnull(sum(v.valorCompra), 0) valor
 from movimentacoes m
 inner join veiculos v on m.veiculo_id = v.id
 where m.tipoOperacao = 1
@@ -16,7 +16,7 @@ where m.tipoOperacao = 1
   and m.data between $P{data_ini}  and $P{data_fim} 
 union
 select
-  'Gastos com Manutenção' descricao, count(1) qtde, sum(man.valor) * -1 valor
+  'Gastos com Manutenção' descricao, count(1) qtde, ifnull(sum(man.valor), 0) * -1 valor
 from movimentacoes m
 inner join veiculos v on m.veiculo_id = v.id
 inner join manutencoes man on v.id = man.veiculo_id
@@ -24,7 +24,7 @@ where m.tipoOperacao = 1
   and m.statusVenda = 'CONCLUIDA'
   and m.data between $P{data_ini}  and $P{data_fim} 
 union
-select 'Comissão do Período', count(1) qtde, sum(c.comissao) * -1 valor
+select 'Comissão do Período', count(1) qtde, ifnull(sum(c.comissao), 0) * -1 valor
 from comissao_venda c
 inner join vendedores v on c.vendedor_id = v.id
 inner join movimentacoes m on c.movimentacao_id = m.id
@@ -32,9 +32,9 @@ where m.tipoOperacao = 1
   and m.statusVenda = 'CONCLUIDA'
   and m.data between $P{data_ini}  and $P{data_fim} 
 union
-select 'Despesas Operacionais' descricao, count(1) qtde, sum(d.valor) * -1 valor
+select 'Despesas Operacionais' descricao, count(1) qtde, ifnull(sum(d.valor), 0) * -1 valor
 from despesas d
-where d.data between $P{data_ini}  and $P{data_fim} ]]>
+where d.data between $P{data_ini}  and $P{data_fim}]]>
 	</queryString>
 	<field name="descricao" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="descricao"/>
@@ -151,7 +151,7 @@ where d.data between $P{data_ini}  and $P{data_fim} ]]>
 				<textFieldExpression><![CDATA[$F{qtde}]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤ #,##0.00;¤ -#,##0.00">
-				<reportElement x="360" y="0" width="70" height="20" uuid="bcf52627-3b13-4ed2-9094-2af8b6d79be9">
+				<reportElement x="310" y="0" width="120" height="20" uuid="bcf52627-3b13-4ed2-9094-2af8b6d79be9">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="eb391521-863e-4fb8-a6e4-6124d8bf0073"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
@@ -162,7 +162,7 @@ where d.data between $P{data_ini}  and $P{data_fim} ]]>
 	<summary>
 		<band height="51" splitType="Stretch">
 			<textField pattern="¤ #,##0.00;¤ -#,##0.00">
-				<reportElement x="359" y="10" width="70" height="20" uuid="17d6f64e-2e86-4158-a7b0-fd6a8f1616fe"/>
+				<reportElement x="310" y="10" width="119" height="20" uuid="17d6f64e-2e86-4158-a7b0-fd6a8f1616fe"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>

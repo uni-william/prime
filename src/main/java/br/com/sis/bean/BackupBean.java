@@ -1,14 +1,17 @@
 package br.com.sis.bean;
 
 import java.io.BufferedReader;
-import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UnknownFormatConversionException;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -84,20 +87,23 @@ public class BackupBean implements Serializable {
 		try {
 			proc = Runtime.getRuntime().exec(mydump + " --databases primedb -u primeroot -pprime > " + caminhoBackup);
 			result.put("input", inputStreamToString(proc.getInputStream()));
-			FileWriter arq = new FileWriter(caminhoBackup);
-			PrintWriter gravarArq = new PrintWriter(arq);
-			gravarArq.printf(result.get("input"));
-			arq.close();
+			File  arq = new File(caminhoBackup);
+			BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(arq),"UTF-8"));
+			fw.append(result.get("input"));
+			fw.close();
 			return true;
 		} catch (IOException e) {
 			FacesUtil.addErroMessage(e.getMessage());
 			return false;
+		} catch(UnknownFormatConversionException e) {
+			FacesUtil.addErroMessage(e.getMessage());
+			return false;			
 		}
 	}
 	
 	private String inputStreamToString(InputStream isr) {
 	     try {
-	        BufferedReader br = new BufferedReader(new InputStreamReader(isr));
+	        BufferedReader br = new BufferedReader(new InputStreamReader(isr, "UTF-8"));
 	        StringBuilder sb = new StringBuilder();
 	        String s = null;
 	        while ((s = br.readLine()) != null) {
@@ -106,7 +112,7 @@ public class BackupBean implements Serializable {
 	        return sb.toString();
 	     } catch (IOException e) {
 	        // TODO Auto-generated catch block
-	        e.printStackTrace();
+	        System.out.println(e.getMessage());
 	        return null;
 	     }
 	  }	

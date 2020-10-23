@@ -7,7 +7,7 @@
 	<parameter name="data_fim" class="java.util.Date"/>
 	<parameter name="logo" class="java.lang.String"/>
 	<queryString language="SQL">
-		<![CDATA[select v.nome, sum(c.comissao) valor
+		<![CDATA[select v.nome, ifnull(sum(c.comissao), 0) valor
 from comissao_venda c
 inner join vendedores v on c.vendedor_id = v.id
 inner join movimentacoes m on c.movimentacao_id = m.id
@@ -126,14 +126,14 @@ group by v.nome]]>
 	<summary>
 		<band height="122" splitType="Stretch">
 			<staticText>
-				<reportElement x="284" y="10" width="30" height="20" uuid="673aa496-8ab9-4a24-b017-1ed12cef83ba"/>
+				<reportElement x="264" y="10" width="30" height="20" uuid="673aa496-8ab9-4a24-b017-1ed12cef83ba"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Qtde]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="284" y="33" width="30" height="20" uuid="c9145965-a071-4a37-85dc-6ab523562d0c"/>
+				<reportElement x="264" y="33" width="30" height="20" uuid="c9145965-a071-4a37-85dc-6ab523562d0c"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
@@ -143,14 +143,14 @@ group by v.nome]]>
 				<reportElement x="0" y="3" width="555" height="1" uuid="f597ad2f-4a1f-4fde-bc28-f8d9d6294e88"/>
 			</line>
 			<textField>
-				<reportElement x="320" y="33" width="70" height="20" uuid="04f7e4ac-9ef8-4a83-b674-54102f18f93d"/>
+				<reportElement x="300" y="33" width="90" height="20" uuid="04f7e4ac-9ef8-4a83-b674-54102f18f93d"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{valor1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="320" y="10" width="71" height="20" uuid="b1f93e87-4632-4c1f-a3c2-fb50d7508b32"/>
+				<reportElement x="300" y="10" width="91" height="20" uuid="b1f93e87-4632-4c1f-a3c2-fb50d7508b32"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
