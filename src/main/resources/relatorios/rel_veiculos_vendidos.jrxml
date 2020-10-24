@@ -39,7 +39,7 @@ x.comissao,
   where m2.tipoOperacao = 1
     and m2.statusVenda = 'CONCLUIDA'
     and m.id = m2.id
-    and m2.data between $P{data_ini}  and   $P{data_fim}), 0) manutencao,
+    and m2.data between  $P{data_ini}  and  $P{data_fim}  ), 0) manutencao,
   ifnull(sum(com.comissao), 0) comissao
   from movimentacoes m
 inner join veiculos v on m.veiculo_id = v.id
@@ -49,7 +49,7 @@ inner join pessoas cli on m.cliente_id = cli.id
 left outer join comissao_venda com on m.id = com.movimentacao_id
 where m.tipoOperacao = 1
   and m.statusVenda = 'CONCLUIDA'
-  and m.data between $P{data_ini}  and   $P{data_fim} 
+  and m.data between $P{data_ini} and  $P{data_fim} 
 group by 
   f.descricao,
   mo.descricao,
@@ -90,7 +90,6 @@ group by
 	</field>
 	<field name="valor" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="valor"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacoes"/>
 	</field>
 	<field name="valorCompra" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="valorCompra"/>
