@@ -18,7 +18,7 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import br.com.sis.entity.Modelo;
 import br.com.sis.entity.Movimentacao;

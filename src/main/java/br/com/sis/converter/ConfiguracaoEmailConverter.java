@@ -6,7 +6,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import br.com.sis.entity.Configuracoes;
 import br.com.sis.repository.ConfiguracoesRepository;

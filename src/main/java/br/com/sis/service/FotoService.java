@@ -9,7 +9,8 @@ import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+
 
 public class FotoService implements Serializable {
 

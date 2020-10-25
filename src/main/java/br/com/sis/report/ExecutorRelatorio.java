@@ -47,7 +47,6 @@ public class ExecutorRelatorio implements Work {
 			
 			JasperPrint print = JasperFillManager.fillReport(relatorioStream, this.parametros, connection);
 			this.relatorioGerado = print.getPages().size() > 0;
-			
 			if (this.relatorioGerado) {
 				Exporter<ExporterInput, PdfReportConfiguration, PdfExporterConfiguration, 
 			    	OutputStreamExporterOutput> exportador = new JRPdfExporter();

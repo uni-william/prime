@@ -65,7 +65,7 @@ public enum Funcionalidade {
 	REL_MOVIMENTACOES("Relatório - Movimentações"),
 	REL_COMISSAO("Relatório - Comissões por Vendedor"),
 	REL_DESPESAS("Relatório - Resumo Despesas"),
-	REL_VEIC_VEND("Relatório - Veículos Vendidos");	
+	REL_VEIC_VEND("Relatório - Resumo Vendas");	
 
 	Funcionalidade(String descricao) {
 		this.descricao = descricao;

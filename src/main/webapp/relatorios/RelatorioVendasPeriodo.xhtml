@@ -5,18 +5,18 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 
-	<ui:define name="titulo">Relatório Veículos Vendidos</ui:define>
+	<ui:define name="titulo">Relatório Vendas Período</ui:define>
 
 	<ui:define name="content">
 		<f:metadata>
-			<f:viewAction action="#{relatorioVeiculosVendidosBean.inicializar}" />
+			<f:viewAction action="#{relatorioVendasBean.inicializar()}" />
 		</f:metadata>
-		<h1 class="aw-page-title">Relatório Veículos Vendidos</h1>
+		<h1 class="aw-page-title">Relatório Vendas Período</h1>
 		<h:form id="frm">
 			<p:toolbar>
 				<p:toolbarGroup>
 					<p:commandButton value="Emitir Relatório"
-						action="#{relatorioVeiculosVendidosBean.emitirRelatorio}"
+						action="#{relatorioVendasBean.emitirRelatorio()}"
 						ajax="false" update="@form" />
 				</p:toolbarGroup>
 			</p:toolbar>
@@ -26,10 +26,10 @@
 					columnClasses="ui-grid-col-1, ui-grid-col-2"
 					styleClass="panelgrid-withmargin">
 					<p:outputLabel value="Data inicial" for="dtini" />
-					<p:calendar value="#{relatorioVeiculosVendidosBean.dtInicial}"
+					<p:calendar value="#{relatorioVendasBean.dtInicial}"
 						mask="99/99/9999" pattern="dd/MM/yyyy" id="dtini" showOn="button" />
 					<p:outputLabel value="Data final" for="dtfim" />
-					<p:calendar value="#{relatorioVeiculosVendidosBean.dtFinal}"
+					<p:calendar value="#{relatorioVendasBean.dtFinal}"
 						mask="99/99/9999" pattern="dd/MM/yyyy" id="dtfim" showOn="button" />
 
 				</p:panelGrid>
