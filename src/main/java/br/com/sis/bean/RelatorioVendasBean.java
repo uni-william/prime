@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
 
-import br.com.sis.enuns.StatusVenda;
 import br.com.sis.report.ExecutorRelatorio;
 import br.com.sis.util.jsf.FacesUtil;
 
@@ -68,7 +67,6 @@ public class RelatorioVendasBean implements Serializable {
 		String caminhoLogo = FacesUtil.localFotos() + "/logo_prime_short.png";
 		Map<String, Object> parametros = new HashMap<>();
 		parametros.put("logo", caminhoLogo);
-		parametros.put("statusVenda", StatusVenda.CONCLUIDA);
 		if (dtInicial != null) {
 			parametros.put("data_ini", dtInicial);
 		}
