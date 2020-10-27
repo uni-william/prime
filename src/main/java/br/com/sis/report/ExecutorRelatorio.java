@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.jdbc.Work;
 
+import br.com.sis.util.jsf.FacesUtil;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -60,7 +61,7 @@ public class ExecutorRelatorio implements Work {
 				exportador.exportReport();
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			FacesUtil.addErroMessage(e.getMessage());
 		}
 	}
 

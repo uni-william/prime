@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
 
+import br.com.sis.enuns.StatusVenda;
 import br.com.sis.report.ExecutorRelatorio;
 import br.com.sis.util.jsf.FacesUtil;
 
@@ -60,13 +61,14 @@ public class RelatorioVendasBean implements Serializable {
 		dateIni = dateIni.with(TemporalAdjusters.firstDayOfMonth());
 		dateFim = dateFim.with(TemporalAdjusters.lastDayOfMonth());
 		dtInicial = Date.from(dateIni.atStartOfDay(ZoneId.systemDefault()).toInstant());
-		dtFinal = Date.from(dateFim.atStartOfDay(ZoneId.systemDefault()).toInstant());		
+		dtFinal = Date.from(dateFim.atStartOfDay(ZoneId.systemDefault()).toInstant());	
 	}
 	
 	public void emitirRelatorio() {
 		String caminhoLogo = FacesUtil.localFotos() + "/logo_prime_short.png";
 		Map<String, Object> parametros = new HashMap<>();
 		parametros.put("logo", caminhoLogo);
+		parametros.put("statusVenda", StatusVenda.CONCLUIDA);
 		if (dtInicial != null) {
 			parametros.put("data_ini", dtInicial);
 		}

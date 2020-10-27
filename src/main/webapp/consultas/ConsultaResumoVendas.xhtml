@@ -1,0 +1,106 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Resumo de vendas</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{consultaResumoVendasBean.inicializar()}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Resumo de vendas</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Consultar"
+						action="#{consultaResumoVendasBean.consultar()}" update="@form" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" closable="true" id="msg" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-2"
+					styleClass="panelgrid-withmargin">
+					<p:outputLabel value="Data inicial" for="dtini" />
+					<p:calendar value="#{consultaResumoVendasBean.dataIni}"
+						mask="99/99/9999" pattern="dd/MM/yyyy" id="dtini" showOn="button" />
+					<p:outputLabel value="Data final" for="dtfim" />
+					<p:calendar value="#{consultaResumoVendasBean.dataFim}"
+						mask="99/99/9999" pattern="dd/MM/yyyy" id="dtfim" showOn="button" />
+				</p:panelGrid>
+				<p:dataTable value="#{consultaResumoVendasBean.listresumoVendas}"
+					var="venda" style="margin-top: 20px" reflow="true"
+					emptyMessage="Sem registros" id="table">
+					<p:column headerText="Data" width="8%">
+						<h:outputText value="#{venda.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Fabricante">
+						<h:outputText value="#{venda.fabricante}" />
+					</p:column>
+					<p:column headerText="Modelo">
+						<h:outputText value="#{venda.modelo}" />
+					</p:column>
+					<p:column headerText="Placa" width="8%">
+						<h:outputText value="#{venda.placa}" />
+					</p:column>
+					<p:column headerText="Vlr Venda" width="10%"
+						style="text-align: right">
+						<h:outputText value="#{venda.valorVenda}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Vlr Compra" width="10%"
+						style="text-align: right">
+						<h:outputText value="#{venda.valorCompra}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Vlr Comissão" width="10%"
+						style="text-align: right">
+						<h:outputText value="#{venda.valorComissao}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Vlr Manutenção" width="12%"
+						style="text-align: right">
+						<h:outputText value="#{venda.valorManutencao}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Vlr Saldo" width="10%"
+						style="text-align: right">
+						<h:outputText value="#{venda.saldo}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</p:column>
+					<p:columnGroup type="footer">
+						<p:row>
+							<p:column colspan="8" footerText="Total Saldo"
+								style="text-align: right; font-weight: bold" />
+							<p:column style="text-align: right; font-weight: bold">
+								<f:facet name="footer">
+									<h:outputText value="#{consultaResumoVendasBean.totalSaldo}"
+										id="totalSaldo">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</f:facet>
+							</p:column>
+						</p:row>
+					</p:columnGroup>
+				</p:dataTable>
+				<br />
+				<h:commandLink
+					rendered="#{consultaResumoVendasBean.listresumoVendas.size() > 0}">
+					<p:graphicImage library="images" name="xls_16.png" width="24" />
+					<p:dataExporter type="xls" target="table" fileName="vendas" />
+				</h:commandLink>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

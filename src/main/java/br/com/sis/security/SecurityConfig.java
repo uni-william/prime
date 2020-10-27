@@ -73,6 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/relatorios/RelatorioResumoDespesas.xhtml").hasAnyRole("REL_DESPESAS")
 			.antMatchers("/relatorios/RelatorioFluxoCaixa.xhtml").hasAnyRole("REL_FLUXO_CAIXA")
 			.antMatchers("/relatorios/RelatorioVendasPeriodo.xhtml").hasAnyRole("REL_VEIC_VEND")
+			.antMatchers("/consultas/ConsultaResumoVendas.xhtml").hasAnyRole("REL_VEIC_VEND")
 			.and()
 		.formLogin()
 			.loginPage("/Login.xhtml")

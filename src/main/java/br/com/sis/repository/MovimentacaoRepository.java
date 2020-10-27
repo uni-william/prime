@@ -20,11 +20,13 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
+import br.com.sis.entity.ComissaoVenda;
 import br.com.sis.entity.Modelo;
 import br.com.sis.entity.Movimentacao;
 import br.com.sis.entity.Pessoa;
 import br.com.sis.entity.Veiculo;
 import br.com.sis.entity.vo.CarrosMaisVendidos;
+import br.com.sis.entity.vo.ResumoVendasVO;
 import br.com.sis.entity.vo.TotalPorData;
 import br.com.sis.entity.vo.TotalPorOperacao;
 import br.com.sis.enuns.StatusVenda;
@@ -258,6 +260,37 @@ public class MovimentacaoRepository implements Serializable {
 		List<CarrosMaisVendidos> resultado = query.getResultList();
 		return resultado;
 		
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<ResumoVendasVO> listResumoVendas(Date dataInicial, Date dataFinal) {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<ResumoVendasVO> criteriaQuery = builder.createQuery(ResumoVendasVO.class);
+		Root<Movimentacao> movRoot = criteriaQuery.from(Movimentacao.class);
+		Join<Movimentacao, Veiculo> veiculoRoot = (Join) movRoot.join("veiculo");
+		veiculoRoot.join("modelo", JoinType.INNER);		
+		Join<Movimentacao, ComissaoVenda> comissaoRoot = (Join) movRoot.join("comissoes", JoinType.LEFT);
+		criteriaQuery.select(builder.construct(ResumoVendasVO.class,
+				movRoot.get("data"),
+				veiculoRoot.get("modelo").get("fabricante").get("descricao"),
+				veiculoRoot.get("modelo").get("descricao"),
+				veiculoRoot.get("id"),
+				veiculoRoot.get("placa"),
+				movRoot.get("valor"),
+				veiculoRoot.get("valorCompra"),
+				builder.sum(comissaoRoot.get("comissao"))));
+		criteriaQuery.where(builder.between(movRoot.get("data"), dataInicial, dataFinal),
+				builder.equal(movRoot.get("statusVenda"), StatusVenda.CONCLUIDA),
+				builder.equal(movRoot.get("tipoOperacao"), TipoOperacao.VENDA));
+		criteriaQuery.groupBy(movRoot.get("data"),
+							  veiculoRoot.get("modelo").get("fabricante").get("descricao"),
+							  veiculoRoot.get("modelo").get("descricao"),
+							  veiculoRoot.get("id"),
+							  veiculoRoot.get("placa"),
+							  movRoot.get("valor"),
+							  veiculoRoot.get("valorCompra"));
+		TypedQuery<ResumoVendasVO> query = manager.createQuery(criteriaQuery);
+		return query.getResultList();
 	}
 
 }

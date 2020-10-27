@@ -65,6 +65,20 @@ public class ManutencaoRepository implements Serializable{
 		return total;
 		
 	}
+	
+	public BigDecimal totalManutencoesPorVeiculoId(Long id) {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<BigDecimal> criteriaQuery = builder.createQuery(BigDecimal.class);
+		Root<Manutencao> manRoot = criteriaQuery.from(Manutencao.class);
+		criteriaQuery.select(builder.sum(manRoot.<BigDecimal>get("valor")));
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(builder.equal(manRoot.get("veiculo").get("id"), id));
+		criteriaQuery.where(predicates.toArray(new Predicate[0]));
+		TypedQuery<BigDecimal> query = manager.createQuery(criteriaQuery);
+		BigDecimal total = query.getSingleResult();
+		return total;
+		
+	}	
 
 	@Transactional
 	public boolean remover(Manutencao manutencao) {
