@@ -147,6 +147,19 @@ public class Seguranca {
 	public boolean isCanalEditar() {
 		return externalContext.isUserInRole(Funcionalidade.CANAL_EDIT.toString());
 	}
+	
+	public boolean isFormaPagamentoInserir() {
+		return externalContext.isUserInRole(Funcionalidade.FORMA_INSERT.toString());
+
+	}
+
+	public boolean isFormaPagamentoExcluir() {
+		return externalContext.isUserInRole(Funcionalidade.FORMA_DEL.toString());
+	}
+
+	public boolean isFormaPagamentoEditar() {
+		return externalContext.isUserInRole(Funcionalidade.FORMA_EDIT.toString());
+	}	
 
 	
 	public boolean isTipoDespesaInserir() {

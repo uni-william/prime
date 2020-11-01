@@ -1,0 +1,60 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Formas de pagamento</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaFormaPagamentoBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Formas de pagamento</h1>
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup align="right">
+					<p:button value="Nova forma de pagamento" outcome="/formas_pagamento/CadastroFormaPagamento" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:messages autoUpdate="true" closable="true" />
+			<p:dataTable value="#{pesquisaFormaPagamentoBean.listaFormaPagamentos}" var="formaPagamento"
+				style="margin-top: 20px" selectionMode="single"
+				selection="#{pesquisaFormaPagamentoBean.formaPagamentoSelecionado}"
+				rowKey="#{formaPagamento.id}" reflow="true"
+				emptyMessage="Nenhum formaPagamento cadastrado" id="table">
+				<p:ajax event="rowSelect" update="btnEdit btnRemove"
+					listener="#{pesquisaFormaPagamentoBean.onRowSelect}" />
+				<p:ajax event="rowUnselect" update="btnEdit btnRemove"
+					listener="#{pesquisaFormaPagamentoBean.onRowUnSelect}" />
+				<p:column headerText="Formas de pagamentos cadastradas">
+					<h:outputText value="#{formaPagamento.descricao}" />
+				</p:column>
+				<f:facet name="footer">
+					<p:button icon="ui-icon-pencil" value="Visualizar/Editar" id="btnEdit"
+						outcome="/formas_pagamento/CadastroFormaPagamento"
+						disabled="#{pesquisaFormaPagamentoBean.desabilitarBotoes}">
+						<f:param name="formaPagamento"
+							value="#{pesquisaFormaPagamentoBean.formaPagamentoSelecionado.id}" />
+					</p:button>
+					<p:commandButton icon="ui-icon-trash" value="Excluir"
+						id="btnRemove"
+						oncomplete="PF('confirmacao').show(); return false;"
+						process="@this" update=":frm:conf"
+						disabled="#{pesquisaFormaPagamentoBean.desabilitarBotoes or not seguranca.formaPagamentoExcluir}" />
+				</f:facet>
+			</p:dataTable>
+			<p:confirmDialog header="Excluão de Registro"
+				message="Confirma excluir o formaPagamento #{pesquisaFormaPagamentoBean.formaPagamentoSelecionado.descricao}?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaFormaPagamentoBean.excluir}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

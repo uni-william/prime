@@ -5,17 +5,17 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 
-	<ui:define name="titulo">Canais de divugação</ui:define>
+	<ui:define name="titulo">Canais de divulgação</ui:define>
 
 	<ui:define name="content">
 		<f:metadata>
 			<f:viewAction action="#{pesquisaCanalBean.inicializar}" />
 		</f:metadata>
-		<h1 class="aw-page-title">Canais de divugação</h1>
+		<h1 class="aw-page-title">Canais de divulgação</h1>
 		<h:form id="frm">
 			<p:toolbar>
 				<p:toolbarGroup align="right">
-					<p:button value="Novo canal" outcome="/canais/CadastroCanalDivugacao" />
+					<p:button value="Novo canal" outcome="/canais/CadastroCanalDivulgacao" />
 				</p:toolbarGroup>
 			</p:toolbar>
 			<p:messages autoUpdate="true" closable="true" />
@@ -33,7 +33,7 @@
 				</p:column>
 				<f:facet name="footer">
 					<p:button icon="ui-icon-pencil" value="Visualizar/Editar" id="btnEdit"
-						outcome="/canais/CadastroCanalDivugacao"
+						outcome="/canais/CadastroCanalDivulgacao"
 						disabled="#{pesquisaCanalBean.desabilitarBotoes}">
 						<f:param name="canal"
 							value="#{pesquisaCanalBean.canalSelecionado.id}" />
