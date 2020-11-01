@@ -135,6 +135,20 @@ public class Seguranca {
 		return externalContext.isUserInRole(Funcionalidade.BANCO_EDIT.toString());
 	}
 	
+	public boolean isCanalInserir() {
+		return externalContext.isUserInRole(Funcionalidade.CANAL_INSERT.toString());
+
+	}
+
+	public boolean isCanalExcluir() {
+		return externalContext.isUserInRole(Funcionalidade.CANAL_DEL.toString());
+	}
+
+	public boolean isCanalEditar() {
+		return externalContext.isUserInRole(Funcionalidade.CANAL_EDIT.toString());
+	}
+
+	
 	public boolean isTipoDespesaInserir() {
 		return externalContext.isUserInRole(Funcionalidade.TIPO_DESPESA_INSERT.toString());
 	}

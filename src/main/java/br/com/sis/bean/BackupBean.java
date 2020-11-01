@@ -82,6 +82,10 @@ public class BackupBean implements Serializable {
 		}
 		
 		String caminhoBackup = FacesUtil.localFiles() +  "db_prime_backup.sql";
+		File diretorio = new File(caminhoBackup);
+		if(!diretorio.exists()) {
+			diretorio.mkdir();
+		}
 		Process proc = null;
 		Map<String, String> result = new HashMap<>(); 
 		try {

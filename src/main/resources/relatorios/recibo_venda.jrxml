@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.15.0.final using JasperReports Library version 6.15.0-dd49bfb94918336b8321d5507193f0169ead4e95  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="recibo_venda" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="53b44633-c189-4aaf-8af1-6dfe079bf6d1">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="primedb"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="id" class="java.lang.Long"/>
+	<parameter name="logo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+  m.id,
+  p.nome,
+  p.logradouro,
+  p.numero,
+  p.cidade,
+  p.estado,
+  m.entrada,
+  f.descricao fabricante,
+  concat(mo.descricao, ' ', mo.motorizacao) modeloMotorizacao,
+  v.combustivel,
+  concat(v.anoFabricacao, '/', v.anoModelo) anoModelo,
+  v.placa,
+  v.quilometragem
+from movimentacoes m
+inner join pessoas p on m.cliente_id = p.id
+inner join veiculos v on m.veiculo_id = v.id
+inner join modelos mo on v.modelo_id = mo.id
+inner join fabricantes f on mo.fabricante_id = f.id
+where m.id = $P{id}]]>
+	</queryString>
+	<field name="id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="id"/>
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacoes"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nome"/>
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoas"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="logradouro" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="logradouro"/>
+		<property name="com.jaspersoft.studio.field.label" value="logradouro"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoas"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="numero" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="numero"/>
+		<property name="com.jaspersoft.studio.field.label" value="numero"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoas"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cidade"/>
+		<property name="com.jaspersoft.studio.field.label" value="cidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoas"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="estado" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="estado"/>
+		<property name="com.jaspersoft.studio.field.label" value="estado"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoas"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="entrada" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="entrada"/>
+		<property name="com.jaspersoft.studio.field.label" value="entrada"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacoes"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fabricante" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="descricao"/>
+		<property name="com.jaspersoft.studio.field.label" value="fabricante"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fabricantes"/>
+	</field>
+	<field name="modeloMotorizacao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="modeloMotorizacao"/>
+		<property name="com.jaspersoft.studio.field.label" value="modeloMotorizacao"/>
+	</field>
+	<field name="combustivel" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="combustivel"/>
+		<property name="com.jaspersoft.studio.field.label" value="combustivel"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="veiculos"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="anoModelo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="anoModelo"/>
+		<property name="com.jaspersoft.studio.field.label" value="anoModelo"/>
+	</field>
+	<field name="placa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="placa"/>
+		<property name="com.jaspersoft.studio.field.label" value="placa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="veiculos"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="quilometragem" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="quilometragem"/>
+		<property name="com.jaspersoft.studio.field.label" value="quilometragem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="veiculos"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="76" splitType="Stretch">
+			<image>
+				<reportElement stretchType="RelativeToTallestObject" x="10" y="13" width="100" height="50" uuid="e462735a-e060-47e8-bca9-30fd2d69468a"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="193" y="24" width="100" height="30" uuid="c08c02c4-3ce0-4786-9fd7-35e791582904"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[RECIBO]]></text>
+			</staticText>
+			<textField pattern="000000">
+				<reportElement x="460" y="31" width="80" height="17" uuid="b06a8e43-6c10-4a7e-b9ce-a680ded77a0a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="351" splitType="Stretch">
+			<textField>
+				<reportElement x="86" y="10" width="264" height="22" uuid="4542cc5e-2435-40e2-a934-dd28f86d8fd5"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="10" width="76" height="22" uuid="8c77f0f2-8f10-452f-b841-8aaf2ad94525"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Recebi o Sr(a)]]></text>
+			</staticText>
+			<line>
+				<reportElement x="80" y="30" width="270" height="1" uuid="fd055d50-a7b2-43f2-8eb2-a5552e56ad9b"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="350" y="10" width="200" height="22" uuid="96fb01d9-2bc7-479d-9ee0-717ecf76f268"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[brasileiro(a), residnte e domiciliado(a) na]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="11" y="39" width="209" height="22" uuid="df66a247-8acf-4b04-af5f-5a4e3c8060b2"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{logradouro}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="9" y="59" width="211" height="1" uuid="ac0a9ec7-7116-4d44-bf3f-ab540d6a9a5a"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="223" y="39" width="47" height="22" uuid="cc4267fe-c4a5-4971-b33e-603275ba9019"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[, número]]></text>
+			</staticText>
+			<line>
+				<reportElement x="273" y="59" width="37" height="1" uuid="92e87bad-ec52-4407-a9dd-2e9e5b399e38"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="271" y="39" width="39" height="22" uuid="c5a4c647-6b27-418f-914f-bee6c857fdec"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{numero}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="315" y="39" width="45" height="22" uuid="41498809-700a-4b55-84eb-29b2d310e5b0"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[, cidade]]></text>
+			</staticText>
+			<line>
+				<reportElement x="358" y="60" width="92" height="1" uuid="f400de46-f062-4788-80c5-1768267b8405"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="361" y="39" width="89" height="22" uuid="e40fcafe-15f1-42d9-9468-24f7379241fc"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{cidade}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="455" y="39" width="36" height="22" uuid="9999cfc6-3def-4cc5-9070-9013b7e261d6">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[, estado]]></text>
+			</staticText>
+			<line>
+				<reportElement x="495" y="60" width="25" height="1" uuid="409f97a4-6cd5-4d19-82c5-a4f235b204c6"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="491" y="39" width="29" height="22" uuid="781ee10d-0958-42bb-a6a9-ce7c674b71ab"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="525" y="39" width="15" height="22" uuid="15fe099f-cddf-495a-b28c-638639ed6206">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[a]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="8" y="64" width="47" height="22" uuid="b114f68a-dd85-4e2b-9062-8ad975ccc8de"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[quantia de]]></text>
+			</staticText>
+			<line>
+				<reportElement x="61" y="84" width="109" height="1" uuid="cae7cc57-9752-4a6d-9a97-7b6be1a46e8d"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<textField pattern="¤#,##0.00;¤-#,##0.00">
+				<reportElement x="67" y="64" width="103" height="22" uuid="21f0dbb0-de05-447e-96d4-aaef3e3c866e"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{entrada}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="176" y="84" width="374" height="1" uuid="429aa71d-b762-4519-85d8-c5f04d9663e7"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="8" y="88" width="442" height="22" uuid="affa3eca-05ae-451e-91ad-e7e04d140c3c"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[refrente ao pagamento semanl de veículo alugado, dando-lhe por este recibo a dvida quitação]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="93" y="128" width="100" height="21" uuid="651ea494-389b-4f47-8cfb-335873d50b85"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fabricante}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="128" width="65" height="21" uuid="fe378b06-6a18-4bcc-b727-61c037a11dc3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[MARCA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="94" y="153" width="100" height="21" uuid="3c15b049-2678-4d9d-8b17-bac148e01cc3"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{combustivel}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="153" width="78" height="21" uuid="90cc4422-658c-47fe-a3c3-36fad8b6e6c7"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[COMBUSTÍVEL:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="95" y="178" width="165" height="21" uuid="17216249-fbfc-464f-ad0e-a7b6e08b2e22"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{modeloMotorizacao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="178" width="65" height="21" uuid="dc8bc731-fa81-4836-869d-c77b5e141cba"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[VEÍCULO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="128" width="45" height="21" uuid="9ae35621-e2f7-4cda-a189-aecc05217742"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[ANO/MOD:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="413" y="128" width="100" height="21" uuid="c068aa7c-a805-4de3-9b01-f071f5630cfb"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{anoModelo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="328" y="153" width="78" height="21" uuid="359c8f74-10b3-4f77-8077-78cffec8b5f4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[PLACA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="414" y="153" width="100" height="21" uuid="d5d8fe49-baaa-4ebc-96f4-df920acb7a79"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{placa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="340" y="178" width="65" height="21" uuid="f359b7dd-9e3f-4389-a0e4-1616fe43187f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[KM:]]></text>
+			</staticText>
+			<textField pattern="#,##0;#,##0">
+				<reportElement x="415" y="178" width="99" height="21" uuid="0b2d3ec3-14a9-4ae5-86a2-0fa421028e08"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{quilometragem}]]></textFieldExpression>
+			</textField>
+			<textField pattern="&apos;Manaus,&apos; dd MMMMM &apos;de&apos; yyyy">
+				<reportElement x="328" y="229" width="212" height="22" uuid="ce16544e-3b2d-4609-b92a-238143e75740"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="310" y="317" width="240" height="20" uuid="c4ed5dc1-0870-4527-8a20-9248edfd1cc0"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Assinatura e Carimbo]]></text>
+			</staticText>
+			<line direction="BottomUp">
+				<reportElement x="310" y="313" width="241" height="1" uuid="85fc7e3f-3ee6-410b-b59a-13b11889732a"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<textField pattern="¤#,##0.00;¤-#,##0.00">
+				<reportElement x="177" y="64" width="368" height="22" uuid="ca1e69a5-37d2-4d75-980b-b5dfcb5bb176"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new br.com.sis.util.Extenso($F{entrada}.doubleValue())]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

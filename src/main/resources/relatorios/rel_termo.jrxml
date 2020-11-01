@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.15.0.final using JasperReports Library version 6.15.0-dd49bfb94918336b8321d5507193f0169ead4e95  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rel_termo" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="382467a1-b49e-49ab-9e24-ec67c349aa2b">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="primedb"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="id" class="java.lang.Long"/>
+	<parameter name="logo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+  m.id,
+  p.nome,
+  p.logradouro,
+  p.numero,
+  p.cidade,
+  p.estado,
+  m.entrada,
+  f.descricao fabricante,
+  concat(mo.descricao, ' ', mo.motorizacao) modeloMotorizacao,
+  v.combustivel,
+  concat(v.anoFabricacao, '/', v.anoModelo) anoModelo,
+  v.placa,
+  v.quilometragem
+from movimentacoes m
+inner join pessoas p on m.cliente_id = p.id
+inner join veiculos v on m.veiculo_id = v.id
+inner join modelos mo on v.modelo_id = mo.id
+inner join fabricantes f on mo.fabricante_id = f.id
+where m.id = $P{id}]]>
+	</queryString>
+	<field name="id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="id"/>
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacoes"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nome"/>
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoas"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="logradouro" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="logradouro"/>
+		<property name="com.jaspersoft.studio.field.label" value="logradouro"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoas"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="numero" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="numero"/>
+		<property name="com.jaspersoft.studio.field.label" value="numero"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoas"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cidade"/>
+		<property name="com.jaspersoft.studio.field.label" value="cidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoas"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="estado" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="estado"/>
+		<property name="com.jaspersoft.studio.field.label" value="estado"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pessoas"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="entrada" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="entrada"/>
+		<property name="com.jaspersoft.studio.field.label" value="entrada"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacoes"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fabricante" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="descricao"/>
+		<property name="com.jaspersoft.studio.field.label" value="fabricante"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fabricantes"/>
+	</field>
+	<field name="modeloMotorizacao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="modeloMotorizacao"/>
+		<property name="com.jaspersoft.studio.field.label" value="modeloMotorizacao"/>
+	</field>
+	<field name="combustivel" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="combustivel"/>
+		<property name="com.jaspersoft.studio.field.label" value="combustivel"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="veiculos"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="anoModelo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="anoModelo"/>
+		<property name="com.jaspersoft.studio.field.label" value="anoModelo"/>
+	</field>
+	<field name="placa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="placa"/>
+		<property name="com.jaspersoft.studio.field.label" value="placa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="veiculos"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="quilometragem" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="quilometragem"/>
+		<property name="com.jaspersoft.studio.field.label" value="quilometragem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="veiculos"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="130" splitType="Stretch">
+			<image>
+				<reportElement stretchType="RelativeToTallestObject" x="10" y="3" width="100" height="50" uuid="d5825ae3-f9e1-488a-9622-f6a411881905"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="140" y="15" width="250" height="30" uuid="7b60e553-4b43-434f-848f-0bc20eb03892"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROTOCOLO DE ENTREGA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="60" width="500" height="70" uuid="88fd4120-0807-4693-a132-21616916de72"/>
+				<textElement textAlignment="Justified">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Declaro para os devidos fins que examinei recebi, nesta data o veículo descrito em perfeitas
+condições de uso, acompanhado dos devidos acessórios e ferramentas. Declaro ainda estar
+ciente de que se trata de um veículo usado, no estado em que se encontram as seguintes
+garantias abaixo especificadas.]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="105" splitType="Stretch">
+			<textField>
+				<reportElement x="93" y="29" width="100" height="21" uuid="26186866-a5bc-4b10-99f1-ce12df2dcc45"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fabricante}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="29" width="65" height="21" uuid="f7ec7938-1e22-4563-8f9d-c02298249c6d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[MARCA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="94" y="54" width="100" height="21" uuid="a5907418-d331-4d29-866c-1af00c7506db"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{combustivel}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="54" width="78" height="21" uuid="1ce976dc-4615-4d26-a53f-93acc944b818"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[COMBUSTÍVEL:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="95" y="79" width="165" height="21" uuid="52bde0b4-b4cd-4280-8819-86366d658d6f"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{modeloMotorizacao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="79" width="65" height="21" uuid="0535e348-8f85-4737-a182-febad1a577c5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[VEÍCULO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="29" width="45" height="21" uuid="c2719666-cbef-4c5f-9cf9-d0848a6e57c5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[ANO/MOD:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="413" y="29" width="100" height="21" uuid="3c267deb-f343-4b35-b06b-96aabcc618f6"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{anoModelo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="328" y="54" width="78" height="21" uuid="e97fcc4f-22ad-401d-ab4f-578c5d917db4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[PLACA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="414" y="54" width="100" height="21" uuid="76d708ad-7e4f-407d-b082-308777557d8b"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{placa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="340" y="79" width="65" height="21" uuid="9b282276-43e9-4a14-901b-55fbe4cc01c9"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[KM:]]></text>
+			</staticText>
+			<textField pattern="#,##0;#,##0">
+				<reportElement x="415" y="79" width="99" height="21" uuid="b88578e0-d5cd-4610-88fd-f7eb8a8a83ce"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{quilometragem}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="4" width="65" height="21" uuid="93c4857c-29a0-4974-888a-1511cb1587c3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[CLIENTE:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="93" y="4" width="235" height="21" uuid="102a7414-8572-4d4d-8802-bc9b500c68b2"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="566" splitType="Stretch">
+			<staticText>
+				<reportElement x="140" y="5" width="250" height="30" uuid="55fb3461-afb3-4b8e-a2ab-1cbe5255b524"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GARANTIA DE QUALIDADE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="39" width="500" height="410" uuid="d23e9f3e-c247-4b75-9af7-fe3c77ca1db8"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[O expositor, Sr CARLOS PRINTES DE SANTANA NETO, tendo promovido específica vistoria
+no veículo acima descrito, garante o motor (suas partes internas de força) e a caixa de marcha
+somente as partes internas (engrenagens), por um período de 03 meses ou 5.000 km o que
+ocorrer primeiro a contar da presente data.
+A garantia é limitada a defeitos no bloco e na caixa de câmbio do veículo desde que
+observados as seguintes regras:
+I - A garantia restringe-se ao bloco do motor e suas partes e a caixa de câmbio e suas partes
+internas, não se estendendo aos demais componentes externos e/ou periféricos do bloco do
+motor e desta caixa de câmbio.
+II - Caberá exclusivamente ao expositor, Sr CARLOS PRINTES DE SANTANA NETO, decisão
+de reparos ou substituição a peça que apresentar com defeito.
+III - Os serviços de reparo e/ou substituição serão efetuados exclusivamente na oficina da
+própria empresa garantidora após o diagnóstico do serviço e autorização da garantia.
+A garantia, objeto deste instrumento, que não abrange responsabilidade por perdas, e danos
+ou lucros cessantes decorrentes de paralisações do veículo para reparo ou substituição dos
+componentes garantidos, cessará de pleno direito (cancelamento de garantia), nos seguintes
+casos:
+(a) Uso inadequdo do veículo, entre estes, mas não tão somente, sua utilização em
+competições de qualquer natureza ou espécie; (b) uso do veículo submetendo-o a abuso ou a
+carga incompatível; (c) modificação de combustível ou lubrificante para ele recomendados; (d)
+reparos ou assistência do veículo por outras oficinas; (e) danificações do veículo por mau uso
+ou acidente, de data e qualquer natureza; (f) violação e/ou alteração do velocímetro ou seu
+cabo.]]></text>
+			</staticText>
+			<textField pattern="&apos;Manaus,&apos; dd MMMMM &apos;de&apos; yyyy">
+				<reportElement x="38" y="457" width="212" height="22" uuid="1d8dae29-6807-41d3-bdb9-b70f094d0f47"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="39" y="493" width="188" height="15" uuid="d8c9f5c0-cef7-4c21-8fe2-ab5b75180710"/>
+				<text><![CDATA[CARLOS PRINTES DE SANTANA NETO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="320" y="512" width="210" height="15" uuid="ba760047-016d-4b55-a8ad-1ff28bf84198"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="320" y="493" width="220" height="16" uuid="11d2e8eb-5e15-40b9-a8ca-23790586721b"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="112" y="534" width="306" height="30" uuid="2871e958-5707-467d-b003-d1f9c8274373"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Av. Rodrigo Otavio 670, Japiim I.
+Manaus - AM CEP:69077-000 Te.:(92)99110-4271]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

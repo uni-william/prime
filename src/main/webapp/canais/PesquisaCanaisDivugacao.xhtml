@@ -5,54 +5,54 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 
-	<ui:define name="titulo">Bancos</ui:define>
+	<ui:define name="titulo">Canais de divugação</ui:define>
 
 	<ui:define name="content">
 		<f:metadata>
-			<f:viewAction action="#{pesquisaBancoBean.inicializar}" />
+			<f:viewAction action="#{pesquisaCanalBean.inicializar}" />
 		</f:metadata>
-		<h1 class="aw-page-title">Bancos</h1>
+		<h1 class="aw-page-title">Canais de divugação</h1>
 		<h:form id="frm">
 			<p:toolbar>
 				<p:toolbarGroup align="right">
-					<p:button value="Novo banco" outcome="/bancos/CadastroBanco" />
+					<p:button value="Novo canal" outcome="/canais/CadastroCanalDivugacao" />
 				</p:toolbarGroup>
 			</p:toolbar>
 			<p:messages autoUpdate="true" closable="true" />
-			<p:dataTable value="#{pesquisaBancoBean.listaBancos}" var="banco"
+			<p:dataTable value="#{pesquisaCanalBean.listaCanals}" var="canal"
 				style="margin-top: 20px" selectionMode="single"
-				selection="#{pesquisaBancoBean.bancoSelecionado}"
-				rowKey="#{banco.id}" reflow="true"
-				emptyMessage="Nenhum banco cadastrado" id="table">
+				selection="#{pesquisaCanalBean.canalSelecionado}"
+				rowKey="#{canal.id}" reflow="true"
+				emptyMessage="Nenhum canal cadastrado" id="table">
 				<p:ajax event="rowSelect" update="btnEdit btnRemove"
-					listener="#{pesquisaBancoBean.onRowSelect}" />
+					listener="#{pesquisaCanalBean.onRowSelect}" />
 				<p:ajax event="rowUnselect" update="btnEdit btnRemove"
-					listener="#{pesquisaBancoBean.onRowUnSelect}" />
-				<p:column headerText="Bancos cadastrados">
-					<h:outputText value="#{banco.descricao}" />
+					listener="#{pesquisaCanalBean.onRowUnSelect}" />
+				<p:column headerText="Canais cadastrados">
+					<h:outputText value="#{canal.descricao}" />
 				</p:column>
 				<f:facet name="footer">
 					<p:button icon="ui-icon-pencil" value="Visualizar/Editar" id="btnEdit"
-						outcome="/bancos/CadastroBanco"
-						disabled="#{pesquisaBancoBean.desabilitarBotoes}">
-						<f:param name="banco"
-							value="#{pesquisaBancoBean.bancoSelecionado.id}" />
+						outcome="/canais/CadastroCanalDivugacao"
+						disabled="#{pesquisaCanalBean.desabilitarBotoes}">
+						<f:param name="canal"
+							value="#{pesquisaCanalBean.canalSelecionado.id}" />
 					</p:button>
 					<p:commandButton icon="ui-icon-trash" value="Excluir"
 						id="btnRemove"
 						oncomplete="PF('confirmacao').show(); return false;"
 						process="@this" update=":frm:conf"
-						disabled="#{pesquisaBancoBean.desabilitarBotoes or not seguranca.bancoExcluir}" />
+						disabled="#{pesquisaCanalBean.desabilitarBotoes or not seguranca.canalExcluir}" />
 				</f:facet>
 			</p:dataTable>
 			<p:confirmDialog header="Excluão de Registro"
-				message="Confirma excluir o banco #{pesquisaBancoBean.bancoSelecionado.descricao}?"
+				message="Confirma excluir o canal #{pesquisaCanalBean.canalSelecionado.descricao}?"
 				widgetVar="confirmacao" id="conf">
 				<p:button value="Não"
 					onclick="PF('confirmacao').hide(); return false;" />
 				<p:commandButton value="Sim" update="@form"
 					oncomplete="PF('confirmacao').hide()" process="@this"
-					action="#{pesquisaBancoBean.excluir}" />
+					action="#{pesquisaCanalBean.excluir}" />
 			</p:confirmDialog>
 		</h:form>
 	</ui:define>

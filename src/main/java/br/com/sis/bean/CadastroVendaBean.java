@@ -31,6 +31,7 @@ import org.primefaces.model.StreamedContent;
 
 import br.com.sis.converter.PessoaConverter;
 import br.com.sis.entity.Banco;
+import br.com.sis.entity.Canal;
 import br.com.sis.entity.ComissaoVenda;
 import br.com.sis.entity.Movimentacao;
 import br.com.sis.entity.Pessoa;
@@ -39,13 +40,13 @@ import br.com.sis.entity.Vendedor;
 import br.com.sis.enuns.TipoOperacao;
 import br.com.sis.report.ExecutorRelatorio;
 import br.com.sis.repository.BancoRepository;
+import br.com.sis.repository.CanalRepository;
 import br.com.sis.repository.MovimentacaoRepository;
 import br.com.sis.repository.PessoaRepository;
 import br.com.sis.repository.VeiculoRepository;
 import br.com.sis.repository.VendedorRepository;
 import br.com.sis.security.Seguranca;
 import br.com.sis.service.MovimentacaoService;
-import br.com.sis.util.Utils;
 import br.com.sis.util.jsf.FacesUtil;
 
 @Named
@@ -70,6 +71,9 @@ public class CadastroVendaBean implements Serializable {
 	private VendedorRepository vendedorRepository;
 
 	@Inject
+	private CanalRepository canalRepository;
+
+	@Inject
 	private PessoaConverter pessoaConverter;
 	private Movimentacao movimentacao;
 
@@ -88,10 +92,16 @@ public class CadastroVendaBean implements Serializable {
 
 	private List<Banco> bancos;
 
+	private List<Canal> canais = new ArrayList<Canal>();
+
 	private String labelBotao;
 	private List<ComissaoVenda> comissoes = new ArrayList<ComissaoVenda>();
 	private Vendedor vendedor = new Vendedor();
 	private List<Vendedor> vendedores;
+
+	public List<Canal> getCanais() {
+		return canais;
+	}
 
 	public List<Banco> getBancos() {
 		return bancos;
@@ -171,6 +181,7 @@ public class CadastroVendaBean implements Serializable {
 
 	public void inicializar() {
 		bancos = bancoRepository.listAll();
+		canais = canalRepository.listAll();
 		vendedores = vendedorRepository.listAllAtivos();
 		if (movimentacao == null) {
 			movimentacao = new Movimentacao();
@@ -260,14 +271,12 @@ public class CadastroVendaBean implements Serializable {
 	}
 
 	public void emitirRelatorio() {
-		String dataExtenso = "Manaus, " + Utils.dataPorExtenso(new Date()) + ".";
 		Long id = movimentacao.getId();
 		String nomeRel = "Contrato_" + numeroFormatado(movimentacao.getId()) + ".pdf";
 		String caminhoLogo = FacesUtil.localFotos() + "/logo_prime_short.png";
 		Map<String, Object> parametros = new HashMap<>();
-		parametros.put("codigo", id);
+		parametros.put("id", id);
 		parametros.put("logo", caminhoLogo);
-		parametros.put("dataextenso", dataExtenso);
 		ExecutorRelatorio executor = new ExecutorRelatorio("/relatorios/rel_termo.jasper", this.response, parametros,
 				nomeRel);
 
@@ -332,9 +341,9 @@ public class CadastroVendaBean implements Serializable {
 		String nomeRel = "Recibo_" + numeroFormatado(movimentacao.getId()) + ".pdf";
 		String caminhoLogo = FacesUtil.localFotos() + "/logo_prime_short.png";
 		Map<String, Object> parametros = new HashMap<>();
-		parametros.put("codigo", id);
+		parametros.put("id", id);
 		parametros.put("logo", caminhoLogo);
-		ExecutorRelatorio executor = new ExecutorRelatorio("/relatorios/recibo.jasper", this.response, parametros,
+		ExecutorRelatorio executor = new ExecutorRelatorio("/relatorios/recibo_venda.jasper", this.response, parametros,
 				nomeRel);
 
 		Session session = manager.unwrap(Session.class);

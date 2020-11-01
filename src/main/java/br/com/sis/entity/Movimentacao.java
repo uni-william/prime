@@ -46,6 +46,7 @@ public class Movimentacao implements Serializable {
 	private Banco banco;
 	private StatusVenda statusVenda = StatusVenda.ANDAMENTO;
 	private List<ComissaoVenda> comissoes = new ArrayList<ComissaoVenda>();
+	private Canal canal;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -163,6 +164,16 @@ public class Movimentacao implements Serializable {
 
 	public void setComissoes(List<ComissaoVenda> comissoes) {
 		this.comissoes = comissoes;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "canal_id")
+	public Canal getCanal() {
+		return canal;
+	}
+
+	public void setCanal(Canal canal) {
+		this.canal = canal;
 	}
 
 	@Transient
