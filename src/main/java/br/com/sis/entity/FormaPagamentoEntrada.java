@@ -1,28 +1,27 @@
 package br.com.sis.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.validator.constraints.NotBlank;
-
 @Entity
-@Table(name = "canais_divugacao")
-public class Canal implements Serializable {
+@Table(name = "forma_pagto_entrada")
+public class FormaPagamentoEntrada implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private String descricao;
-	private List<Movimentacao> vendas = new ArrayList<Movimentacao>();
+	private Movimentacao venda;
+	private FormaPagamento formaPagamento;
+	private BigDecimal valor;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,23 +33,32 @@ public class Canal implements Serializable {
 		this.id = id;
 	}
 
-	@NotBlank
-	@Column(length = 30, nullable = false)
-	public String getDescricao() {
-		return descricao;
+	@ManyToOne
+	@JoinColumn(name = "venda_id", nullable = false)
+	public Movimentacao getVenda() {
+		return venda;
 	}
 
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+	public void setVenda(Movimentacao venda) {
+		this.venda = venda;
 	}
 
-	@OneToMany(mappedBy = "canal")
-	public List<Movimentacao> getVendas() {
-		return vendas;
+	@ManyToOne
+	@JoinColumn(name = "forma_id", nullable = false)
+	public FormaPagamento getFormaPagamento() {
+		return formaPagamento;
 	}
 
-	public void setVendas(List<Movimentacao> vendas) {
-		this.vendas = vendas;
+	public void setFormaPagamento(FormaPagamento formaPagamento) {
+		this.formaPagamento = formaPagamento;
+	}
+	@Column(precision = 10, scale = 2)
+	public BigDecimal getValor() {
+		return valor;
+	}
+
+	public void setValor(BigDecimal valor) {
+		this.valor = valor;
 	}
 
 	@Override
@@ -69,7 +77,7 @@ public class Canal implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Canal other = (Canal) obj;
+		FormaPagamentoEntrada other = (FormaPagamentoEntrada) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

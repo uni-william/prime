@@ -166,6 +166,50 @@
 								</p:inputNumber>
 							</p:panelGrid>
 
+							<p:panelGrid columns="4" layout="grid"
+								columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-3, ui-grid-col-2"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Forma pagamento" for="forma_entrada" />
+								<p:selectOneMenu
+									value="#{cadastroVendaBean.formaPagamentoEntrada.formaPagamento}"
+									id="forma">
+									<f:selectItems value="#{cadastroVendaBean.formaPagamentos}"
+										var="formaPgto" itemValue="#{formaPgto}"
+										itemLabel="#{formaPgto.descricao}" />
+								</p:selectOneMenu>
+								<p:inputNumber id="forma_entrada"
+									value="#{cadastroVendaBean.formaPagamentoEntrada.valor}"
+									decimalPlaces="2" thousandSeparator="." decimalSeparator="," />
+
+								<p:commandButton icon="ui-icon-circle-plus" style="width: 30px"
+									id="btAddEntrada" title="Adicionar Forma"
+									process="@this forma forma_entrada"
+									action="#{cadastroVendaBean.adicionarEntrada}"
+									update="tbentarda forma forma_entrada">
+								</p:commandButton>
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+								<p:dataTable id="tbentarda"
+									value="#{cadastroVendaBean.listPagamentoEntradas}"
+									var="formaEntrada" emptyMessage="Sem entrada">
+									<p:column headerText="Forma de pagamento">
+										<h:outputText value="#{formaEntrada.formaPagamento.descricao}" />
+									</p:column>
+									<p:column headerText="Valor" style="width: 100px">
+										<h:outputText value="#{formaEntrada.valor}">
+											<f:convertNumber type="currency" />
+										</h:outputText>
+									</p:column>
+									<p:column style="width: 32px">
+										<p:commandButton icon=" ui-icon-minus" style="width: 30px"
+											action="#{cadastroVendaBean.removerEntrada(formaEntrada)}"
+											process="@this" update="@form" />
+									</p:column>
+								</p:dataTable>
+							</p:panelGrid>
 
 						</p:panelGrid>
 
@@ -214,10 +258,10 @@
 							<p:panelGrid columns="2" layout="grid"
 								columnClasses="ui-grid-col-3, ui-grid-col-4"
 								styleClass="panelgrid-noborder">
-								<p:outputLabel value="Onde encontrou a Prime Veículos?" for="canal" />
-								<p:selectOneMenu id="canal"
-									value="#{cadastroVendaBean.movimentacao.canal}"
-									disabled="#{cadastroVendaBean.vendaEfetuada}">
+								<p:outputLabel value="Onde encontrou a Prime Veículos?"
+									for="idcanal" />
+								<p:selectOneMenu id="idcanal"
+									value="#{cadastroVendaBean.movimentacao.canal}">
 									<f:selectItem itemLabel="Não informado" />
 									<f:selectItems value="#{cadastroVendaBean.canais}" var="canal"
 										itemValue="#{canal}" itemLabel="#{canal.descricao}"></f:selectItems>

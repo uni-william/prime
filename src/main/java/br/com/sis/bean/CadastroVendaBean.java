@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +34,8 @@ import br.com.sis.converter.PessoaConverter;
 import br.com.sis.entity.Banco;
 import br.com.sis.entity.Canal;
 import br.com.sis.entity.ComissaoVenda;
+import br.com.sis.entity.FormaPagamento;
+import br.com.sis.entity.FormaPagamentoEntrada;
 import br.com.sis.entity.Movimentacao;
 import br.com.sis.entity.Pessoa;
 import br.com.sis.entity.Veiculo;
@@ -41,6 +44,7 @@ import br.com.sis.enuns.TipoOperacao;
 import br.com.sis.report.ExecutorRelatorio;
 import br.com.sis.repository.BancoRepository;
 import br.com.sis.repository.CanalRepository;
+import br.com.sis.repository.FormaPagamentoRepository;
 import br.com.sis.repository.MovimentacaoRepository;
 import br.com.sis.repository.PessoaRepository;
 import br.com.sis.repository.VeiculoRepository;
@@ -74,6 +78,9 @@ public class CadastroVendaBean implements Serializable {
 	private CanalRepository canalRepository;
 
 	@Inject
+	private FormaPagamentoRepository formaPagamentoRepository;
+
+	@Inject
 	private PessoaConverter pessoaConverter;
 	private Movimentacao movimentacao;
 
@@ -98,6 +105,34 @@ public class CadastroVendaBean implements Serializable {
 	private List<ComissaoVenda> comissoes = new ArrayList<ComissaoVenda>();
 	private Vendedor vendedor = new Vendedor();
 	private List<Vendedor> vendedores;
+
+	private List<FormaPagamento> formaPagamentos = new ArrayList<FormaPagamento>();
+	private FormaPagamentoEntrada formaPagamentoEntrada = new FormaPagamentoEntrada();
+	private List<FormaPagamentoEntrada> listPagamentoEntradas = new ArrayList<FormaPagamentoEntrada>();
+
+	public List<FormaPagamentoEntrada> getListPagamentoEntradas() {
+		return listPagamentoEntradas;
+	}
+
+	public void setFormaPagamentos(List<FormaPagamento> formaPagamentos) {
+		this.formaPagamentos = formaPagamentos;
+	}
+
+	public void setListPagamentoEntradas(List<FormaPagamentoEntrada> listPagamentoEntradas) {
+		this.listPagamentoEntradas = listPagamentoEntradas;
+	}
+
+	public FormaPagamentoEntrada getFormaPagamentoEntrada() {
+		return formaPagamentoEntrada;
+	}
+
+	public void setFormaPagamentoEntrada(FormaPagamentoEntrada formaPagamentoEntrada) {
+		this.formaPagamentoEntrada = formaPagamentoEntrada;
+	}
+
+	public List<FormaPagamento> getFormaPagamentos() {
+		return formaPagamentos;
+	}
 
 	public List<Canal> getCanais() {
 		return canais;
@@ -182,6 +217,7 @@ public class CadastroVendaBean implements Serializable {
 	public void inicializar() {
 		bancos = bancoRepository.listAll();
 		canais = canalRepository.listAll();
+		formaPagamentos = formaPagamentoRepository.listAll();
 		vendedores = vendedorRepository.listAllAtivos();
 		if (movimentacao == null) {
 			movimentacao = new Movimentacao();
@@ -192,8 +228,13 @@ public class CadastroVendaBean implements Serializable {
 		} else {
 			this.placa = this.movimentacao.getVeiculo().getPlaca();
 			this.comissoes = this.movimentacao.getComissoes();
+			this.listPagamentoEntradas = this.movimentacao.getEntradas();
 			this.labelBotao = "Atualizar Venda";
 		}
+	}
+
+	public void setCanais(List<Canal> canais) {
+		this.canais = canais;
 	}
 
 	public List<Pessoa> completePorNome(String nome) {
@@ -201,10 +242,15 @@ public class CadastroVendaBean implements Serializable {
 	}
 
 	public void efetuarVenda() {
-		movimentacao.setComissoes(this.comissoes);
-		movimentacao = service.efetuarVenda(movimentacao);
-		if (movimentacao != null) {
-			FacesUtil.addInfoMessage("Operação realizada com sucesso");
+		if (!validarEntrada())
+			FacesUtil.addErroMessage("O valor das formas de pagamento para entrada não é igual ao valor da entrada");
+		else {
+			movimentacao.setComissoes(this.comissoes);
+			movimentacao.setEntradas(this.listPagamentoEntradas);
+			movimentacao = service.efetuarVenda(movimentacao);
+			if (movimentacao != null) {
+				FacesUtil.addInfoMessage("Operação realizada com sucesso");
+			}
 		}
 	}
 
@@ -372,8 +418,39 @@ public class CadastroVendaBean implements Serializable {
 		}
 	}
 
+	private boolean validarEntrada() {
+		if (this.movimentacao.getEntrada() == null || this.movimentacao.getEntrada().compareTo(BigDecimal.ZERO) == 0)
+			return true;
+		BigDecimal totalFormasEntrada = BigDecimal.ZERO;
+		for (FormaPagamentoEntrada formaPagamentoEntrada : listPagamentoEntradas) {
+			totalFormasEntrada = totalFormasEntrada.add(formaPagamentoEntrada.getValor());
+		}
+		return totalFormasEntrada.compareTo(this.movimentacao.getEntrada()) == 0;
+	}
+
+	public void adicionarEntrada() {
+		if (this.formaPagamentoEntrada.getValor() == null)
+			FacesUtil.addErroMessage("Valor inválido!");
+		else {
+			boolean encontrou = false;
+			for (FormaPagamentoEntrada entrada : listPagamentoEntradas) {
+				if (entrada.getFormaPagamento().equals(this.formaPagamentoEntrada.getFormaPagamento()))
+					encontrou = true;
+			}
+			if (encontrou == false) {
+				formaPagamentoEntrada.setVenda(movimentacao);
+				this.listPagamentoEntradas.add(formaPagamentoEntrada);
+				this.formaPagamentoEntrada = new FormaPagamentoEntrada();
+			}
+		}
+	}
+
 	public void removerVendedor(ComissaoVenda comissaoVenda) {
 		this.comissoes.remove(comissaoVenda);
+	}
+
+	public void removerEntrada(FormaPagamentoEntrada entrada) {
+		this.listPagamentoEntradas.remove(entrada);
 	}
 
 }

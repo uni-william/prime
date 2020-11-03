@@ -70,9 +70,9 @@ public class PesquisaMovimentacaoBean implements Serializable {
 	
 	public void selecionar(Movimentacao mov) {
 		if (mov.getTipoOperacao().equals(TipoOperacao.COMPRA)) {
-			FacesUtil.redirecionarPagina("/movimentacoes/CadastroCompra.xhtml?compra=" + mov.getId());
+			FacesUtil.redirecionarPagina("movimentacoes/CadastroCompra.xhtml?compra=" + mov.getId());
 		} else {
-			FacesUtil.redirecionarPagina("/movimentacoes/CadastroVenda.xhtml?venda=" + mov.getId());
+			FacesUtil.redirecionarPagina("movimentacoes/CadastroVenda.xhtml?venda=" + mov.getId());
 		}
 	}
 }

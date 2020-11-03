@@ -20,6 +20,7 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
+import br.com.sis.entity.Canal;
 import br.com.sis.entity.ComissaoVenda;
 import br.com.sis.entity.Modelo;
 import br.com.sis.entity.Movimentacao;
@@ -27,6 +28,7 @@ import br.com.sis.entity.Pessoa;
 import br.com.sis.entity.Veiculo;
 import br.com.sis.entity.vo.CarrosMaisVendidos;
 import br.com.sis.entity.vo.ResumoVendasVO;
+import br.com.sis.entity.vo.TotalCanaisVO;
 import br.com.sis.entity.vo.TotalPorData;
 import br.com.sis.entity.vo.TotalPorOperacao;
 import br.com.sis.enuns.StatusVenda;
@@ -67,6 +69,7 @@ public class MovimentacaoRepository implements Serializable {
 		funcRoot.fetch("usuario", JoinType.INNER);
 		Join<Pessoa, Movimentacao> cliRoot = (Join) movimentacaoRoot.fetch("cliente");
 		cliRoot.fetch("usuario", JoinType.LEFT);
+		movimentacaoRoot.fetch("banco", JoinType.LEFT);
 		criteriaQuery.select(movimentacaoRoot);
 		List<Predicate> predicates = new ArrayList<>();
 
@@ -292,5 +295,32 @@ public class MovimentacaoRepository implements Serializable {
 		TypedQuery<ResumoVendasVO> query = manager.createQuery(criteriaQuery);
 		return query.getResultList();
 	}
+	
+	public List<TotalCanaisVO> canais() {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<TotalCanaisVO> criteriaQuery = builder.createQuery(TotalCanaisVO.class);
+		Root<Canal> root = criteriaQuery.from(Canal.class);
+		Join<Canal, Movimentacao> join = root.join("vendas", JoinType.INNER);
+		criteriaQuery.select(builder.construct(TotalCanaisVO.class,
+				root.get("descricao"),
+				builder.count(join.get("id"))));
+		criteriaQuery.where(builder.equal(join.get("statusVenda"), StatusVenda.CONCLUIDA),
+							builder.equal(join.get("tipoOperacao"), TipoOperacao.VENDA));		
+		criteriaQuery.groupBy(root.get("descricao"));
+		TypedQuery<TotalCanaisVO> query = manager.createQuery(criteriaQuery);
+		return query.getResultList();
+	}
+	
+	public Long totalCanaisNulo() {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<Long> criteriaQuery = builder.createQuery(Long.class);
+		Root<Movimentacao> root = criteriaQuery.from(Movimentacao.class);
+		criteriaQuery.select(builder.count(root.get("id")));
+		criteriaQuery.where(builder.isNull(root.get("canal")),
+				builder.equal(root.get("statusVenda"), StatusVenda.CONCLUIDA),
+				builder.equal(root.get("tipoOperacao"), TipoOperacao.VENDA));
+		TypedQuery<Long> query = manager.createQuery(criteriaQuery);
+		return query.getSingleResult();
+	}	
 
 }

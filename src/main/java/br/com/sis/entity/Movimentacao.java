@@ -47,6 +47,7 @@ public class Movimentacao implements Serializable {
 	private StatusVenda statusVenda = StatusVenda.ANDAMENTO;
 	private List<ComissaoVenda> comissoes = new ArrayList<ComissaoVenda>();
 	private Canal canal;
+	private List<FormaPagamentoEntrada> entradas = new ArrayList<FormaPagamentoEntrada>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -166,7 +167,7 @@ public class Movimentacao implements Serializable {
 		this.comissoes = comissoes;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "canal_id")
 	public Canal getCanal() {
 		return canal;
@@ -174,6 +175,15 @@ public class Movimentacao implements Serializable {
 
 	public void setCanal(Canal canal) {
 		this.canal = canal;
+	}
+
+	@OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<FormaPagamentoEntrada> getEntradas() {
+		return entradas;
+	}
+
+	public void setEntradas(List<FormaPagamentoEntrada> entradas) {
+		this.entradas = entradas;
 	}
 
 	@Transient
