@@ -1,6 +1,7 @@
 package br.com.sis.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +20,7 @@ public class Banco implements Serializable {
 
 	private Long id;
 	private String descricao;
+	private BigDecimal percentual;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +40,15 @@ public class Banco implements Serializable {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	@Column(precision = 10, scale = 2)
+	public BigDecimal getPercentual() {
+		return percentual;
+	}
+
+	public void setPercentual(BigDecimal percentual) {
+		this.percentual = percentual;
 	}
 
 	@Override

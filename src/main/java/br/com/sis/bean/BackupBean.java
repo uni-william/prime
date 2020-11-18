@@ -81,11 +81,12 @@ public class BackupBean implements Serializable {
 			mydump = "C:\\Program Files\\MySQL\\MySQL Server 5.7\\bin\\" + mydump;
 		}
 		
-		String caminhoBackup = FacesUtil.localFiles() +  "db_prime_backup.sql";
+		String caminhoBackup = FacesUtil.localFiles();
 		File diretorio = new File(caminhoBackup);
 		if(!diretorio.exists()) {
 			diretorio.mkdir();
 		}
+		caminhoBackup = caminhoBackup + "db_prime_backup.sql";
 		Process proc = null;
 		Map<String, String> result = new HashMap<>(); 
 		try {

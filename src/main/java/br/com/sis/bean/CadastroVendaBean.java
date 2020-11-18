@@ -247,6 +247,8 @@ public class CadastroVendaBean implements Serializable {
 		else {
 			movimentacao.setComissoes(this.comissoes);
 			movimentacao.setEntradas(this.listPagamentoEntradas);
+			movimentacao.setPagoBanco(this.movimentacao.getValorFinanciamento()
+					.multiply(this.movimentacao.getBanco().getPercentual()).divide(new BigDecimal(100)));
 			movimentacao = service.efetuarVenda(movimentacao);
 			if (movimentacao != null) {
 				FacesUtil.addInfoMessage("Operação realizada com sucesso");

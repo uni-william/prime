@@ -38,6 +38,15 @@
 					<p:inputText id="banco"
 						value="#{cadastroBancoBean.banco.descricao}" />
 				</p:panelGrid>
+
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-2"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Percentual pago no financiamento" for="perc" />
+					<p:inputNumber id="perc"
+						value="#{cadastroBancoBean.banco.percentual}" decimalPlaces="2"
+						decimalSeparator="," thousandSeparator="." />
+				</p:panelGrid>
 			</div>
 		</h:form>
 	</ui:define>

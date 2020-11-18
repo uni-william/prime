@@ -48,6 +48,7 @@ public class Movimentacao implements Serializable {
 	private List<ComissaoVenda> comissoes = new ArrayList<ComissaoVenda>();
 	private Canal canal;
 	private List<FormaPagamentoEntrada> entradas = new ArrayList<FormaPagamentoEntrada>();
+	private BigDecimal pagoBanco = BigDecimal.ZERO;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -97,7 +98,7 @@ public class Movimentacao implements Serializable {
 	}
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "cliente_id", nullable = false)
 	public Pessoa getCliente() {
 		return cliente;
@@ -108,7 +109,7 @@ public class Movimentacao implements Serializable {
 	}
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "veiculo_id", nullable = false)
 	public Veiculo getVeiculo() {
 		return veiculo;
@@ -119,7 +120,7 @@ public class Movimentacao implements Serializable {
 	}
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "func_id", nullable = false)
 	public Pessoa getFuncionario() {
 		return funcionario;
@@ -184,6 +185,15 @@ public class Movimentacao implements Serializable {
 
 	public void setEntradas(List<FormaPagamentoEntrada> entradas) {
 		this.entradas = entradas;
+	}
+
+	@Column(precision = 10, scale = 2)
+	public BigDecimal getPagoBanco() {
+		return pagoBanco;
+	}
+
+	public void setPagoBanco(BigDecimal pagoBanco) {
+		this.pagoBanco = pagoBanco;
 	}
 
 	@Transient

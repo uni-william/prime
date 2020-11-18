@@ -87,7 +87,7 @@ public class Aluguel implements Serializable {
 	}
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "veiculo_id", nullable = false)
 	public Veiculo getVeiculo() {
 		return veiculo;

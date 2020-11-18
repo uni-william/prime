@@ -31,9 +31,14 @@
 				<p:column headerText="Bancos cadastrados">
 					<h:outputText value="#{banco.descricao}" />
 				</p:column>
+				<p:column headerText="Pecentual Financiamento" width="20%">
+					<h:outputText value="#{banco.percentual}">
+						<f:convertNumber pattern="###,##0.00" />
+					</h:outputText>
+				</p:column>
 				<f:facet name="footer">
-					<p:button icon="ui-icon-pencil" value="Visualizar/Editar" id="btnEdit"
-						outcome="/bancos/CadastroBanco"
+					<p:button icon="ui-icon-pencil" value="Visualizar/Editar"
+						id="btnEdit" outcome="/bancos/CadastroBanco"
 						disabled="#{pesquisaBancoBean.desabilitarBotoes}">
 						<f:param name="banco"
 							value="#{pesquisaBancoBean.bancoSelecionado.id}" />
