@@ -162,7 +162,7 @@
 								<p:inputNumber value="#{cadastroVendaBean.movimentacao.entrada}"
 									decimalPlaces="2" thousandSeparator="." decimalSeparator=","
 									id="vlentrada">
-									<p:ajax event="change" process="@this" update="pnvenda" />
+									<p:ajax event="change" process="@this" update="vlfin" />
 								</p:inputNumber>
 							</p:panelGrid>
 
@@ -206,7 +206,7 @@
 									<p:column style="width: 32px">
 										<p:commandButton icon=" ui-icon-minus" style="width: 30px"
 											action="#{cadastroVendaBean.removerEntrada(formaEntrada)}"
-											process="@this" update="@form" />
+											process="@this" update="tbentarda" />
 									</p:column>
 								</p:dataTable>
 							</p:panelGrid>
@@ -288,7 +288,7 @@
 						<p:commandButton icon="ui-icon-circle-plus" style="width: 30px"
 							id="btAddVend" title="Adicionar Vendedor"
 							process="@this cbvendedor"
-							action="#{cadastroVendaBean.adicionarVendedor}" update="@form"
+							action="#{cadastroVendaBean.adicionarVendedor}" update="tbvendedores"
 							disabled="#{cadastroVendaBean.vendaEfetuada}">
 
 						</p:commandButton>
@@ -298,7 +298,7 @@
 					<p:panelGrid columns="1" layout="grid"
 						columnClasses="ui-grid-col-6" styleClass="panelgrid-noborder">
 						<p:dataTable value="#{cadastroVendaBean.comissoes}" var="comissao"
-							emptyMessage="Sem vendedores">
+							emptyMessage="Sem vendedores" id="tbvendedores">
 							<p:column headerText="Vendedores">
 								<h:outputText value="#{comissao.vendedor.nome}" />
 							</p:column>
@@ -310,7 +310,7 @@
 							<p:column style="width: 32px">
 								<p:commandButton icon=" ui-icon-minus" style="width: 30px"
 									action="#{cadastroVendaBean.removerVendedor(comissao)}"
-									process="@this" update="@form"
+									process="@this" update="tbvendedores"
 									disabled="#{cadastroVendaBean.vendaEfetuada}" />
 							</p:column>
 						</p:dataTable>
