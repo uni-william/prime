@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.15.0.final using JasperReports Library version 6.15.0-dd49bfb94918336b8321d5507193f0169ead4e95  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rel_termo" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="382467a1-b49e-49ab-9e24-ec67c349aa2b">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rel_termo" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="382467a1-b49e-49ab-9e24-ec67c349aa2b">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="primedb"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="id" class="java.lang.Long"/>
@@ -19,7 +19,8 @@
   v.combustivel,
   concat(v.anoFabricacao, '/', v.anoModelo) anoModelo,
   v.placa,
-  v.quilometragem
+  v.quilometragem,
+  m.data
 from movimentacoes m
 inner join pessoas p on m.cliente_id = p.id
 inner join veiculos v on m.veiculo_id = v.id
@@ -98,6 +99,12 @@ where m.id = $P{id}]]>
 		<property name="com.jaspersoft.studio.field.name" value="quilometragem"/>
 		<property name="com.jaspersoft.studio.field.label" value="quilometragem"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="veiculos"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="data" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="data"/>
+		<property name="com.jaspersoft.studio.field.label" value="data"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacoes"/>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<background>
@@ -243,7 +250,7 @@ cabo.]]></text>
 			<textField pattern="&apos;Manaus,&apos; dd MMMMM &apos;de&apos; yyyy">
 				<reportElement x="38" y="457" width="212" height="22" uuid="1d8dae29-6807-41d3-bdb9-b70f094d0f47"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="39" y="493" width="188" height="15" uuid="d8c9f5c0-cef7-4c21-8fe2-ab5b75180710"/>
